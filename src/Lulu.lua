@@ -54,6 +54,7 @@ enemies = GetEnemyHeroes()
 
 -- called once when the script is loaded
 function OnLoad()
+    Orb = SxOrbWalk()
     PrintChat(" >> Lulu script")
     IgniteSet()
     ts = TargetSelector(TARGET_LESS_CAST_PRIORITY,950)
@@ -65,7 +66,7 @@ function OnLoad()
     menu.combosettings:addParam("usee", "Use E", SCRIPT_PARAM_ONOFF, true)
     menu.combosettings:addParam("user", "Use R", SCRIPT_PARAM_ONOFF, true)
     
-    menu:addSubMenu("AutoGrowth Settings", "growthsettings")
+    menu:addSubMenu("AutoR Settings", "growthsettings")
     menu.growthsettings:addParam("user","Use R", SCRIPT_PARAM_ONOFF, true)
     
     menu:addSubMenu("Custom Save Priority","custompriority")
@@ -90,9 +91,11 @@ function OnLoad()
     menu.drawab:addParam("drawr", "Draw R", SCRIPT_PARAM_ONOFF, true)
     if VIP_USER then
     menu:addSubMenu("Packets", "Packets")
-    menu.Packets:addParam("QPACK", "Q Packest", SCRIPT_PARAM_ONOFF, false)
-    menu.Packets:addParam("EPACK", "E Packest", SCRIPT_PARAM_ONOFF, false)
+    menu.Packets:addParam("QPACK", "Q Packets", SCRIPT_PARAM_ONOFF, false)
+    menu.Packets:addParam("EPACK", "E Packets", SCRIPT_PARAM_ONOFF, false)
     end
+    menu:addSubMenu("Orbwalker", "orbi")
+    Orb:LoadToMenu(menu.orbi)
     menu:addParam("info", " >> Version ", SCRIPT_PARAM_INFO, version)
     PrintChat ("<font color='#4ECB65'>Lulu v" .. tostring(version) .. " - loaded successful!</font>")
 end
@@ -120,6 +123,30 @@ end
 function OnTick()
   if not menu.Combo or myHero.dead or not bootDone then return end
   Check()
+  Orb:EnableAttacks()
+  ts2:update()
+  target = ts2.target
+  if menu.Combo then
+    if ValidTarget(target, 1200) and not target.dead then
+      Combo(target)
+    end
+  end
+  if menu.Harass then
+   if ValidTarget(target, 1200) and not target.dead then
+      Harass(target)
+    end
+  end
+end
+
+function Combo(Target)
+  Orb:DisableAttacks()
+  
+  -- combo logic here
+  
+  Orb:EnableAttacks()
+end
+
+function Harass(Target)
 end
 
 function Check()
