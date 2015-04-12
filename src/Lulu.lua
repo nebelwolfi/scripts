@@ -38,15 +38,19 @@ local QReady, WReady, EReady, RReady = nil, nil, nil, nil
 local target = nil
 local ignite, igniteReady = nil, false
 local BootDone = false
+local Spell = { Q = {Range = 925, Width = 50, Speed = 1450, Delay = 0.25},  
+                W = {Range = 650},  
+                E = {Range = 650},
+                R = {Range = 900},}
 InterruptList = {"CaitlynAceintheHole", "Crowstorm", "DrainChannel", "GalioIdolOfDurand", "KatarinaR", "InfiniteDuress", "AbsoluteZero", "MissFortuneBulletTime", "AlZaharNetherGrasp"}
-EnemyMinions = minionManager(MINION_ENEMY, Ranges[_Q], myHero, MINION_SORT_MAXHEALTH_DEC)
-JungleMinions = minionManager(MINION_JUNGLE, Ranges[_Q], myHero, MINION_SORT_MAXHEALTH_DEC)
+EnemyMinions = minionManager(MINION_ENEMY, Spell.Q.Range, myHero, MINION_SORT_MAXHEALTH_DEC)
+JungleMinions = minionManager(MINION_JUNGLE, Spell.Q.Range, myHero, MINION_SORT_MAXHEALTH_DEC)
 
   
 --A basic BoL template for the Eclipse Lua Development Kit module's execution environment written by Nader Sl.
 player = GetMyHero()
-allies = GetAllyHeros()
-enemies = GetEnemyHeros()
+allies = GetAllyHeroes()
+enemies = GetEnemyHeroes()
 
 -- called once when the script is loaded
 function OnLoad()
@@ -85,21 +89,21 @@ function OnLoad()
     menu.drawab:addParam("drawe", "Draw E", SCRIPT_PARAM_ONOFF, true)
     menu.drawab:addParam("drawr", "Draw R", SCRIPT_PARAM_ONOFF, true)
     if VIP_USER then
-    Config:addSubMenu("Packets", "Packets")
-    Config.Packets:addParam("QPACK", "Q Packest", SCRIPT_PARAM_ONOFF, false)
-    Config.Packets:addParam("EPACK", "E Packest", SCRIPT_PARAM_ONOFF, false)
+    menu:addSubMenu("Packets", "Packets")
+    menu.Packets:addParam("QPACK", "Q Packest", SCRIPT_PARAM_ONOFF, false)
+    menu.Packets:addParam("EPACK", "E Packest", SCRIPT_PARAM_ONOFF, false)
     end
-    Config:addParam("info", " >> Version ", SCRIPT_PARAM_INFO, version)
-    PrintChat ("<font color='#4ECB65'>Lulu' .. tostring(version) .. ' - loaded successful!</font>")
+    menu:addParam("info", " >> Version ", SCRIPT_PARAM_INFO, version)
+    PrintChat ("<font color='#4ECB65'>Lulu v" .. tostring(version) .. " - loaded successful!</font>")
 end
 
 function Boot()
   ts1 = TargetSelector(TARGET_LESS_CAST_PRIORITY, 950, DAMAGE_MAGIC, nil, false)
   ts1.name = "Ally"
-  menu.growthsettings.custompriority:addTS(ts1)
+  menu.custompriority:addTS(ts1)
   ts2 = TargetSelector(TARGET_LESS_CAST_PRIORITY, 950)
   ts2.name = "Enemy"
-  menu.growthsettings.custompriority:addTS(ts2)
+  menu.custompriority:addTS(ts2)
   BootDone = true
 end
 
@@ -114,7 +118,7 @@ end
 
 -- handles script logic, a pure high speed loop
 function OnTick()
-  if not Menu.Combo or myHero.dead or not bootDone then return end
+  if not menu.Combo or myHero.dead or not bootDone then return end
   Check()
 end
 
