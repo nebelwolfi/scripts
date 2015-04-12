@@ -1,8 +1,20 @@
 local version = 1.0
+if myHero.charName ~= "Zyra" then return end
+local VP = VPrediction()
+local QReady, WReady, EReady, RReady = nil, nil, nil, nil
+local target = nil
+local ignite, igniteReady = nil, false
+local AUTOUPDATE = true
+
+InterruptList = {"CaitlynAceintheHole", "Crowstorm", "DrainChannel", "GalioIdolOfDurand", "KatarinaR", "InfiniteDuress", "AbsoluteZero", "MissFortuneBulletTime", "AlZaharNetherGrasp"}
+  
+if AUTOUPDATE then
+   LazyUpdater("Lulu", version, "fire-bol.de", "/scripts/Lulu.lua", SCRIPT_PATH .. GetCurrentEnv().FILE_NAME):SetSilent(false):CheckUpdate()
+end
 
 --A basic BoL template for the Eclipse Lua Development Kit module's execution environment written by Nader Sl.
 player = GetMyHero()
-allie = GetAllyHeros()
+allies = GetAllyHeros()
 
 -- called once when the script is loaded
 function OnLoad()
@@ -24,28 +36,13 @@ function OnLoad()
     menu:addParam("harass", "Toogle Auto Harass", SCRIPT_PARAM_ONKEYTOGGLE, false, string.byte("C"))
     PrintChat ("<font color='#4ECB65'>Lulu script - loaded successful!</font>")
 end
-    
+
 -- handles script logic, a pure high speed loop
 function OnTick()
-
+  if not Menu.Combo or myHero.dead then return end
 end
 
---handles overlay drawing (processing is not recommended here,use onTick() for that)
-function OnDraw()
-
-end
-
---handles input
-function OnWndMsg(msg,key)
-
-end
-
--- listens to chat input
-function OnSendChat(txt)
-
-end
-
--- listens to spell
-function OnProcessSpell(owner,spell)
-
+function EnemysAround(Unit, range)
+  local c=0
+  for i=1,heroManager.iCount do hero = heroManager:GetHero(i) if hero.team ~= myHero.team and hero.x and hero.y and hero.z and GetDistance(hero, Unit) < range then c=c+1 end end return c
 end
