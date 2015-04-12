@@ -1,14 +1,11 @@
 if myHero.charName ~= "Lulu" then return end
-print("<b>IF THE SCRIPT DOESNT SAY SOMETHING IN CHAT AFTER 1-3 MINUTES THEN</b>")
-print("<b>CHECK IF SCRIPT IS NAMED : Lulu.lua</b>")
-print("<b>IF IT STILL DOESNT WORK PRESS DOUBLE F9 OR DOWNLOAD SoW - SourceLib and VPrediction manually.</b>")
 local version = 1.0
 local AUTOUPDATE = true
 
 local REQUIRED_LIBS = {
     ["VPrediction"] = "https://raw.githubusercontent.com/Hellsing/BoL/master/common/VPrediction.lua",
     ["SxOrbWalk"] = "https://raw.githubusercontent.com/Superx321/BoL/master/common/SxOrbWalk.lua",
-    ["SourceLib"] = "https://bitbucket.org/TheRealSource/public/raw/master/common/SourceLib.lua",}
+    ["SourceLib"] = "https://raw.githubusercontent.com/TheRealSource/public/master/common/SourceLib.lua",}
   
 local DOWNLOADING_LIBS, DOWNLOAD_COUNT = false, 0
 local SELF_NAME = GetCurrentEnv() and GetCurrentEnv().FILE_NAME or ""
@@ -33,12 +30,8 @@ end
 if DOWNLOADING_LIBS then return end
 
 require "VPrediction"
-require "SOW"
+require "SxOrbWalk"
 require "SourceLib"
-
-if AUTOUPDATE then
-   LazyUpdater("Lulu", version, "https://github.com/nebelwolfi/scripts/raw/master/src/", "Lulu.lua", SCRIPT_PATH .. GetCurrentEnv().FILE_NAME):SetSilent(false):CheckUpdate()
-end
 
 local VP = VPrediction()
 local QReady, WReady, EReady, RReady = nil, nil, nil, nil
