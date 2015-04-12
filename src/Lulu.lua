@@ -127,12 +127,12 @@ function OnTick()
   ts2:update()
   target = ts2.target
   if menu.Combo then
-    if ValidTarget(target, 1200) and not target.dead then
+    if ValidTarget(target, 900) and not target.dead then
       Combo(target)
     end
   end
   if menu.Harass then
-   if ValidTarget(target, 1200) and not target.dead then
+   if ValidTarget(target, 900) and not target.dead then
       Harass(target)
     end
   end
