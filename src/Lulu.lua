@@ -58,6 +58,7 @@ enemies = GetEnemyHeros()
 -- called once when the script is loaded
 function OnLoad()
     PrintChat(" >> Lulu script")
+    IgniteSet()
     ts = TargetSelector(TARGET_LESS_CAST_PRIORITY,950)
     menu = scriptConfig("Lulu script", "Lulu")
     menu:addSubMenu("AutoCombo Settings", "combosettings")
@@ -95,7 +96,7 @@ function OnLoad()
     Config.Packets:addParam("QPACK", "Q Packest", SCRIPT_PARAM_ONOFF, false)
     Config.Packets:addParam("EPACK", "E Packest", SCRIPT_PARAM_ONOFF, false)
     end
-    Config:addParam("info4", " >> Version ", SCRIPT_PARAM_INFO, version)
+    Config:addParam("info", " >> Version ", SCRIPT_PARAM_INFO, version)
     PrintChat ("<font color='#4ECB65'>Lulu' .. tostring(version) .. ' - loaded successful!</font>")
 end
 
@@ -109,12 +110,39 @@ function Boot()
   BootDone = true
 end
 
+function IgniteSet()
+  if myHero:GetSpellData(SUMMONER_1).name:find("summonerdot") then
+    ignite = SUMMONER_1 
+  elseif myHero:GetSpellData(SUMMONER_2).name:find("summonerdot") then
+    ignite = SUMMONER_2 
+  end
+  igniteReady = (ignite ~= nil and myHero:CanUseSpell(ignite) == READY)
+end
+
 -- handles script logic, a pure high speed loop
 function OnTick()
   if not Menu.Combo or myHero.dead or not bootDone then return end
+  Check()
+end
+
+function Check()
+  QReady = (myHero:CanUseSpell(_Q) == READY)
+  WReady = (myHero:CanUseSpell(_W) == READY)
+  EReady = (myHero:CanUseSpell(_E) == READY)
+  RReady = (myHero:CanUseSpell(_R) == READY)
+  igniteReady = (ignite ~= nil and myHero:CanUseSpell(ignite) == READY)
 end
 
 function EnemysAround(Unit, range)
   local c=0
   for i=1,heroManager.iCount do hero = heroManager:GetHero(i) if hero.team ~= myHero.team and hero.x and hero.y and hero.z and GetDistance(hero, Unit) < range then c=c+1 end end return c
+end
+
+
+function getMousePos(range)
+local temprange = range or SkillWard.range
+local MyPos = Vector(myHero.x, myHero.y, myHero.z)
+local MousePos = Vector(mousePos.x, mousePos.y, mousePos.z)
+
+return MyPos - (MyPos - MousePos):normalized() * SkillWard.range
 end
