@@ -22,18 +22,38 @@ function OnLoad()
     ts = TargetSelector(TARGET_LESS_CAST_PRIORITY,950)
     menu = scriptConfig("Lulu script", "Lulu")
     menu:addSubMenu("AutoCombo Settings", "combosettings")
-    menu:addSubMenu("AutoGrowth Settings", "growthsettings")
-    menu.growthsettings:addParam("user","Use R", SCRIPT_PARAM_ONOFF, true)
-    menu.growthsettings:addSubMenu("Custom Priority","custompriority")
-    menu.growthsettings.custompriority: addParam(allie[1].name, SCRIPT_PARAM_SLICE, 3, 1, 9, 0)
-    menu.growthsettings.custompriority: addParam(allie[2].name, SCRIPT_PARAM_SLICE, 3, 1, 9, 0)
-    menu.growthsettings.custompriority: addParam(allie[3].name, SCRIPT_PARAM_SLICE, 3, 1, 9, 0)
-    menu.growthsettings.custompriority: addParam(allie[4].name, SCRIPT_PARAM_SLICE, 3, 1, 9, 0)
-    
     menu.combosettings:addParam("useflashr","Use Flash+R", SCRIPT_PARAM_ONKEYDOWN, false, 32)
     menu.combosettings:addParam("useq", "Use Q", SCRIPT_PARAM_ONOFF, true)
+    menu.combosettings:addParam("usew", "Use W", SCRIPT_PARAM_ONOFF, true)
+    menu.combosettings:addParam("usee", "Use E", SCRIPT_PARAM_ONOFF, true)
+    menu.combosettings:addParam("user", "Use R", SCRIPT_PARAM_ONOFF, true)
+    
+    menu:addSubMenu("AutoGrowth Settings", "growthsettings")
+    menu.growthsettings:addParam("user","Use R", SCRIPT_PARAM_ONOFF, true)
+    
+    menu:addSubMenu("Custom Save Priority","custompriority")
+    menu.custompriority: addParam(allie[1].charName, SCRIPT_PARAM_SLICE, 3, 1, 9, 0)
+    menu.custompriority: addParam(allie[2].charName, SCRIPT_PARAM_SLICE, 3, 1, 9, 0)
+    menu.custompriority: addParam(allie[3].charName, SCRIPT_PARAM_SLICE, 3, 1, 9, 0)
+    menu.custompriority: addParam(allie[4].charName, SCRIPT_PARAM_SLICE, 3, 1, 9, 0)
+    
     menu:addParam("combokey", "Combo", SCRIPT_PARAM_ONKEYDOWN, false, 32)
-    menu:addParam("harass", "Toogle Auto Harass", SCRIPT_PARAM_ONKEYTOGGLE, false, string.byte("C"))
+    menu:addSubMenu("Harass Settings", "harass")
+    menu.harass:addParam("harass", "Toogle Auto Harass", SCRIPT_PARAM_ONKEYTOGGLE, false, string.byte("C"))
+    menu.harass:addParam("mana","Auto Harass till Mana is under",SCRIPT_PARAM_SLICE, 30, 0, 101, 0)
+    
+    menu:addSubMenu("Draw Ranges", "drawab")
+    menu.drawab:addParam("drawauto", "Draw Auto", SCRIPT_PARAM_ONOFF, true)
+    menu.drawab:addParam("drawq", "Draw Q", SCRIPT_PARAM_ONOFF, true)
+    menu.drawab:addParam("draww", "Draw W", SCRIPT_PARAM_ONOFF, true)
+    menu.drawab:addParam("drawe", "Draw E", SCRIPT_PARAM_ONOFF, true)
+    menu.drawab:addParam("drawr", "Draw R", SCRIPT_PARAM_ONOFF, true)
+    if VIP_USER then
+    Config:addSubMenu("Packets", "Packets")
+    Config.Packets:addParam("QPACK", "Q Packest", SCRIPT_PARAM_ONOFF, false)
+    Config.Packets:addParam("EPACK", "E Packest", SCRIPT_PARAM_ONOFF, false)
+    end
+    Config:addParam("info4", " >> Version ", SCRIPT_PARAM_INFO, version)
     PrintChat ("<font color='#4ECB65'>Lulu script - loaded successful!</font>")
 end
 
