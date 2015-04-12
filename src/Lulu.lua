@@ -1,5 +1,5 @@
 local version = 1.0
-if myHero.charName ~= "Zyra" then return end
+if myHero.charName ~= "Lulu" then return end
 local VP = VPrediction()
 local QReady, WReady, EReady, RReady = nil, nil, nil, nil
 local target = nil
@@ -9,7 +9,7 @@ local AUTOUPDATE = true
 InterruptList = {"CaitlynAceintheHole", "Crowstorm", "DrainChannel", "GalioIdolOfDurand", "KatarinaR", "InfiniteDuress", "AbsoluteZero", "MissFortuneBulletTime", "AlZaharNetherGrasp"}
   
 if AUTOUPDATE then
-   LazyUpdater("Lulu", version, "fire-bol.de", "/scripts/Lulu.lua", SCRIPT_PATH .. GetCurrentEnv().FILE_NAME):SetSilent(false):CheckUpdate()
+   LazyUpdater("Lulu", version, "https://github.com/nebelwolfi/scripts/raw/master/src/", "Lulu.lua", SCRIPT_PATH .. GetCurrentEnv().FILE_NAME):SetSilent(false):CheckUpdate()
 end
 
 --A basic BoL template for the Eclipse Lua Development Kit module's execution environment written by Nader Sl.
