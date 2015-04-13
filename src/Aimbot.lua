@@ -163,6 +163,9 @@ _G.Champs = {
         [_E] = { speed = 2000, delay = 0.250, range = 900, minionCollisionWidth = 0},
         [_R] = { speed = 2000, delay = 0.250, range = 1200, minionCollisionWidth = 0},
     },
+        ["Lissandra"] = {
+        [_Q] = { speed = 1530, delay = 0.250, range = 725, minionCollisionWidth = 80}
+    },
         ["Lucian"] = {
         [_W] = { speed = 1470, delay = 0.288, range = 1000, minionCollisionWidth = 25}
     },
@@ -298,8 +301,8 @@ function OnLoad()
   Config.skConfig:addParam("scw", "Cast W", SCRIPT_PARAM_ONKEYDOWN, false, string.byte("W"))
   Config.skConfig:addParam("sce", "Cast E", SCRIPT_PARAM_ONKEYDOWN, false, string.byte("E"))
   Config.skConfig:addParam("scr", "Cast R", SCRIPT_PARAM_ONKEYDOWN, false, string.byte("R")) ]]
-  Config:addParam("tog", "Aimbot on/off", SCRIPT_PARAM_ONKEYTOGGLE, false, string.byte("T"))
-  Config:addParam("throw", "Throw everything", SCRIPT_PARAM_ONKEYDOWN, false, string.byte(" "))
+  Config:addParam("tog", "Aimbot on/off", SCRIPT_PARAM_ONKEYTOGGLE, true, string.byte("T"))
+  Config:addParam("throw", "Throw everything", SCRIPT_PARAM_ONKEYDOWN, false, 32)
   Config:addParam("autocast", "Autocast on 100% hitchance", SCRIPT_PARAM_ONOFF, false)
   Config:addParam("accuracy", "Accuracy Slider", SCRIPT_PARAM_SLICE, 2, 0, 5, 0)
   Config:addParam("rangeoffset", "Range Decrease Offset", SCRIPT_PARAM_SLICE, 0, 0, 200, 0)
@@ -309,6 +312,7 @@ end
 
 function OnTick()
   if Config.tog then
+    --myHero:SpellsEnabled(false)
     if Config.prConfig.pro == 1 then
       Target = GetCustomTarget() --Tmrees
       if Target == nil then return end
@@ -325,22 +329,34 @@ function OnTick()
     if Config.prConfig.pro == 2 and VIP_USER then
       Target = GetCustomTarget() --Tmrees
       if Target == nil then return end
-       local unit = DPTarget(Target)
-       for i, spell in pairs(data) do
-        local Skillz = LineSS(spell.speed, spell.range, spell.width, spell.delay*1000, math.huge)
+      PrintChat(Target)
+      local unit = DPTarget(Target)
+      PrintChat(unit)
+      for i, spell in pairs(data) do
+        local Skillz = LineSS(spell.speed, spell.range, spell.width, spell.delay, 0)
+        PrintChat(Skillz)
         local State, Position, perc = DP:predict(unit, Skillz, 2, Vector(from))
-        if State == SkillShot.STATUS.SUCCESS_HIT and myHero:CanUseSpell(i) then 
-          CCastSpell(spell, Position.x, Position.z)
-       end
+        PrintChat(State)
+        if Config.throw and State == SkillShot.STATUS.SUCCESS_HIT and myHero:CanUseSpell(i) then 
+          PrintChat("Attempt to shoot spell")
+          CCastSpell(i, Position.x, Position.z)
+        end
       end
     end
+    walk()
+  else 
+    --myHero:SpellsEnabled(true)
   end
 end
-
+--How do I block keyinput so i can use qwer for something else (pred)?  :o
 function walk()
   if Config.throw then
     myHero:MoveTo(mousePos.x, mousePos.z)
   end
+end
+
+function WndMsg(msg,key)
+  if (key == string.byte("Q")) then PrintChat("Q") end
 end
 
 function IsLeeThresh()
