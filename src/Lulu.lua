@@ -1,6 +1,6 @@
 if myHero.charName ~= "Lulu" then return end
 
-local version = 0.12
+local version = 0.13
 local AUTO_UPDATE = true
 local UPDATE_HOST = "raw.github.com"
 local UPDATE_PATH = "/nebelwolfi/scripts/master/src/Lulu.lua".."?rand="..math.random(1,10000)
@@ -12,7 +12,6 @@ if AUTO_UPDATE then
   local ServerData = GetWebResult(UPDATE_HOST, "/nebelwolfi/scripts/master/src/Lulu.version")
   if ServerData then
     ServerVersion = type(tonumber(ServerData)) == "number" and tonumber(ServerData) or nil
-    PrintChat(ServerData)
     if ServerVersion then
       if tonumber(version) < ServerVersion then
         AutoupdaterMsg("New version available v"..ServerVersion)
@@ -29,7 +28,6 @@ end
 
 if FileExist(LIB_PATH .. "/SxOrbWalk.lua") then
   require("SxOrbWalk")
-  Orb = SxOrbWalk()
 end
 if FileExist(LIB_PATH .. "/VPrediction.lua") then
   require("VPrediction")
@@ -39,7 +37,7 @@ if FileExist(LIB_PATH .. "/SourceLib.lua") then
   require "SourceLib"
 end
 
-local VP = VPrediction()
+local Orb = _G.SxOrb
 local QReady, WReady, EReady, RReady = nil, nil, nil, nil
 local target = nil
 local ignite, igniteReady = nil, false
@@ -52,7 +50,6 @@ InterruptList = {"CaitlynAceintheHole", "Crowstorm", "DrainChannel", "GalioIdolO
 EnemyMinions = minionManager(MINION_ENEMY, Spell.Q.Range, myHero, MINION_SORT_MAXHEALTH_DEC)
 JungleMinions = minionManager(MINION_JUNGLE, Spell.Q.Range, myHero, MINION_SORT_MAXHEALTH_DEC)
 
-  
 --A basic BoL template for the Eclipse Lua Development Kit module's execution environment written by Nader Sl.
 player = GetMyHero()
 allies = GetAllyHeroes()
@@ -60,8 +57,13 @@ enemies = GetEnemyHeroes()
 
 -- called once when the script is loaded
 function OnLoad()
+    VP = VPrediction()
     IgniteSet()
-    ts = TargetSelector(TARGET_LESS_CAST_PRIORITY,950)
+    LoadMenu()
+    PrintChat ("<font color='#4ECB65'>Lulu v" .. tostring(version) .. " - loaded successful!</font>")
+end
+
+function LoadMenu()
     menu = scriptConfig("Lulu script", "Lulu")
     menu:addSubMenu("AutoCombo Settings", "combosettings")
     menu.combosettings:addParam("useflashr","Use Flash+R", SCRIPT_PARAM_ONKEYDOWN, false, 32)
@@ -72,6 +74,7 @@ function OnLoad()
     
     menu:addSubMenu("AutoR Settings", "growthsettings")
     menu.growthsettings:addParam("user","Use R", SCRIPT_PARAM_ONOFF, true)
+    menu.growthsettings:addParam("smartr","Use if x enemies hitable", SCRIPT_PARAM_SLICE, 3, 1, 5, 0)
     
     menu:addSubMenu("Custom Save Priority","custompriority")
     --[[ old 
@@ -101,7 +104,6 @@ function OnLoad()
     menu:addSubMenu("Orbwalker", "orbi")
     Orb:LoadToMenu(menu.orbi)
     menu:addParam("info", " >> Version ", SCRIPT_PARAM_INFO, version)
-    PrintChat ("<font color='#4ECB65'>Lulu v" .. tostring(version) .. " - loaded successful!</font>")
 end
 
 function Boot()
@@ -145,6 +147,7 @@ function OnTick()
       Combo(target)
     end
   end
+  SmartR()
   if menu.Harass then
    if ValidTarget(target, 900) and not target.dead then
       Harass(target)
@@ -155,37 +158,33 @@ end
 function Combo(Target)
   Orb:DisableAttacks()
   
-for i = 1, enemyHerosCount do
-      local Unit = enemyHeros[i].object
-      local q = enemyHeros[i].q
-      local w = enemyHeros[i].w
-      local e = enemyHeros[i].e
-      local r = enemyHeros[i].r
-      local myDamage = enemyHeros[i].myDamage
-      R:SetAOE(true, R.width, Config.ExtraSub.rTarget)
-      Q:SetHitChance(Config.ExtraSub.HitchanceQ)
-      E:SetHitChance(Config.ExtraSub.HitchanceE)
-      R:SetHitChance(Config.ExtraSub.HitchanceR)
-      if Unit.name == Target.name and myDamage >= Target.health then
-        if q == 1 and menu.combosettings.useq then Q:Cast(target) end
-        if w == 1 and menu.combosettings.usew then W:Cast(target) end
-        if e == 1 and menu.combosettings.usee then E:Cast(target) end
-        if r == 1 and menu.combosettings.user then R:Cast(target) end
-        
-      elseif myDamage < Target.health then
-        if menu.combosettings.useq then Q:Cast(target) end
-        if menu.combosettings.usew then W:Cast(target) end
-        if menu.combosettings.usee then E:Cast(target) end
-        if menu.combosettings.user then R:Cast(target) end
-  else
-        if menu.combosettings.useq then Q:Cast(target) end
-        if menu.combosettings.usew then W:Cast(target) end
-        if menu.combosettings.usee then E:Cast(target) end
-        if menu.combosettings.user then R:Cast(target) end
-end
-end
+  local Target = STS:GetTarget(Qrance)
+  if Target ~= nil then
+    if menu.combosettings.usee and EReady then
+      CastSpell(_E, Target)
+    end
+    if menu.combosettings.useq and GetDistance(Target, player) < Spell.Q.Range then
+      local CastPosition, HitChance, Position = VP:GetLineCastPosition(Target, 0.25,60,950, 1600, myHero, false)
+      if CastPosition and HitChance >= 2 then
+        CastSpell(_Q, CastPosition.x, CastPosition.z)
+      end
+    end
+  end
 
   Orb:EnableAttacks()
+end
+
+function SmartR()
+  if RReady and menu.growthsettings.user then
+    if countEnemy(player, 200) >= menu.growthsettings.smartr then
+      CastSpell(_R, player)
+    end
+    for _, i in pairs (allyHeroes) do
+      if countEnemy(i, 200) >= menu.growthsettings.smartr and GetDistance(i, player) < Spell.R.Range then
+        CastSpell(_R, i)
+      end
+    end
+  end
 end
 
 function Harass(Target)
