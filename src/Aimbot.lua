@@ -281,11 +281,16 @@ if not Champs[myHero.charName] then return end -- not supported :(
 local data = Champs[myHero.charName]
 local QReady, WReady, EReady, RReady = nil, nil, nil, nil
 local Target 
+local enemyChamps = {}
 local ts2 = TargetSelector(TARGET_LOW_HP, 1500, DAMAGE_MAGIC, true) -- make these local
 local str = { [_Q] = "Q", [_W] = "W", [_E] = "E", [_R] = "R" }
 local ConfigType = SCRIPT_PARAM_ONKEYDOWN
 local predictions = {}
 function OnLoad()
+  for i = 1, heroManager.iCount do
+    local hero = heroManager:GetHero(i)
+    if hero.team ~= myHero.team then enemyChamps[""..hero.networkID] = DPTarget(hero) end
+  end
   Config = scriptConfig("Aimbot v"..version, "Aimbot v"..version)
   Config:addSubMenu("[Prediction]: Settings", "prConfig")
   Config.prConfig:addParam("pc", "Use Packets To Cast Spells(VIP)", SCRIPT_PARAM_ONOFF, false)
@@ -331,9 +336,9 @@ function OnTick()
       if Target == nil then return end
       local unit = DPTarget(Target)
       for i, spell in pairs(data) do
-        local lineSS = LineSS(spell.speed, spell.range, spell.width, spell.delay, 0)
-        local State, Position, perc = DP:predict(unit, lineSS)
-        PrintChat(State.." "..Position.." "..perc)
+        local lineSS = LineSS(spell.speed, spell.range, spell.minionCollisionWidth, spell.delay, 0)
+        local state,hitPos,perc = DP:predict(unit, lineSS, 2, Vector(myHero))
+        PrintChat(state.." "..hitPos.." "..perc)
         --if Config.throw and State == SkillShot.STATUS.SUCCESS_HIT and myHero:CanUseSpell(i) then 
         --  CCastSpell(i, Position.x, Position.z)
         --end
