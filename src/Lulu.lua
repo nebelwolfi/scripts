@@ -334,7 +334,7 @@ function Plugin_FocusedAlly(target,DamageLvlTaken)
         end
     end
   end
-  PrintChat("Dmglvl: "..DamageLvlTaken..", Champ: "..target.charName..", Priority: "..targetP)
+  --PrintChat("Dmglvl: "..DamageLvlTaken..", Champ: "..target.charName..", Priority: "..targetP)
   if DamageLvlTaken>=30 and (myHero:CanUseSpell(_R) == READY) and (GetDistance(target) < 900 ) then
     if targetP > 4 and DamageLvlTaken>=30 then
       CastSpell(_R, target)
