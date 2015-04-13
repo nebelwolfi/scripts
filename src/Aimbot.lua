@@ -48,6 +48,10 @@ function OnLoad()
   Config.skConfig:addParam("scw", "Cast W", SCRIPT_PARAM_ONKEYDOWN, false, string.byte("W"))
   Config.skConfig:addParam("sce", "Cast E", SCRIPT_PARAM_ONKEYDOWN, false, string.byte("E"))
   Config.skConfig:addParam("scr", "Cast R", SCRIPT_PARAM_ONKEYDOWN, false, string.byte("R"))
+  Config:addParam("tog", "Aimbot on/off", SCRIPT_PARAM_ONKEYTOGGLE, false, string.byte("T"))
+  TargetSelector = TargetSelector(TARGET_LESS_CAST_PRIORITY, myHero.range+65, DAMAGE_MAGIC)
+  TargetSelector.name = "AimMe"
+  MenuLulu:addTS(TargetSelector)
 end
 
 --[[ Packet Cast Helpers ]]--
@@ -56,7 +60,7 @@ function CastQ(unit)
     if Config.prConfig.pro == 1 then
       local CastPosition, HitChance, maxHit, Positions = VP:GetLineAOECastPosition(unit, Q.delay, Q.width, Q.range - 30, Q.speed, from)
       if HitChance >= 2 then
-        if VIP_USER and MenuLulu.prConfig.pc then
+        if VIP_USER and Config.prConfig.pc then
           Packet("S_CAST", {spellId = _Q, fromX = CastPosition.x, fromY = CastPosition.z, toX = CastPosition.x, toY = CastPosition.z}):send()
         else
           CastSpell(_Q, CastPosition.x, CastPosition.z)
@@ -92,17 +96,17 @@ function CastW(unit)
     if Config.prConfig.pro == 1 then
       local CastPosition, HitChance, maxHit, Positions = VP:GetLineAOECastPosition(unit, Q.delay, Q.width, Q.range - 30, Q.speed, from)
       if HitChance >= 2 then
-        if VIP_USER and MenuLulu.prConfig.pc then
+        if VIP_USER and Config.prConfig.pc then
           Packet("S_CAST", {spellId = _W, fromX = CastPosition.x, fromY = CastPosition.z, toX = CastPosition.x, toY = CastPosition.z}):send()
         else
-          CastSpell(_Q, CastPosition.x, CastPosition.z)
+          CastSpell(_W, CastPosition.x, CastPosition.z)
         end
       end
     end
     if Config.prConfig.pro == 2 and VIP_USER and prodstatus then
       local Position, info = Prodiction.GetPrediction(unit, Q.range - 30, Q.speed, Q.delay, Q.width)
       if Position ~= nil then
-        if VIP_USER and MenuLulu.prConfig.pc then
+        if VIP_USER and Config.prConfig.pc then
           Packet("S_CAST", {spellId = _W, fromX = Position.x, fromY = Position.z, toX = Position.x, toY = Position.z}):send()
         else
           CastSpell(_W, Position.x, Position.z)
@@ -111,10 +115,10 @@ function CastW(unit)
     end
     if Config.prConfig.pro == 3 and VIP_USER then
       local unit = DPTarget(unit)
-      local LuluQ = LineSS(W.speed, W.range, W.width, W.delay*1000, math.huge)
+      local ChampW = LineSS(W.speed, W.range, W.width, W.delay*1000, math.huge)
       local State, Position, perc = DP:predict(unit, ChampW, 2, Vector(from))
       if State == SkillShot.STATUS.SUCCESS_HIT then 
-        if VIP_USER and MenuLulu.prConfig.pc then
+        if VIP_USER and Config.prConfig.pc then
           Packet("S_CAST", {spellId = _W, fromX = Position.x, fromY = Position.z, toX = Position.x, toY = Position.z}):send()
         else
           CastSpell(_W, Position.x, Position.z)
@@ -128,32 +132,32 @@ function CastE(unit)
     if Config.prConfig.pro == 1 then
       local CastPosition, HitChance, maxHit, Positions = VP:GetLineAOECastPosition(unit, Q.delay, Q.width, Q.range - 30, Q.speed, from)
       if HitChance >= 2 then
-        if VIP_USER and MenuLulu.prConfig.pc then
+        if VIP_USER and Config.prConfig.pc then
           Packet("S_CAST", {spellId = _Q, fromX = CastPosition.x, fromY = CastPosition.z, toX = CastPosition.x, toY = CastPosition.z}):send()
         else
-          CastSpell(_Q, CastPosition.x, CastPosition.z)
+          CastSpell(_E, CastPosition.x, CastPosition.z)
         end
       end
     end
     if Config.prConfig.pro == 2 and VIP_USER and prodstatus then
       local Position, info = Prodiction.GetPrediction(unit, Q.range - 30, Q.speed, Q.delay, Q.width)
       if Position ~= nil then
-        if VIP_USER and MenuLulu.prConfig.pc then
+        if VIP_USER and Config.prConfig.pc then
           Packet("S_CAST", {spellId = _Q, fromX = Position.x, fromY = Position.z, toX = Position.x, toY = Position.z}):send()
         else
-          CastSpell(_Q, Position.x, Position.z)
+          CastSpell(_E, Position.x, Position.z)
         end 
       end
     end
     if Config.prConfig.pro == 3 and VIP_USER then
       local unit = DPTarget(unit)
-      local LuluQ = LineSS(Q.speed, Q.range, Q.width, Q.delay*1000, math.huge)
-      local State, Position, perc = DP:predict(unit, LuluQ, 2, Vector(from))
+      local ChampE = LineSS(Q.speed, Q.range, Q.width, Q.delay*1000, math.huge)
+      local State, Position, perc = DP:predict(unit, ChampE, 2, Vector(from))
       if State == SkillShot.STATUS.SUCCESS_HIT then 
-        if VIP_USER and MenuLulu.prConfig.pc then
+        if VIP_USER and Config.prConfig.pc then
           Packet("S_CAST", {spellId = _Q, fromX = Position.x, fromY = Position.z, toX = Position.x, toY = Position.z}):send()
         else
-          CastSpell(_Q, Position.x, Position.z)
+          CastSpell(_E, Position.x, Position.z)
         end
       end
     end
@@ -164,7 +168,7 @@ function CastR(unit)
     if Config.prConfig.pro == 1 then
       local CastPosition, HitChance, maxHit, Positions = VP:GetLineAOECastPosition(unit, Q.delay, Q.width, Q.range - 30, Q.speed, from)
       if HitChance >= 2 then
-        if VIP_USER and MenuLulu.prConfig.pc then
+        if VIP_USER and Config.prConfig.pc then
           Packet("S_CAST", {spellId = _Q, fromX = CastPosition.x, fromY = CastPosition.z, toX = CastPosition.x, toY = CastPosition.z}):send()
         else
           CastSpell(_Q, CastPosition.x, CastPosition.z)
@@ -174,7 +178,7 @@ function CastR(unit)
     if Config.prConfig.pro == 2 and VIP_USER and prodstatus then
       local Position, info = Prodiction.GetPrediction(unit, Q.range - 30, Q.speed, Q.delay, Q.width)
       if Position ~= nil then
-        if VIP_USER and MenuLulu.prConfig.pc then
+        if VIP_USER and Config.prConfig.pc then
           Packet("S_CAST", {spellId = _Q, fromX = Position.x, fromY = Position.z, toX = Position.x, toY = Position.z}):send()
         else
           CastSpell(_Q, Position.x, Position.z)
@@ -183,10 +187,10 @@ function CastR(unit)
     end
     if Config.prConfig.pro == 3 and VIP_USER then
       local unit = DPTarget(unit)
-      local LuluQ = LineSS(Q.speed, Q.range, Q.width, Q.delay*1000, math.huge)
-      local State, Position, perc = DP:predict(unit, LuluQ, 2, Vector(from))
+      local ChampR = LineSS(Q.speed, Q.range, Q.width, Q.delay*1000, math.huge)
+      local State, Position, perc = DP:predict(unit, ChampR, 2, Vector(from))
       if State == SkillShot.STATUS.SUCCESS_HIT then 
-        if VIP_USER and MenuLulu.prConfig.pc then
+        if VIP_USER and Config.prConfig.pc then
           Packet("S_CAST", {spellId = _Q, fromX = Position.x, fromY = Position.z, toX = Position.x, toY = Position.z}):send()
         else
           CastSpell(_Q, Position.x, Position.z)
