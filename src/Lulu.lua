@@ -1,6 +1,6 @@
 if myHero.charName ~= "Lulu" then return end
 
-local version = 0.11
+local version = 0.12
 local AUTO_UPDATE = true
 local UPDATE_HOST = "raw.github.com"
 local UPDATE_PATH = "/nebelwolfi/scripts/master/src/Lulu.lua".."?rand="..math.random(1,10000)
@@ -28,8 +28,8 @@ if AUTO_UPDATE then
 end
 
 if FileExist(LIB_PATH .. "/SxOrbWalk.lua") then
-  --require("SxOrbWalk")
-  --Orb = SxOrbWalk()
+  require("SxOrbWalk")
+  Orb = SxOrbWalk()
 end
 if FileExist(LIB_PATH .. "/VPrediction.lua") then
   require("VPrediction")
@@ -60,7 +60,6 @@ enemies = GetEnemyHeroes()
 
 -- called once when the script is loaded
 function OnLoad()
-    PrintChat(" >> Lulu script")
     IgniteSet()
     ts = TargetSelector(TARGET_LESS_CAST_PRIORITY,950)
     menu = scriptConfig("Lulu script", "Lulu")
@@ -100,7 +99,7 @@ function OnLoad()
     menu.Packets:addParam("EPACK", "E Packets", SCRIPT_PARAM_ONOFF, false)
     end
     menu:addSubMenu("Orbwalker", "orbi")
-    --Orb:LoadToMenu(menu.orbi)
+    Orb:LoadToMenu(menu.orbi)
     menu:addParam("info", " >> Version ", SCRIPT_PARAM_INFO, version)
     PrintChat ("<font color='#4ECB65'>Lulu v" .. tostring(version) .. " - loaded successful!</font>")
 end
