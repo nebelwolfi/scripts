@@ -1,4 +1,5 @@
 local version = 0.01 -- REMEMBER: UPDATE .version FILE ASWELL FOR IN-GAME PUSH!
+--[[
 local AUTO_UPDATE = true
 local UPDATE_HOST = "raw.github.com"
 local UPDATE_PATH = "/nebelwolfi/scripts/master/src/Aimbot.lua".."?rand="..math.random(1,10000)
@@ -23,14 +24,10 @@ if AUTO_UPDATE then
     AutoupdaterMsg("Error downloading version info")
   end
 end
-
+]]--
 if FileExist(LIB_PATH .. "/VPrediction.lua") then
   require("VPrediction")
   VP = VPrediction()
-end
-if VIP_USER and FileExist(LIB_PATH .. "/Prodiction.lua") then
-  require("Prodiction")
-  prodstatus = true
 end
 if VIP_USER and FileExist(LIB_PATH .. "/DivinePred.lua") then 
   require "DivinePred" 
@@ -38,20 +35,21 @@ if VIP_USER and FileExist(LIB_PATH .. "/DivinePred.lua") then
 end
 
 function OnLoad()
-  Config = scriptConfig("Lulu Master "..version, "Lulu Master "..version)
+  Config = scriptConfig("Aimbot v"..version, "Aimbot v"..version)
   Config:addSubMenu("[Prediction]: Settings", "prConfig")
   Config.prConfig:addParam("pc", "Use Packets To Cast Spells(VIP)", SCRIPT_PARAM_ONOFF, false)
   Config.prConfig:addParam("qqq", "--------------------------------------------------------", SCRIPT_PARAM_INFO,"")
-  Config.prConfig:addParam("pro", "Prodiction To Use:", SCRIPT_PARAM_LIST, 1, {"VPrediction","Prodiction","DivinePred"}) 
+  Config.prConfig:addParam("pro", "Prodiction To Use:", SCRIPT_PARAM_LIST, 1, {"VPrediction","DivinePred"}) 
   Config:addSubMenu("[Skills]: Settings", "skConfig")
   Config.skConfig:addParam("scq", "Cast Q", SCRIPT_PARAM_ONKEYDOWN, false, string.byte("Q"))
   Config.skConfig:addParam("scw", "Cast W", SCRIPT_PARAM_ONKEYDOWN, false, string.byte("W"))
   Config.skConfig:addParam("sce", "Cast E", SCRIPT_PARAM_ONKEYDOWN, false, string.byte("E"))
   Config.skConfig:addParam("scr", "Cast R", SCRIPT_PARAM_ONKEYDOWN, false, string.byte("R"))
   Config:addParam("tog", "Aimbot on/off", SCRIPT_PARAM_ONKEYTOGGLE, false, string.byte("T"))
-  TargetSelector = TargetSelector(TARGET_LESS_CAST_PRIORITY, myHero.range+65, DAMAGE_MAGIC)
+  TargetSelector = TargetSelector(TARGET_LOW_HP_PRIORITY, myHero.range+65, DAMAGE_MAGIC)
   TargetSelector.name = "AimMe"
-  MenuLulu:addTS(TargetSelector)
+  Config:addTS(TargetSelector)
+  PrintChat("Aimbot v"..version.." loaded!")
 end
 
 --[[ Packet Cast Helpers ]]--
@@ -67,17 +65,7 @@ function CastQ(unit)
         end
       end
     end
-    if Config.prConfig.pro == 2 and VIP_USER and prodstatus then
-      local Position, info = Prodiction.GetPrediction(unit, Q.range - 30, Q.speed, Q.delay, Q.width)
-      if Position ~= nil then
-        if VIP_USER and Config.prConfig.pc then
-          Packet("S_CAST", {spellId = _Q, fromX = Position.x, fromY = Position.z, toX = Position.x, toY = Position.z}):send()
-        else
-          CastSpell(_Q, Position.x, Position.z)
-        end 
-      end
-    end
-    if Config.prConfig.pro == 3 and VIP_USER then
+    if Config.prConfig.pro == 2 and VIP_USER then
       local unit = DPTarget(unit)
       local LuluQ = LineSS(Q.speed, Q.range, Q.width, Q.delay*1000, math.huge)
       local State, Position, perc = DP:predict(unit, ChampQ, 2, Vector(from))
@@ -103,17 +91,7 @@ function CastW(unit)
         end
       end
     end
-    if Config.prConfig.pro == 2 and VIP_USER and prodstatus then
-      local Position, info = Prodiction.GetPrediction(unit, Q.range - 30, Q.speed, Q.delay, Q.width)
-      if Position ~= nil then
-        if VIP_USER and Config.prConfig.pc then
-          Packet("S_CAST", {spellId = _W, fromX = Position.x, fromY = Position.z, toX = Position.x, toY = Position.z}):send()
-        else
-          CastSpell(_W, Position.x, Position.z)
-        end 
-      end
-    end
-    if Config.prConfig.pro == 3 and VIP_USER then
+    if Config.prConfig.pro == 2 and VIP_USER then
       local unit = DPTarget(unit)
       local ChampW = LineSS(W.speed, W.range, W.width, W.delay*1000, math.huge)
       local State, Position, perc = DP:predict(unit, ChampW, 2, Vector(from))
@@ -139,17 +117,7 @@ function CastE(unit)
         end
       end
     end
-    if Config.prConfig.pro == 2 and VIP_USER and prodstatus then
-      local Position, info = Prodiction.GetPrediction(unit, Q.range - 30, Q.speed, Q.delay, Q.width)
-      if Position ~= nil then
-        if VIP_USER and Config.prConfig.pc then
-          Packet("S_CAST", {spellId = _Q, fromX = Position.x, fromY = Position.z, toX = Position.x, toY = Position.z}):send()
-        else
-          CastSpell(_E, Position.x, Position.z)
-        end 
-      end
-    end
-    if Config.prConfig.pro == 3 and VIP_USER then
+    if Config.prConfig.pro == 2 and VIP_USER then
       local unit = DPTarget(unit)
       local ChampE = LineSS(Q.speed, Q.range, Q.width, Q.delay*1000, math.huge)
       local State, Position, perc = DP:predict(unit, ChampE, 2, Vector(from))
@@ -175,17 +143,7 @@ function CastR(unit)
         end
       end
     end
-    if Config.prConfig.pro == 2 and VIP_USER and prodstatus then
-      local Position, info = Prodiction.GetPrediction(unit, Q.range - 30, Q.speed, Q.delay, Q.width)
-      if Position ~= nil then
-        if VIP_USER and Config.prConfig.pc then
-          Packet("S_CAST", {spellId = _Q, fromX = Position.x, fromY = Position.z, toX = Position.x, toY = Position.z}):send()
-        else
-          CastSpell(_Q, Position.x, Position.z)
-        end 
-      end
-    end
-    if Config.prConfig.pro == 3 and VIP_USER then
+    if Config.prConfig.pro == 2 and VIP_USER then
       local unit = DPTarget(unit)
       local ChampR = LineSS(Q.speed, Q.range, Q.width, Q.delay*1000, math.huge)
       local State, Position, perc = DP:predict(unit, ChampR, 2, Vector(from))
