@@ -164,7 +164,7 @@ end
 
 -- handles script logic, a pure high speed loop
 function OnTick()
-  if myHero.dead or not BootDone then return end
+  if myHero.dead or not BootDone or recall then return end
   tick=GetTickCount()
   CalcAllyDamage()
   Check()
@@ -314,7 +314,7 @@ function DamageImpactTaken(iHero)
 end
 
 function Plugin_FocusedAlly(target,DamageLvlTaken)
-  local targetP = 0
+  local targetP = 1
   for i = 1, 5 do
     local hero = allies[i]
       if target == myHero then 
