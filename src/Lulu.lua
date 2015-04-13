@@ -5,7 +5,7 @@ local version = 0.11
 local AUTO_UPDATE = true
 local UPDATE_HOST = "raw.githubusercontent.com"
 local UPDATE_PATH = "/nebelwolfi/scripts/master/src/Lulu.lua".."?rand="..math.random(1,10000)
-local UPDATE_FILE_PATH = LIB_PATH.."Your Lulu.lua"
+local UPDATE_FILE_PATH = LIB_PATH.."Lulu.lua"
 local UPDATE_URL = "https://"..UPDATE_HOST..UPDATE_PATH
 
 local function AutoupdaterMsg(msg) print("<font color=\"#6699ff\"><b>Your Lulu:</b></font> <font color=\"#FFFFFF\">"..msg..".</font>") end
@@ -13,6 +13,7 @@ if AUTO_UPDATE then
   local ServerData = GetWebResult(UPDATE_HOST, "/nebelwolfi/scripts/master/src/Lulu.version")
   if ServerData then
     ServerVersion = type(tonumber(ServerData)) == "number" and tonumber(ServerData) or nil
+    PrintChat(ServerData)
     if ServerVersion then
       if tonumber(version) < ServerVersion then
         AutoupdaterMsg("New version available"..ServerVersion)
@@ -28,8 +29,8 @@ if AUTO_UPDATE then
 end
 
 if FileExist(LIB_PATH .. "/SxOrbWalk.lua") then
-  require("SxOrbWalk")
-  Orb = SxOrbWalk()
+  --require("SxOrbWalk")
+  --Orb = SxOrbWalk()
 end
 if FileExist(LIB_PATH .. "/VPrediction.lua") then
   require("VPrediction")
@@ -100,7 +101,7 @@ function OnLoad()
     menu.Packets:addParam("EPACK", "E Packets", SCRIPT_PARAM_ONOFF, false)
     end
     menu:addSubMenu("Orbwalker", "orbi")
-    Orb:LoadToMenu(menu.orbi)
+    --Orb:LoadToMenu(menu.orbi)
     menu:addParam("info", " >> Version ", SCRIPT_PARAM_INFO, version)
     PrintChat ("<font color='#4ECB65'>Lulu v" .. tostring(version) .. " - loaded successful!</font>")
 end
@@ -112,6 +113,16 @@ function Boot()
   ts2 = TargetSelector(TARGET_LESS_CAST_PRIORITY, 950)
   ts2.name = "Enemy"
   menu.custompriority:addTS(ts2)
+  enemyHeros = {}
+  enemyHerosCount = 0
+    for i = 1, heroManager.iCount do
+    local hero = heroManager:GetHero(i)
+    if hero.team ~= player.team then
+      local enemyCount = enemyHerosCount + 1
+      enemyHeros[enemyCount] = {object = hero, q = 0, w = 0, e = 0, r = 0, dfg = 0, ig = 0, myDamage = 0, manaCombo = 0}
+      enemyHerosCount = enemyCount
+    end
+  end
   BootDone = true
 end
 
@@ -146,8 +157,36 @@ end
 function Combo(Target)
   Orb:DisableAttacks()
   
-  -- combo logic here
-  
+for i = 1, enemyHerosCount do
+      local Unit = enemyHeros[i].object
+      local q = enemyHeros[i].q
+      local w = enemyHeros[i].w
+      local e = enemyHeros[i].e
+      local r = enemyHeros[i].r
+      local myDamage = enemyHeros[i].myDamage
+      R:SetAOE(true, R.width, Config.ExtraSub.rTarget)
+      Q:SetHitChance(Config.ExtraSub.HitchanceQ)
+      E:SetHitChance(Config.ExtraSub.HitchanceE)
+      R:SetHitChance(Config.ExtraSub.HitchanceR)
+      if Unit.name == Target.name and myDamage >= Target.health then
+        if q == 1 and menu.combosettings.useq then Q:Cast(target) end
+        if w == 1 and menu.combosettings.usew then W:Cast(target) end
+        if e == 1 and menu.combosettings.usee then E:Cast(target) end
+        if r == 1 and menu.combosettings.user then R:Cast(target) end
+        
+      elseif myDamage < Target.health then
+        if menu.combosettings.useq then Q:Cast(target) end
+        if menu.combosettings.usew then W:Cast(target) end
+        if menu.combosettings.usee then E:Cast(target) end
+        if menu.combosettings.user then R:Cast(target) end
+  else
+        if menu.combosettings.useq then Q:Cast(target) end
+        if menu.combosettings.usew then W:Cast(target) end
+        if menu.combosettings.usee then E:Cast(target) end
+        if menu.combosettings.user then R:Cast(target) end
+end
+end
+
   Orb:EnableAttacks()
 end
 
@@ -169,7 +208,7 @@ end
 
 function OnProcessSpell(unit, spell)
   if unit.isMe and spell.name:lower():find("attack") then
-    PrintChat("Is attack!")
+    --PrintChat("Is attack!")
   end
 end 
 
