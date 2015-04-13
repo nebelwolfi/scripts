@@ -1,5 +1,5 @@
 local version = 0.01 -- REMEMBER: UPDATE .version FILE ASWELL FOR IN-GAME PUSH!
---[[
+
 local AUTO_UPDATE = true
 local UPDATE_HOST = "raw.github.com"
 local UPDATE_PATH = "/nebelwolfi/scripts/master/src/Aimbot.lua".."?rand="..math.random(1,10000)
@@ -24,7 +24,6 @@ if AUTO_UPDATE then
     AutoupdaterMsg("Error downloading version info")
   end
 end
-]]--
 if FileExist(LIB_PATH .. "/VPrediction.lua") then
   require("VPrediction")
   VP = VPrediction()
