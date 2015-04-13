@@ -299,27 +299,39 @@ function OnLoad()
   Config.skConfig:addParam("sce", "Cast E", SCRIPT_PARAM_ONKEYDOWN, false, string.byte("E"))
   Config.skConfig:addParam("scr", "Cast R", SCRIPT_PARAM_ONKEYDOWN, false, string.byte("R")) ]]
   Config:addParam("tog", "Aimbot on/off", SCRIPT_PARAM_ONKEYTOGGLE, false, string.byte("T"))
+  Config:addParam("autocast", "Autocast on 100% hitchance", SCRIPT_PARAM_ONOFF, false)
+  Config:addParam("accuracy", "Accuracy Slider", SCRIPT_PARAM_SLICE, 1, 0, 5, 0)
+  Config:addParam("rangeoffset", "Range Decrease Offset", SCRIPT_PARAM_SLICE, 0, 0, 200, 0)
   ts2.name = "AimMe"
   Config:addTS(ts2)
 end
 
 function OnTick()
-  Check()
-end
-
-function Check()
-  QReady = (myHero:CanUseSpell(_Q) == READY)
-  WReady = (myHero:CanUseSpell(_W) == READY)
-  EReady = (myHero:CanUseSpell(_E) == READY)
-  RReady = (myHero:CanUseSpell(_R) == READY)
-end
-
-function GetCustomTarget()
-    if _G.MMA_Target and _G.MMA_Target.type == myHero.type then return _G.MMA_Target end
-    if _G.AutoCarry and _G.AutoCarry.Crosshair and _G.AutoCarry.Attack_Crosshair and _G.AutoCarry.Attack_Crosshair.target and _G.AutoCarry.Attack_Crosshair.target.type == myHero.type then return _G.AutoCarry.Attack_Crosshair.target end
-    ts2:update()
-    --print('tstarget called')
-    return ts2.target
+  if Config.tog then
+    if Config.prConfig.pro == 1 then
+      Target = GetCustomTarget() --Tmrees
+      if Target == nil then return end
+      for i, spell in pairs(data) do
+            local collision = spell.minionCollisionWidth == 0 and false or true
+            local CastPosition, HitChance, Position = VP:GetLineCastPosition(Target, spell.delay, spell.minionCollisionWidth, spell.range, spell.speed, myHero, collision)
+          if Config[str[i]] and myHero:CanUseSpell(i) and IsLeeThresh() then -- move spell ready check to top
+              if CastPosition and HitChance and HitChance >= Config.accuracy and GetDistance(CastPosition, myHero) < spell.range - Config.rangeoffset then CCastSpell(i, CastPosition.x, CastPosition.z) end   
+          elseif Config.autocast then
+                if CastPosition and HitChance and HitChance > 2 and GetDistance(CastPosition, myHero) < spell.range - Config.rangeoffset then CCastSpell(i, CastPosition.x, CastPosition.z) end
+            end
+      end 
+    end
+    if Config.prConfig.pro == 2 and VIP_USER then
+      Target = GetCustomTarget() --Tmrees
+      if Target == nil then return end
+      local unit = DPTarget(unit)
+      local ChampQ = LineSS(_Q.speed, _Q.range, _Q.width, _Q.delay*1000, math.huge)
+      local State, Position, perc = DP:predict(unit, ChampQ, 2, Vector(from))
+      if State == SkillShot.STATUS.SUCCESS_HIT then 
+          CastSpell(_Q, Position.x, Position.z)
+      end
+    end
+  end
 end
 
 function IsLeeThresh()
@@ -340,108 +352,33 @@ function IsLeeThresh()
   end
 end
 
+function IsYasuo()
+  if myHero.charName == 'LeeSin' then
+    if myHero:GetSpellData(_Q).name == 'YasuoQ' then
+      return true
+    else
+      return false
+    end 
+  else 
+    return true
+  end
+end
+
+--Credit Trees
+function GetCustomTarget()
+    if _G.MMA_Target and _G.MMA_Target.type == myHero.type then return _G.MMA_Target end
+    if _G.AutoCarry and _G.AutoCarry.Crosshair and _G.AutoCarry.Attack_Crosshair and _G.AutoCarry.Attack_Crosshair.target and _G.AutoCarry.Attack_Crosshair.target.type == myHero.type then return _G.AutoCarry.Attack_Crosshair.target end
+    ts2:update()
+    --print('tstarget called')
+    return ts2.target
+end
+--End Credit Trees
+
 --[[ Packet Cast Helpers ]]--
-function CastQ(unit)
-  if Q.Ready() then
-    if Config.prConfig.pro == 1 then
-      local CastPosition, HitChance, maxHit, Positions = VP:GetLineAOECastPosition(unit, _Q.delay, _Q.width, _Q.range, _Q.speed, from)
-      if HitChance >= 2 then
-        if VIP_USER and Config.prConfig.pc then
-          Packet("S_CAST", {spellId = _Q, fromX = CastPosition.x, fromY = CastPosition.z, toX = CastPosition.x, toY = CastPosition.z}):send()
-        else
-          CastSpell(_Q, CastPosition.x, CastPosition.z)
-        end
-      end
-    end
-    if Config.prConfig.pro == 2 and VIP_USER then
-      local unit = DPTarget(unit)
-      local ChampQ = LineSS(_Q.speed, _Q.range, _Q.width, _Q.delay*1000, math.huge)
-      local State, Position, perc = DP:predict(unit, ChampQ, 2, Vector(from))
-      if State == SkillShot.STATUS.SUCCESS_HIT then 
-        if VIP_USER and Config.prConfig.pc then
-          Packet("S_CAST", {spellId = _Q, fromX = Position.x, fromY = Position.z, toX = Position.x, toY = Position.z}):send()
-        else
-          CastSpell(_Q, Position.x, Position.z)
-        end
-      end
-    end
-  end
-end
-function CastW(unit)
-  if W.Ready() then
-    if Config.prConfig.pro == 1 then
-      local CastPosition, HitChance, maxHit, Positions = VP:GetLineAOECastPosition(unit, _W.delay, _W.width, _W.range, _W.speed, from)
-      if HitChance >= 2 then
-        if VIP_USER and Config.prConfig.pc then
-          Packet("S_CAST", {spellId = _W, fromX = CastPosition.x, fromY = CastPosition.z, toX = CastPosition.x, toY = CastPosition.z}):send()
-        else
-          CastSpell(_W, CastPosition.x, CastPosition.z)
-        end
-      end
-    end
-    if Config.prConfig.pro == 2 and VIP_USER then
-      local unit = DPTarget(unit)
-      local ChampW = LineSS(_W.speed, _W.range, _W.width, _W.delay*1000, math.huge)
-      local State, Position, perc = DP:predict(unit, ChampW, 2, Vector(from))
-      if State == SkillShot.STATUS.SUCCESS_HIT then 
-        if VIP_USER and Config.prConfig.pc then
-          Packet("S_CAST", {spellId = _W, fromX = Position.x, fromY = Position.z, toX = Position.x, toY = Position.z}):send()
-        else
-          CastSpell(_W, Position.x, Position.z)
-        end
-      end
-    end
-  end
-end
-function CastE(unit)
-  if Q.Ready() then
-    if Config.prConfig.pro == 1 then
-      local CastPosition, HitChance, maxHit, Positions = VP:GetLineAOECastPosition(unit, _E.delay, _E.width, _E.range, _E.speed, from)
-      if HitChance >= 2 then
-        if VIP_USER and Config.prConfig.pc then
-          Packet("S_CAST", {spellId = _E, fromX = CastPosition.x, fromY = CastPosition.z, toX = CastPosition.x, toY = CastPosition.z}):send()
-        else
-          CastSpell(_E, CastPosition.x, CastPosition.z)
-        end
-      end
-    end
-    if Config.prConfig.pro == 2 and VIP_USER then
-      local unit = DPTarget(unit)
-      local ChampE = LineSS(_E.speed, _E.range, _E.width, _E.delay*1000, math.huge)
-      local State, Position, perc = DP:predict(unit, ChampE, 2, Vector(from))
-      if State == SkillShot.STATUS.SUCCESS_HIT then 
-        if VIP_USER and Config.prConfig.pc then
-          Packet("S_CAST", {spellId = _E, fromX = Position.x, fromY = Position.z, toX = Position.x, toY = Position.z}):send()
-        else
-          CastSpell(_E, Position.x, Position.z)
-        end
-      end
-    end
-  end
-end
-function CastR(unit)
-  if Q.Ready() then
-    if Config.prConfig.pro == 1 then
-      local CastPosition, HitChance, maxHit, Positions = VP:GetLineAOECastPosition(unit, _R.delay, _R.width, _R.range, _R.speed, from)
-      if HitChance >= 2 then
-        if VIP_USER and Config.prConfig.pc then
-          Packet("S_CAST", {spellId = _R, fromX = CastPosition.x, fromY = CastPosition.z, toX = CastPosition.x, toY = CastPosition.z}):send()
-        else
-          CastSpell(_R, CastPosition.x, CastPosition.z)
-        end
-      end
-    end
-    if Config.prConfig.pro == 2 and VIP_USER then
-      local unit = DPTarget(unit)
-      local ChampR = LineSS(_R.speed, _R.range, _R.width, _R.delay*1000, math.huge)
-      local State, Position, perc = DP:predict(unit, ChampR, 2, Vector(from))
-      if State == SkillShot.STATUS.SUCCESS_HIT then 
-        if VIP_USER and Config.prConfig.pc then
-          Packet("S_CAST", {spellId = _R, fromX = Position.x, fromY = Position.z, toX = Position.x, toY = Position.z}):send()
-        else
-          CastSpell(_R, Position.x, Position.z)
-        end
-      end
-    end
+function CCastSpell(Spell, xPos, zPos)
+  if VIP_USER and Config.prConfig.pc then
+    Packet("S_CAST", {spellId = Spell, fromX = xPos, fromY = zPos, toX = xPos, toY = zPos}):send()
+  else
+    CastSpell(Spell, xPos, zPos)
   end
 end
