@@ -164,15 +164,6 @@ end
 if FileExist(LIB_PATH .. "/SourceLib.lua") then
   require "SourceLib"
 end
-if VIP_USER and FileExist(LIB_PATH .. "/Prodiction.lua") then
-  require("Prodiction")
-  prodstatus = true
-end
-if VIP_USER and FileExist(LIB_PATH .. "/DivinePred.lua") then 
-  require "DivinePred" 
-  DP = DivinePred()
-end
-
 
 local VP = VPrediction()
 local QReady, WReady, EReady, RReady = nil, nil, nil, nil
