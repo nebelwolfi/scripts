@@ -299,8 +299,9 @@ function OnLoad()
   Config.skConfig:addParam("sce", "Cast E", SCRIPT_PARAM_ONKEYDOWN, false, string.byte("E"))
   Config.skConfig:addParam("scr", "Cast R", SCRIPT_PARAM_ONKEYDOWN, false, string.byte("R")) ]]
   Config:addParam("tog", "Aimbot on/off", SCRIPT_PARAM_ONKEYTOGGLE, false, string.byte("T"))
+  Config:addParam("throw", "Throw everything", SCRIPT_PARAM_ONKEYDOWN, false, string.byte(" "))
   Config:addParam("autocast", "Autocast on 100% hitchance", SCRIPT_PARAM_ONOFF, false)
-  Config:addParam("accuracy", "Accuracy Slider", SCRIPT_PARAM_SLICE, 1, 0, 5, 0)
+  Config:addParam("accuracy", "Accuracy Slider", SCRIPT_PARAM_SLICE, 2, 0, 5, 0)
   Config:addParam("rangeoffset", "Range Decrease Offset", SCRIPT_PARAM_SLICE, 0, 0, 200, 0)
   ts2.name = "AimMe"
   Config:addTS(ts2)
@@ -314,11 +315,11 @@ function OnTick()
       for i, spell in pairs(data) do
             local collision = spell.minionCollisionWidth == 0 and false or true
             local CastPosition, HitChance, Position = VP:GetLineCastPosition(Target, spell.delay, spell.minionCollisionWidth, spell.range, spell.speed, myHero, collision)
-          if Config[str[i]] and myHero:CanUseSpell(i) and IsLeeThresh() then -- move spell ready check to top
+          if Config.throw and myHero:CanUseSpell(i) and IsLeeThresh() then -- move spell ready check to top
               if CastPosition and HitChance and HitChance >= Config.accuracy and GetDistance(CastPosition, myHero) < spell.range - Config.rangeoffset then CCastSpell(i, CastPosition.x, CastPosition.z) end   
           elseif Config.autocast then
                 if CastPosition and HitChance and HitChance > 2 and GetDistance(CastPosition, myHero) < spell.range - Config.rangeoffset then CCastSpell(i, CastPosition.x, CastPosition.z) end
-            end
+          end
       end 
     end
     if Config.prConfig.pro == 2 and VIP_USER then
@@ -328,7 +329,7 @@ function OnTick()
       local ChampQ = LineSS(_Q.speed, _Q.range, _Q.width, _Q.delay*1000, math.huge)
       local State, Position, perc = DP:predict(unit, ChampQ, 2, Vector(from))
       if State == SkillShot.STATUS.SUCCESS_HIT then 
-          CastSpell(_Q, Position.x, Position.z)
+          CCastSpell(_Q, Position.x, Position.z)
       end
     end
   end
