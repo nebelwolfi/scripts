@@ -1,6 +1,6 @@
 if myHero.charName ~= "Lulu" then return end
 
-local version = 0.13
+local version = 0.14
 local AUTO_UPDATE = true
 local UPDATE_HOST = "raw.github.com"
 local UPDATE_PATH = "/nebelwolfi/scripts/master/src/Lulu.lua".."?rand="..math.random(1,10000)
@@ -60,7 +60,7 @@ function OnLoad()
     VP = VPrediction()
     IgniteSet()
     LoadMenu()
-    PrintChat ("<font color='#4ECB65'>Lulu v" .. tostring(version) .. " - loaded successful!</font>")
+    --PrintChat ("<font color='#4ECB65'>Lulu v" .. tostring(version) .. " - loaded successful!</font>")
 end
 
 function LoadMenu()
@@ -89,6 +89,9 @@ function LoadMenu()
     menu:addSubMenu("Harass Settings", "harass")
     menu.harass:addParam("harass", "Toogle Auto Harass", SCRIPT_PARAM_ONKEYTOGGLE, false, string.byte("C"))
     menu.harass:addParam("mana","Auto Harass till Mana is under",SCRIPT_PARAM_SLICE, 30, 0, 101, 0)
+    menu.harass:addParam("useq", "Use Q", SCRIPT_PARAM_ONOFF, true)
+    menu.harass:addParam("qchance", "Q Hitchance", SCRIPT_PARAM_SLICE, 0, 0, 2, 0)
+    menu.harass:addParam("usee", "Use E", SCRIPT_PARAM_ONOFF, true)
     
     menu:addSubMenu("Draw Ranges", "drawab")
     menu.drawab:addParam("drawauto", "Draw Auto", SCRIPT_PARAM_ONOFF, true)
