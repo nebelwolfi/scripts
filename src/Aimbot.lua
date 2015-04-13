@@ -304,7 +304,7 @@ function OnLoad()
   Config:addParam("tog", "Aimbot on/off", SCRIPT_PARAM_ONKEYTOGGLE, true, string.byte("T"))
   Config:addParam("throw", "Throw everything", SCRIPT_PARAM_ONKEYDOWN, false, 32)
   Config:addParam("autocast", "Autocast on 100% hitchance", SCRIPT_PARAM_ONOFF, false)
-  Config:addParam("accuracy", "Accuracy Slider", SCRIPT_PARAM_SLICE, 2, 0, 5, 0)
+  Config:addParam("accuracy", "Accuracy Slider", SCRIPT_PARAM_SLICE, 2, 0, 3, 0)
   Config:addParam("rangeoffset", "Range Decrease Offset", SCRIPT_PARAM_SLICE, 0, 0, 200, 0)
   ts2.name = "Target"
   Config:addTS(ts2)
@@ -331,12 +331,12 @@ function OnTick()
       if Target == nil then return end
       local unit = DPTarget(Target)
       for i, spell in pairs(data) do
-        local Skillz = LineSS(spell.speed, spell.range, spell.width, spell.delay, 0)
-        local State, Position, perc = DP:predict(unit, Skillz, 2, Vector(myHero))
+        local lineSS = LineSS(spell.speed, spell.range, spell.width, spell.delay, 0)
+        local State, Position, perc = DP:predict(unit, lineSS)
         PrintChat(State.." "..Position.." "..perc)
-        if Config.throw and State == SkillShot.STATUS.SUCCESS_HIT and myHero:CanUseSpell(i) then 
-          CCastSpell(i, Position.x, Position.z)
-        end
+        --if Config.throw and State == SkillShot.STATUS.SUCCESS_HIT and myHero:CanUseSpell(i) then 
+        --  CCastSpell(i, Position.x, Position.z)
+        --end
       end
     end
     walk()
