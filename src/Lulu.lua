@@ -4,7 +4,7 @@ local version = 0.13
 local AUTO_UPDATE = true
 local UPDATE_HOST = "raw.github.com"
 local UPDATE_PATH = "/nebelwolfi/scripts/master/src/Lulu.lua".."?rand="..math.random(1,10000)
-local UPDATE_FILE_PATH = LIB_PATH.."Lulu.lua"
+local UPDATE_FILE_PATH = SCRIPT_PATH.."Lulu.lua"
 local UPDATE_URL = "https://"..UPDATE_HOST..UPDATE_PATH
 
 local function AutoupdaterMsg(msg) print("<font color=\"#6699ff\"><b>Lulu:</b></font> <font color=\"#FFFFFF\">"..msg..".</font>") end
