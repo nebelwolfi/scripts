@@ -37,3 +37,40 @@ if VIP_USER and FileExist(LIB_PATH .. "/DivinePred.lua") then
   DP = DivinePred()
 end
 
+--[[ Packet Cast Helpers ]]--
+function CastQ(unit)
+  if Q.Ready() then
+    if VIP_USER and MenuLulu.prConfig.pc then
+      Packet("S_CAST", {spellId = _Q, targetNetworkId = unit.networkID}):send()
+    else
+      CastSpell(_W, unit)
+    end
+  end
+end
+function CastW(unit)
+  if W.Ready() then
+    if VIP_USER and MenuLulu.prConfig.pc then
+      Packet("S_CAST", {spellId = _W, targetNetworkId = unit.networkID}):send()
+    else
+      CastSpell(_W, unit)
+    end
+  end
+end
+function CastE(unit)
+  if E.Ready() then
+    if VIP_USER and MenuLulu.prConfig.pc then
+      Packet("S_CAST", {spellId = _E, targetNetworkId = unit.networkID}):send()
+    else
+      CastSpell(_E, unit)
+    end
+  end
+end
+function CastR(unit)
+  if R.Ready() then
+    if VIP_USER and MenuLulu.prConfig.pc then
+      Packet("S_CAST", {spellId = _R, targetNetworkId = unit.networkID}):send()
+    else
+      CastSpell(_R, unit)
+    end
+  end
+end
