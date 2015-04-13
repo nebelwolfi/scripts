@@ -6,7 +6,7 @@ local UPDATE_PATH = "/nebelwolfi/scripts/master/src/Aimbot.lua".."?rand="..math.
 local UPDATE_FILE_PATH = SCRIPT_PATH.."Aimbot.lua"
 local UPDATE_URL = "https://"..UPDATE_HOST..UPDATE_PATH
 
-local function AutoupdaterMsg(msg) print("<font color=\"#6699ff\"><b>Lulu:</b></font> <font color=\"#FFFFFF\">"..msg..".</font>") end
+local function AutoupdaterMsg(msg) print("<font color=\"#6699ff\"><b>Aimbot:</b></font> <font color=\"#FFFFFF\">"..msg..".</font>") end
 if AUTO_UPDATE then
   local ServerData = GetWebResult(UPDATE_HOST, "/nebelwolfi/scripts/master/src/Aimbot.version")
   if ServerData then
@@ -164,7 +164,7 @@ _G.Champs = {
         [_R] = { speed = 2000, delay = 0.250, range = 1200, minionCollisionWidth = 0},
     },
         ["Lissandra"] = {
-        [_Q] = { speed = 1530, delay = 0.250, range = 725, minionCollisionWidth = 80}
+        [_Q] = { speed = 1800, delay = 0.250, range = 725, minionCollisionWidth = 00}
     },
         ["Lucian"] = {
         [_W] = { speed = 1470, delay = 0.288, range = 1000, minionCollisionWidth = 25}
@@ -329,16 +329,12 @@ function OnTick()
     if Config.prConfig.pro == 2 and VIP_USER then
       Target = GetCustomTarget() --Tmrees
       if Target == nil then return end
-      PrintChat(Target)
       local unit = DPTarget(Target)
-      PrintChat(unit)
       for i, spell in pairs(data) do
         local Skillz = LineSS(spell.speed, spell.range, spell.width, spell.delay, 0)
-        PrintChat(Skillz)
-        local State, Position, perc = DP:predict(unit, Skillz, 2, Vector(from))
-        PrintChat(State)
+        local State, Position, perc = DP:predict(unit, Skillz, 2, Vector(myHero))
+        PrintChat(State.." "..Position.." "..perc)
         if Config.throw and State == SkillShot.STATUS.SUCCESS_HIT and myHero:CanUseSpell(i) then 
-          PrintChat("Attempt to shoot spell")
           CCastSpell(i, Position.x, Position.z)
         end
       end
@@ -353,10 +349,6 @@ function walk()
   if Config.throw then
     myHero:MoveTo(mousePos.x, mousePos.z)
   end
-end
-
-function WndMsg(msg,key)
-  if (key == string.byte("Q")) then PrintChat("Q") end
 end
 
 function IsLeeThresh()
