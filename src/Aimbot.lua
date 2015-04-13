@@ -336,12 +336,14 @@ function OnTick()
       if Target == nil then return end
       local unit = DPTarget(Target)
       for i, spell in pairs(data) do
-        local lineSS = LineSS(spell.speed, spell.range, spell.minionCollisionWidth, spell.delay, 0)
-        local state,hitPos,perc = DP:predict(unit, lineSS, 2, Vector(myHero))
-        PrintChat(state.." "..hitPos.." "..perc)
-        --if Config.throw and State == SkillShot.STATUS.SUCCESS_HIT and myHero:CanUseSpell(i) then 
-        --  CCastSpell(i, Position.x, Position.z)
-        --end
+        local skill = SkillShot.PRESETS[spell.name] --LineSS(spell.speed, spell.range, spell.minionCollisionWidth, spell.delay, 0)
+        local state,hitPos,perc = DP:predict(unit, skill, 2)
+        --PrintChat(" "..state)
+        --PrintChat(" "..hitPos)
+        --PrintChat(" "..perc)
+        if Config.throw and State == SkillShot.STATUS.SUCCESS_HIT and myHero:CanUseSpell(i) then 
+          CCastSpell(i, Position.x, Position.z)
+        end
       end
     end
     walk()
