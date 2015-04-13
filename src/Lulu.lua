@@ -10,7 +10,7 @@ local UPDATE_URL = "https://"..UPDATE_HOST..UPDATE_PATH
 
 local function AutoupdaterMsg(msg) print("<font color=\"#6699ff\"><b>Your Lulu:</b></font> <font color=\"#FFFFFF\">"..msg..".</font>") end
 if AUTO_UPDATE then
-  local ServerData = GetWebResult(UPDATE_HOST, "/jineyne/bol/master/version/Your Lulu.version")
+  local ServerData = GetWebResult(UPDATE_HOST, "/nebelwolfi/scripts/master/src/Lulu.version")
   if ServerData then
     ServerVersion = type(tonumber(ServerData)) == "number" and tonumber(ServerData) or nil
     if ServerVersion then
@@ -28,7 +28,7 @@ if AUTO_UPDATE then
 end
 
 if FileExist(LIB_PATH .. "/SxOrbWalk.lua") then
-  --require("SxOrbWalk")
+  require("SxOrbWalk")
   Orb = SxOrbWalk()
 end
 if FileExist(LIB_PATH .. "/VPrediction.lua") then
