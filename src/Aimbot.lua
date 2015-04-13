@@ -63,7 +63,11 @@ _G.Champs = {
         ["Brand"] = {
         [_Q] = { speed = 1600, delay = 0.625, range = 1100, minionCollisionWidth = 90},
         [_W] = { speed = 900, delay = 0.25, range = 1100, minionCollisionWidth = 0},
-        },
+    },
+        ["Braum"] = {
+        [_Q] = { speed = 1600, delay = 225, range = 1000, minionCollisionWidth = 100},
+        [_R] = { speed = 1250, delay = 500, range = 1250, minionCollisionWidth = 0},
+    },    
         ["Caitlyn"] = {
         [_Q] = { speed = 2200, delay = 0.625, range = 1300, minionCollisionWidth = 0},
         [_E] = { speed = 2000, delay = 0.400, range = 1000, minionCollisionWidth = 80},
@@ -249,6 +253,11 @@ _G.Champs = {
         ["Xerath"] = {
         [_Q] = { speed = 3000, delay = 0.6, range = 1100, minionCollisionWidth = 0},
         [_R] = { speed = 2000, delay = 0.25, range = 1100, minionCollisionWidth = 0}
+    },
+        ["Yasuo"] = {
+        --["yasuoq3"] =  { spellDelay = 250, projectileSpeed = 1200, range = 1000, minionCollisionWidth = 0},
+        [_Q] =  { speed = 25000, delay = 250, range = 475, minionCollisionWidth = 0},
+        --["yasuoq2"] =  { spellDelay = 250, projectileSpeed = 25000, range = 475, minionCollisionWidth = 0},
     },
         ["Zed"] = {
         [_Q] = { speed = 1700, delay = 0.2, range = 925, minionCollisionWidth = 0},
