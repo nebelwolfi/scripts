@@ -3,7 +3,7 @@ assert(load(Base64Decode("G0x1YVIAAQQEBAgAGZMNChoKAAAAAAAAAAAAAQIKAAAABgBAAEFAAA
 
 local version = 0.11
 local AUTO_UPDATE = true
-local UPDATE_HOST = "raw.githubusercontent.com"
+local UPDATE_HOST = "raw.github.com"
 local UPDATE_PATH = "/nebelwolfi/scripts/master/src/Lulu.lua".."?rand="..math.random(1,10000)
 local UPDATE_FILE_PATH = LIB_PATH.."Lulu.lua"
 local UPDATE_URL = "https://"..UPDATE_HOST..UPDATE_PATH
