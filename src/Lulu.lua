@@ -1,6 +1,6 @@
 if myHero.charName ~= "Lulu" then return end
 
-local version = 0.14
+local version = 0.15
 local AUTO_UPDATE = true
 local UPDATE_HOST = "raw.github.com"
 local UPDATE_PATH = "/nebelwolfi/scripts/master/src/Lulu.lua".."?rand="..math.random(1,10000)
@@ -18,7 +18,7 @@ if AUTO_UPDATE then
         AutoupdaterMsg("Updating, please don't press F9")
         DelayAction(function() DownloadFile(UPDATE_URL, UPDATE_FILE_PATH, function () AutoupdaterMsg("Successfully updated. ("..version.." => "..ServerVersion.."), press F9 twice to load the updated version.") end) end, 3)
       else
-        AutoupdaterMsg("You have got the latest version ("..ServerVersion..")")
+        AutoupdaterMsg("Loaded the latest version (v"..ServerVersion..")")
       end
     end
   else
@@ -90,11 +90,10 @@ function LoadMenu()
     menu.harass:addParam("harass", "Toogle Auto Harass", SCRIPT_PARAM_ONKEYTOGGLE, false, string.byte("C"))
     menu.harass:addParam("mana","Auto Harass till Mana is under",SCRIPT_PARAM_SLICE, 30, 0, 101, 0)
     menu.harass:addParam("useq", "Use Q", SCRIPT_PARAM_ONOFF, true)
-    menu.harass:addParam("qchance", "Q Hitchance", SCRIPT_PARAM_SLICE, 0, 0, 2, 0)
+    menu.harass:addParam("usew", "Use W", SCRIPT_PARAM_ONOFF, true)
     menu.harass:addParam("usee", "Use E", SCRIPT_PARAM_ONOFF, true)
     
     menu:addSubMenu("Draw Ranges", "drawab")
-    menu.drawab:addParam("drawauto", "Draw Auto", SCRIPT_PARAM_ONOFF, true)
     menu.drawab:addParam("drawq", "Draw Q", SCRIPT_PARAM_ONOFF, true)
     menu.drawab:addParam("draww", "Draw W", SCRIPT_PARAM_ONOFF, true)
     menu.drawab:addParam("drawe", "Draw E", SCRIPT_PARAM_ONOFF, true)
@@ -191,6 +190,39 @@ function SmartR()
 end
 
 function Harass(Target)
+  Orb:DisableAttacks()
+
+  local Target = STS:GetTarget(Spell.Q.Range+Spell.E.Range)
+  if Target ~= nil then
+    if GetDistance(Target, player) < Spell.Q.Range then
+      if menu.harass.usew and EReady then
+        CastSpell(_W, Target)
+      end
+      if menu.harass.useq then
+        local CastPosition, HitChance, Position = VP:GetLineCastPosition(Target, 0.25,60,950, 1600, myHero, false)
+        if CastPosition and HitChance >= 2 then
+          CastSpell(_Q, CastPosition.x, CastPosition.z)
+        end
+      end
+    elseif GetDistance(Target, player) < Spell.Q.Range+Spell.E.Range then
+      SmartE(Target)
+      local CastPosition, HitChance, Position = VP:GetLineCastPosition(Target, 0.25,60,950, 1600, myHero, false)
+      if CastPosition and HitChance >= 2 then
+        DelayAction(function() CastSpell(_Q, CastPosition.x, CastPosition.z) end, 0.5)
+      end
+    end
+  end
+  
+  Orb:EnableAttacks()
+end
+
+function SmartE(target)
+  enemyMinions:update()
+  for i, minion in pairs(enemyMinions.objects) do
+    if GetDistance(minion, player) < Spell.E.Range and GetDistance(minion, target) < Spell.Q.Range and getDmg("E", minion, player) < minion.health and minion ~= nil then
+      CastSpell(_E, minion)
+    end
+  end
 end
 
 function Check()
@@ -217,4 +249,11 @@ function getMousePos(range)
   local MyPos = Vector(myHero.x, myHero.y, myHero.z)
   local MousePos = Vector(mousePos.x, mousePos.y, mousePos.z)
   return MyPos - (MyPos - MousePos):normalized() * SkillWard.range
+end
+
+function OnDraw()
+  if menu.drawab.drawq then DrawCircle(player.x, player.y, player.z, Spell.Q.Range, 0xffff0000) end
+  if menu.drawab.draww then DrawCircle(player.x, player.y, player.z, Spell.W.Range, 0xffff0000) end
+  if menu.drawab.drawe then DrawCircle(player.x, player.y, player.z, Spell.E.Range, 0xffff0000) end
+  if menu.drawab.drawr then DrawCircle(player.x, player.y, player.z, Spell.R.Range, 0xffff0000) end
 end
