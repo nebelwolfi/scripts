@@ -1,6 +1,6 @@
 if myHero.charName ~= "Lulu" then return end
 local autoupdate = true
-local version = 0.1
+local version = 0.11
  
 class "_ScriptUpdate"
 function _ScriptUpdate:__init(LocalVersion, UseHttps, Host, VersionPath, ScriptPath, SavePath, CallbackUpdate, CallbackNoUpdate, CallbackNewVersion,CallbackError)
@@ -143,8 +143,8 @@ function Update()
     ToUpdate.Version = version
     ToUpdate.UseHttps = true
     ToUpdate.Host = "raw.githubusercontent.com"
-    ToUpdate.VersionPath = "/nebelwolfi/scripts/raw/master/src/"..scriptName..".version"
-    ToUpdate.ScriptPath = "/nebelwolfi/scripts/raw/master/src/"..scriptName..".lua"
+    ToUpdate.VersionPath = "/nebelwolfi/scripts/master/src/"..scriptName..".version"
+    ToUpdate.ScriptPath = "/nebelwolfi/scripts/master/src/"..scriptName..".lua"
     ToUpdate.SavePath = SCRIPT_PATH.._ENV.FILE_NAME
     ToUpdate.CallbackUpdate = function(NewVersion,OldVersion) PrintMessage("Updated to "..NewVersion..". Please reload with 2x F9.") end
     ToUpdate.CallbackNoUpdate = function(OldVersion) PrintMessage("No Updates Found.") end
@@ -155,10 +155,14 @@ end
 
 if FileExist(LIB_PATH .. "/SxOrbWalk.lua") then
   require("SxOrbWalk")
+  Orb = SxOrbWalk()
 end
 if FileExist(LIB_PATH .. "/VPrediction.lua") then
   require("VPrediction")
   VP = VPrediction()
+end
+if FileExist(LIB_PATH .. "/SourceLib.lua") then
+  require "SourceLib"
 end
 if VIP_USER and FileExist(LIB_PATH .. "/Prodiction.lua") then
   require("Prodiction")
@@ -231,7 +235,6 @@ function OnLoad()
     menu.Packets:addParam("EPACK", "E Packets", SCRIPT_PARAM_ONOFF, false)
     end
     menu:addSubMenu("Orbwalker", "orbi")
-    Orb = SxOrbWalk()
     Orb:LoadToMenu(menu.orbi)
     menu:addParam("info", " >> Version ", SCRIPT_PARAM_INFO, version)
     PrintChat ("<font color='#4ECB65'>Lulu v" .. tostring(version) .. " - loaded successful!</font>")
