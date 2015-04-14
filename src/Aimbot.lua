@@ -1,10 +1,13 @@
 --[[
 
+Made by Nebelwolfi & acecross
+
 Big credit to Dienofail, Klokje
 
 ]]--
-
-local version = 0.01 -- REMEMBER: UPDATE .version FILE ASWELL FOR IN-GAME PUSH!
+if not VIP_USER then return end -- VIP only :/
+local version = 0.02 -- REMEMBER: UPDATE .version FILE ASWELL FOR IN-GAME PUSH!
+HookPackets()
 
 local AUTO_UPDATE = true
 local UPDATE_HOST = "raw.github.com"
@@ -530,7 +533,7 @@ function OnLoad()
     Config.skConfig:addParam(str[i], "Cast " .. str[i], ConfigType, false, string.byte(str[i]))
     predictions[str[i]] = {spell.range, spell.speed, spell.delay, spell.minionCollisionWidth, i}
   end
-  --[[ DEPRECATED
+  --[[ DEPRECATED; NOW: BEAUTIFUL
   Config.skConfig:addParam("scq", "Cast Q", SCRIPT_PARAM_ONKEYDOWN, false, string.byte("Q"))
   Config.skConfig:addParam("scw", "Cast W", SCRIPT_PARAM_ONKEYDOWN, false, string.byte("W"))
   Config.skConfig:addParam("sce", "Cast E", SCRIPT_PARAM_ONKEYDOWN, false, string.byte("E"))
@@ -546,15 +549,14 @@ end
 
 function OnTick()
   if Config.tog then
-    --myHero:SpellsEnabled(false)
     if Config.prConfig.pro == 1 then
       Target = GetCustomTarget() --Tmrees
       if Target == nil then return end
       for i, spell in pairs(data) do
             local collision = spell.minionCollisionWidth == 0 and false or true
             local CastPosition, HitChance, Position = VP:GetLineCastPosition(Target, spell.delay, spell.minionCollisionWidth, spell.range, spell.speed, myHero, collision)
-          if Config.throw and myHero:CanUseSpell(i) and IsLeeThresh() and IsYasuo() then -- move spell ready check to top
-              if CastPosition and HitChance and HitChance >= Config.accuracy and GetDistance(CastPosition, myHero) < spell.range - Config.rangeoffset then CCastSpell(i, CastPosition.x, CastPosition.z) end   
+          if (Config.throw or str[i]) and myHero:CanUseSpell(i) and IsLeeThresh() and IsYasuo() then -- move spell ready check to top
+              if CastPosition and HitChance and HitChance >= Config.accuracy and GetDistance(CastPosition, myHero) < spell.range - Config.rangeoffset then PrintChat("Cast Spell"+ i) CCastSpell(i, CastPosition.x, CastPosition.z) end   
           elseif Config.autocast then
                 if CastPosition and HitChance and HitChance > 2 and GetDistance(CastPosition, myHero) < spell.range - Config.rangeoffset then CCastSpell(i, CastPosition.x, CastPosition.z) end
           end
@@ -575,8 +577,6 @@ function OnTick()
       end
     end]]
     walk()
-  else 
-    --myHero:SpellsEnabled(true)
   end
 end
 
@@ -595,9 +595,17 @@ function OnWndMsg(msg, key)
    end
 end
 
-function OnSendPacket(LoLPacket)
-  PrintChat(DumpPacket(LoLPacket))
-  if block and Config.tog then
+function OnSendPacket(p)
+  if Config.tog then
+    if p.header == 0x00E9 then -- Credits to PewPewPew
+      p.pos=27
+      --print(('0x%02X'):format(p:Decode1()))
+      local opc = p:Decode1()
+      if opc == 0x02 or opc == 0xB3 or opc == 0xD8 or 0xE7 then
+        p:Block()
+        p.skip(p, 1)
+      end
+    end
   end
 end
 
