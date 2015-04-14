@@ -6,7 +6,7 @@ Big credit to Dienofail, Klokje
 
 ]]--
 if not VIP_USER then return end -- VIP only :/
-local version = 0.02 -- REMEMBER: UPDATE .version FILE ASWELL FOR IN-GAME PUSH!
+local version = 0.03 -- REMEMBER: UPDATE .version FILE ASWELL FOR IN-GAME PUSH!
 HookPackets()
 
 local AUTO_UPDATE = true
@@ -522,7 +522,7 @@ local ts2 = TargetSelector(TARGET_LOW_HP, 1500, DAMAGE_MAGIC, true) -- make thes
 local str = { [_Q] = "Q", [_W] = "W", [_E] = "E", [_R] = "R" }
 local ConfigType = SCRIPT_PARAM_ONKEYDOWN
 local predictions = {}
-local skippacket = {false, false, false, false}
+local toCast = {false, false, false, false}
 function OnLoad()
   Config = scriptConfig("Aimbot v"..version, "Aimbot v"..version)
   Config:addSubMenu("[Prediction]: Settings", "prConfig")
@@ -531,7 +531,6 @@ function OnLoad()
   Config.prConfig:addParam("pro", "Prodiction To Use:", SCRIPT_PARAM_LIST, 1, {"VPrediction"}) -- ,"DivinePred"
   Config:addSubMenu("[Skills]: Settings", "skConfig")
   for i, spell in pairs(data) do
-    skippacket[i] = true
     Config.skConfig:addParam(str[i], "Cast " .. str[i], ConfigType, false, string.byte(str[i]))
     predictions[str[i]] = {spell.range, spell.speed, spell.delay, spell.minionCollisionWidth, i}
   end
@@ -557,10 +556,13 @@ function OnTick()
       for i, spell in pairs(data) do
             local collision = spell.minionCollisionWidth == 0 and false or true
             local CastPosition, HitChance, Position = VP:GetLineCastPosition(Target, spell.delay, spell.minionCollisionWidth, spell.range, spell.speed, myHero, collision)
-          if (Config.throw or str[i]) and myHero:CanUseSpell(i) and IsLeeThresh() and IsYasuo() then -- move spell ready check to top
+          if (Config.throw or Config[str[i]]) and myHero:CanUseSpell(i) and IsLeeThresh() and IsYasuo() then -- move spell ready check to top
               if CastPosition and HitChance and HitChance >= Config.accuracy and GetDistance(CastPosition, myHero) < spell.range - Config.rangeoffset then CCastSpell(i, CastPosition.x, CastPosition.z) end   
           elseif Config.autocast then
                 if CastPosition and HitChance and HitChance > 2 and GetDistance(CastPosition, myHero) < spell.range - Config.rangeoffset then CCastSpell(i, CastPosition.x, CastPosition.z) end
+          elseif toCast[i] == true and myHero:CanUseSpell(i) and IsLeeThresh() and IsYasuo()  then
+              if CastPosition and HitChance and HitChance >= Config.accuracy and GetDistance(CastPosition, myHero) < spell.range - Config.rangeoffset then CCastSpell(i, CastPosition.x, CastPosition.z) end  
+              toCast[i] = false 
           end
       end 
     end
@@ -588,25 +590,29 @@ function walk()
   end
 end
 
-local block = false
-function OnWndMsg(msg, key)
-   if msg == KEY_DOWN and (key == GetKey("Q") or key == GetKey("W") or key == GetKey("E") or key == GetKey("R")) then
-     block = true
-   else
-     block = false
-   end
-end
-
 function OnSendPacket(p)
-  if Config.tog and block then
+  if Config.tog then
     if p.header == 0x00E9 then -- Credits to PewPewPew
       p.pos=27
       --print(('0x%02X'):format(p:Decode1()))
       local opc = p:Decode1()
-      if (opc == 0x02 and skippacket[0] == true) or (opc == 0xB3 and skippacket[0] == true)  or (opc == 0xD8 and skippacket[0] == true)  or (opc == 0xE7 and skippacket[0] == true)  then
-          print("Skipping: "..('0x%02X'):format(opc))
+      --print("Packet send: "..('0x%02X'):format(opc))
+      if opc == 0x02 and not toCast[0] then 
           p:Block()
           p.skip(p, 1)
+          toCast[0] = true
+      elseif opc == 0xB3 and not toCast[1] then 
+          p:Block()
+          p.skip(p, 1)
+          toCast[1] = true
+      elseif opc == 0xD8 and not toCast[2] then 
+          p:Block()
+          p.skip(p, 1)
+          toCast[2] = true
+      elseif opc == 0xE7 and not toCast[3] then
+          p:Block()
+          p.skip(p, 1)
+          toCast[3] = true
       end
     end
   end
@@ -654,6 +660,7 @@ end
 
 --[[ Packet Cast Helper ]]--
 function CCastSpell(Spell, xPos, zPos)
+  PrintChat("Cast "..Spell)
   if VIP_USER and Config.prConfig.pc then
     Packet("S_CAST", {spellId = Spell, fromX = xPos, fromY = zPos, toX = xPos, toY = zPos}):send()
   else
