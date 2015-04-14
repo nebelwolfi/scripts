@@ -5,10 +5,9 @@ Made by Nebelwolfi & acecross
 Credits to Dienofail, Klokje for old I'mAiming
 
 ]]--
-if not VIP_USER then return end -- VIP only :/
-local version = 0.28 -- REMEMBER: UPDATE .version FILE ASWELL FOR IN-GAME PUSH!
-HookPackets() -- Credits to iCreative
-
+if not VIP_USER then return end -- VIP only since we use 420 packets
+--[[ Auto updater start ]]--
+local version = 0.28
 local AUTO_UPDATE = true
 local UPDATE_HOST = "raw.github.com"
 local UPDATE_PATH = "/nebelwolfi/scripts/master/src/Aimbot.lua".."?rand="..math.random(1,10000)
@@ -33,6 +32,9 @@ if AUTO_UPDATE then
     AutoupdaterMsg("Error downloading version info")
   end
 end
+--[[ Auto updater end ]]--
+
+--[[ Libraries start ]]--
 if FileExist(LIB_PATH .. "/VPrediction.lua") then
   require("VPrediction")
   VP = VPrediction()
@@ -42,7 +44,9 @@ if VIP_USER and FileExist(LIB_PATH .. "/DivinePred.lua") then
   require "DivinePred" 
   DP = DivinePred()
 end ]]
+--[[ Libraries end ]]--
 
+--[[ Skillshot list start ]]--
 _G.Champs = {
     ["Aatrox"] = {
         [_Q] = { speed = 450, delay = 0.27, range = 650, minionCollisionWidth = 280},
@@ -284,10 +288,22 @@ _G.Champs = {
          [_E] = { speed = 1150, delay = 0.16, range = 1100, minionCollisionWidth = 0}
     }
 }
+--[[ Skillshot list end ]]--
 
 if not Champs[myHero.charName] then return end -- not supported :(
+HookPackets() -- Credits to iCreative
+
+--Credit Trees
+function GetCustomTarget()
+    if _G.MMA_Target and _G.MMA_Target.type == myHero.type then return _G.MMA_Target end
+    if _G.AutoCarry and _G.AutoCarry.Crosshair and _G.AutoCarry.Attack_Crosshair and _G.AutoCarry.Attack_Crosshair.target and _G.AutoCarry.Attack_Crosshair.target.type == myHero.type then return _G.AutoCarry.Attack_Crosshair.target end
+    ts2:update()
+    --print('tstarget called')
+    return ts2.target
+end
+--End Credit Trees
+
 local data = Champs[myHero.charName]
---local data2 = champions2[myHero.charName].skillshots
 local QReady, WReady, EReady, RReady = nil, nil, nil, nil
 local Target 
 local ts2 = TargetSelector(TARGET_NEAR_MOUSE, 1500, DAMAGE_MAGIC, true) -- make these local
@@ -413,15 +429,6 @@ function IsLeeThresh()
   end
 end
 
---Credit Trees
-function GetCustomTarget()
-    if _G.MMA_Target and _G.MMA_Target.type == myHero.type then return _G.MMA_Target end
-    if _G.AutoCarry and _G.AutoCarry.Crosshair and _G.AutoCarry.Attack_Crosshair and _G.AutoCarry.Attack_Crosshair.target and _G.AutoCarry.Attack_Crosshair.target.type == myHero.type then return _G.AutoCarry.Attack_Crosshair.target end
-    ts2:update()
-    --print('tstarget called')
-    return ts2.target
-end
---End Credit Trees
 
 --[[ Packet Cast Helper ]]--
 function CCastSpell(Spell, xPos, zPos)
