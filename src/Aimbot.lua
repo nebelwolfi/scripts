@@ -10,12 +10,12 @@ if not VIP_USER then return end -- VIP only since we use packets everywhere
 local version = 0.28
 local AUTO_UPDATE = true
 local UPDATE_HOST = "raw.github.com"
-local UPDATE_PATH = "/nebelwolfi/scripts/master/src/Aimbot.lua".."?rand="..math.random(1,10000)
+local UPDATE_PATH = "/nebelwolfi/scripts/master/Aimbot.lua".."?rand="..math.random(1,10000)
 local UPDATE_FILE_PATH = SCRIPT_PATH.."Aimbot.lua"
 local UPDATE_URL = "https://"..UPDATE_HOST..UPDATE_PATH
 local function AutoupdaterMsg(msg) print("<font color=\"#6699ff\"><b>Aimbot:</b></font> <font color=\"#FFFFFF\">"..msg..".</font>") end
 if AUTO_UPDATE then
-  local ServerData = GetWebResult(UPDATE_HOST, "/nebelwolfi/scripts/master/src/Aimbot.version")
+  local ServerData = GetWebResult(UPDATE_HOST, "/nebelwolfi/scripts/master/Aimbot.version")
   if ServerData then
     ServerVersion = type(tonumber(ServerData)) == "number" and tonumber(ServerData) or nil
     if ServerVersion then
@@ -291,17 +291,6 @@ _G.Champs = {
 
 if not Champs[myHero.charName] then return end -- not supported :(
 HookPackets() -- Credits to iCreative
-
---Credit Trees
-function GetCustomTarget()
-    if _G.MMA_Target and _G.MMA_Target.type == myHero.type then return _G.MMA_Target end
-    if _G.AutoCarry and _G.AutoCarry.Crosshair and _G.AutoCarry.Attack_Crosshair and _G.AutoCarry.Attack_Crosshair.target and _G.AutoCarry.Attack_Crosshair.target.type == myHero.type then return _G.AutoCarry.Attack_Crosshair.target end
-    ts2:update()
-    --print('tstarget called')
-    return ts2.target
-end
---End Credit Trees
-
 local data = Champs[myHero.charName]
 local QReady, WReady, EReady, RReady = nil, nil, nil, nil
 local Target 
@@ -428,6 +417,15 @@ function IsLeeThresh()
   end
 end
 
+--Credit Trees
+function GetCustomTarget()
+    if _G.MMA_Target and _G.MMA_Target.type == myHero.type then return _G.MMA_Target end
+    if _G.AutoCarry and _G.AutoCarry.Crosshair and _G.AutoCarry.Attack_Crosshair and _G.AutoCarry.Attack_Crosshair.target and _G.AutoCarry.Attack_Crosshair.target.type == myHero.type then return _G.AutoCarry.Attack_Crosshair.target end
+    ts2:update()
+    --print('tstarget called')
+    return ts2.target
+end
+--End Credit Trees
 
 --[[ Packet Cast Helper ]]--
 function CCastSpell(Spell, xPos, zPos)
