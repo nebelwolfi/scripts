@@ -3,7 +3,9 @@
 Credits to Dienofail, Klokje for old I'mAiming
 
 ]]--
-if not VIP_USER then return end -- VIP only since we use 420 packets
+
+if not VIP_USER then return end -- VIP only since we use packets everywhere
+
 --[[ Auto updater start ]]--
 local version = 0.28
 local AUTO_UPDATE = true
@@ -11,7 +13,6 @@ local UPDATE_HOST = "raw.github.com"
 local UPDATE_PATH = "/nebelwolfi/scripts/master/src/Aimbot.lua".."?rand="..math.random(1,10000)
 local UPDATE_FILE_PATH = SCRIPT_PATH.."Aimbot.lua"
 local UPDATE_URL = "https://"..UPDATE_HOST..UPDATE_PATH
-
 local function AutoupdaterMsg(msg) print("<font color=\"#6699ff\"><b>Aimbot:</b></font> <font color=\"#FFFFFF\">"..msg..".</font>") end
 if AUTO_UPDATE then
   local ServerData = GetWebResult(UPDATE_HOST, "/nebelwolfi/scripts/master/src/Aimbot.version")
