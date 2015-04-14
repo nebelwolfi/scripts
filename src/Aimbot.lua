@@ -522,6 +522,7 @@ local ts2 = TargetSelector(TARGET_LOW_HP, 1500, DAMAGE_MAGIC, true) -- make thes
 local str = { [_Q] = "Q", [_W] = "W", [_E] = "E", [_R] = "R" }
 local ConfigType = SCRIPT_PARAM_ONKEYDOWN
 local predictions = {}
+local skippacket = {false, false, false, false}
 function OnLoad()
   Config = scriptConfig("Aimbot v"..version, "Aimbot v"..version)
   Config:addSubMenu("[Prediction]: Settings", "prConfig")
@@ -530,6 +531,7 @@ function OnLoad()
   Config.prConfig:addParam("pro", "Prodiction To Use:", SCRIPT_PARAM_LIST, 1, {"VPrediction"}) -- ,"DivinePred"
   Config:addSubMenu("[Skills]: Settings", "skConfig")
   for i, spell in pairs(data) do
+    skippacket[i] = true
     Config.skConfig:addParam(str[i], "Cast " .. str[i], ConfigType, false, string.byte(str[i]))
     predictions[str[i]] = {spell.range, spell.speed, spell.delay, spell.minionCollisionWidth, i}
   end
@@ -556,7 +558,7 @@ function OnTick()
             local collision = spell.minionCollisionWidth == 0 and false or true
             local CastPosition, HitChance, Position = VP:GetLineCastPosition(Target, spell.delay, spell.minionCollisionWidth, spell.range, spell.speed, myHero, collision)
           if (Config.throw or str[i]) and myHero:CanUseSpell(i) and IsLeeThresh() and IsYasuo() then -- move spell ready check to top
-              if CastPosition and HitChance and HitChance >= Config.accuracy and GetDistance(CastPosition, myHero) < spell.range - Config.rangeoffset then PrintChat("Cast Spell"+ i) CCastSpell(i, CastPosition.x, CastPosition.z) end   
+              if CastPosition and HitChance and HitChance >= Config.accuracy and GetDistance(CastPosition, myHero) < spell.range - Config.rangeoffset then CCastSpell(i, CastPosition.x, CastPosition.z) end   
           elseif Config.autocast then
                 if CastPosition and HitChance and HitChance > 2 and GetDistance(CastPosition, myHero) < spell.range - Config.rangeoffset then CCastSpell(i, CastPosition.x, CastPosition.z) end
           end
@@ -596,14 +598,15 @@ function OnWndMsg(msg, key)
 end
 
 function OnSendPacket(p)
-  if Config.tog then
+  if Config.tog and block then
     if p.header == 0x00E9 then -- Credits to PewPewPew
       p.pos=27
       --print(('0x%02X'):format(p:Decode1()))
       local opc = p:Decode1()
-      if opc == 0x02 or opc == 0xB3 or opc == 0xD8 or 0xE7 then
-        p:Block()
-        p.skip(p, 1)
+      if (opc == 0x02 and skippacket[0] == true) or (opc == 0xB3 and skippacket[0] == true)  or (opc == 0xD8 and skippacket[0] == true)  or (opc == 0xE7 and skippacket[0] == true)  then
+          print("Skipping: "..('0x%02X'):format(opc))
+          p:Block()
+          p.skip(p, 1)
       end
     end
   end
