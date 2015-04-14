@@ -6,45 +6,6 @@ Credits to Dienofail, Klokje for old I'mAiming
 
 if not VIP_USER then return end -- VIP only since we use packets everywhere
 
---[[ Auto updater start ]]--
-local version = 0.28
-local AUTO_UPDATE = true
-local UPDATE_HOST = "raw.github.com"
-local UPDATE_PATH = "/nebelwolfi/scripts/master/Aimbot.lua".."?rand="..math.random(1,10000)
-local UPDATE_FILE_PATH = SCRIPT_PATH.."Aimbot.lua"
-local UPDATE_URL = "https://"..UPDATE_HOST..UPDATE_PATH
-local function AutoupdaterMsg(msg) print("<font color=\"#6699ff\"><b>Aimbot:</b></font> <font color=\"#FFFFFF\">"..msg..".</font>") end
-if AUTO_UPDATE then
-  local ServerData = GetWebResult(UPDATE_HOST, "/nebelwolfi/scripts/master/Aimbot.version")
-  if ServerData then
-    ServerVersion = type(tonumber(ServerData)) == "number" and tonumber(ServerData) or nil
-    if ServerVersion then
-      if tonumber(version) < ServerVersion then
-        AutoupdaterMsg("New version available v"..ServerVersion)
-        AutoupdaterMsg("Updating, please don't press F9")
-        DelayAction(function() DownloadFile(UPDATE_URL, UPDATE_FILE_PATH, function () AutoupdaterMsg("Successfully updated. ("..version.." => "..ServerVersion.."), press F9 twice to load the updated version.") end) end, 3)
-      else
-        AutoupdaterMsg("Loaded the latest version (v"..ServerVersion..")")
-      end
-    end
-  else
-    AutoupdaterMsg("Error downloading version info")
-  end
-end
---[[ Auto updater end ]]--
-
---[[ Libraries start ]]--
-if FileExist(LIB_PATH .. "/VPrediction.lua") then
-  require("VPrediction")
-  VP = VPrediction()
-end
---[[ SUPPORTED LATER
-if VIP_USER and FileExist(LIB_PATH .. "/DivinePred.lua") then 
-  require "DivinePred" 
-  DP = DivinePred()
-end ]]
---[[ Libraries end ]]--
-
 --[[ Skillshot list start ]]--
 _G.Champs = {
     ["Aatrox"] = {
@@ -289,6 +250,46 @@ _G.Champs = {
 }
 --[[ Skillshot list end ]]--
 
+--[[ Auto updater start and Encryption start ]]--
+local version = 0.28
+local AUTO_UPDATE = true
+local UPDATE_HOST = "raw.github.com"
+local UPDATE_PATH = "/nebelwolfi/scripts/master/Aimbot.lua".."?rand="..math.random(1,10000)
+local UPDATE_FILE_PATH = SCRIPT_PATH.."Aimbot.lua"
+local UPDATE_URL = "https://"..UPDATE_HOST..UPDATE_PATH
+local function AutoupdaterMsg(msg) print("<font color=\"#6699ff\"><b>Aimbot:</b></font> <font color=\"#FFFFFF\">"..msg..".</font>") end
+if AUTO_UPDATE then
+  local ServerData = GetWebResult(UPDATE_HOST, "/nebelwolfi/scripts/master/Aimbot.version")
+  if ServerData then
+    ServerVersion = type(tonumber(ServerData)) == "number" and tonumber(ServerData) or nil
+    if ServerVersion then
+      if tonumber(version) < ServerVersion then
+        AutoupdaterMsg("New version available v"..ServerVersion)
+        AutoupdaterMsg("Updating, please don't press F9")
+        DelayAction(function() DownloadFile(UPDATE_URL, UPDATE_FILE_PATH, function () AutoupdaterMsg("Successfully updated. ("..version.." => "..ServerVersion.."), press F9 twice to load the updated version.") end) end, 3)
+      else
+        AutoupdaterMsg("Loaded the latest version (v"..ServerVersion..")")
+      end
+    end
+  else
+    AutoupdaterMsg("Error downloading version info")
+  end
+end
+--[[ Auto updater end ]]--
+
+--[[ Libraries start ]]--
+if FileExist(LIB_PATH .. "/VPrediction.lua") then
+  require("VPrediction")
+  VP = VPrediction()
+end
+--[[ SUPPORTED LATER
+if VIP_USER and FileExist(LIB_PATH .. "/DivinePred.lua") then 
+  require "DivinePred" 
+  DP = DivinePred()
+end ]]
+--[[ Libraries end ]]--
+
+
 if not Champs[myHero.charName] then return end -- not supported :(
 HookPackets() -- Credits to iCreative
 local data = Champs[myHero.charName]
@@ -303,10 +304,11 @@ local toAim = {false, false, false, false}
 function OnLoad()
   Config = scriptConfig("Aimbot v"..version, "Aimbot v"..version)
   Config:addSubMenu("[Prediction]: Settings", "prConfig")
-  Config.prConfig:addParam("pc", "Use Packets To Cast Spells(VIP)", SCRIPT_PARAM_ONOFF, false)
+  Config.prConfig:addParam("pc", "Use Packets To Cast Spells", SCRIPT_PARAM_ONOFF, false)
+  Config.prConfig:addParam("qqq", "--------------------------------------------------------", SCRIPT_PARAM_INFO,"")
+  Config.prConfig:addParam("hitchance", "Accuracy", SCRIPT_PARAM_SLICE, 2, 0, 3, 0)
   Config.prConfig:addParam("qqq", "--------------------------------------------------------", SCRIPT_PARAM_INFO,"")
   Config.prConfig:addParam("pro", "Prodiction To Use:", SCRIPT_PARAM_LIST, 1, {"VPrediction"}) -- ,"DivinePred"
-  Config.prConfig:addParam("hitchance", "Accuracy", SCRIPT_PARAM_SLICE, 2, 0, 3, 0)
   Config:addSubMenu("Supported skills", "skConfig")
   for i, spell in pairs(data) do
     Config.skConfig:addParam(str[i], "", ConfigType, false, string.byte(str[i]))
