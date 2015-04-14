@@ -2,11 +2,13 @@
 
 Made by Nebelwolfi & acecross
 
-Big credit to Dienofail, Klokje
+Big credit to Dienofail, Klokje for old I'mAiming
+
+Credits to iCreative and Bilbao for packetusage
 
 ]]--
 if not VIP_USER then return end -- VIP only :/
-local version = 0.03 -- REMEMBER: UPDATE .version FILE ASWELL FOR IN-GAME PUSH!
+local version = 0.27 -- REMEMBER: UPDATE .version FILE ASWELL FOR IN-GAME PUSH!
 HookPackets()
 
 local AUTO_UPDATE = true
@@ -530,15 +532,16 @@ function OnLoad()
   Config.prConfig:addParam("qqq", "--------------------------------------------------------", SCRIPT_PARAM_INFO,"")
   Config.prConfig:addParam("pro", "Prodiction To Use:", SCRIPT_PARAM_LIST, 1, {"VPrediction"}) -- ,"DivinePred"
   Config:addSubMenu("[Skills]: Settings", "skConfig")
-  for i, spell in pairs(data) do
-    Config.skConfig:addParam(str[i], "Cast " .. str[i], ConfigType, false, string.byte(str[i]))
-    predictions[str[i]] = {spell.range, spell.speed, spell.delay, spell.minionCollisionWidth, i}
-  end
-  --[[ DEPRECATED; NOW: BEAUTIFUL
+  --[[ DEPRECATED ]]--[[
   Config.skConfig:addParam("scq", "Cast Q", SCRIPT_PARAM_ONKEYDOWN, false, string.byte("Q"))
   Config.skConfig:addParam("scw", "Cast W", SCRIPT_PARAM_ONKEYDOWN, false, string.byte("W"))
   Config.skConfig:addParam("sce", "Cast E", SCRIPT_PARAM_ONKEYDOWN, false, string.byte("E"))
   Config.skConfig:addParam("scr", "Cast R", SCRIPT_PARAM_ONKEYDOWN, false, string.byte("R")) ]]
+  --[[ NOW: BEAUTIFUL ]]
+  for i, spell in pairs(data) do
+    Config.skConfig:addParam(str[i], "Cast " .. str[i], ConfigType, false, string.byte(str[i]))
+    predictions[str[i]] = {spell.range, spell.speed, spell.delay, spell.minionCollisionWidth, i}
+  end
   Config:addParam("tog", "Aimbot on/off", SCRIPT_PARAM_ONKEYTOGGLE, true, string.byte("T"))
   Config:addParam("throw", "Throw everything", SCRIPT_PARAM_ONKEYDOWN, false, 32)
   Config:addParam("autocast", "Autocast on 100% hitchance", SCRIPT_PARAM_ONOFF, false)
@@ -590,29 +593,44 @@ function walk()
   end
 end
 
+function OnWndMsg(msg, key)
+   if msg == KEY_UP and key == GetKey("Q") then
+     toCast[0] = false
+   elseif msg == KEY_UP and key == GetKey("W") then 
+     toCast[1] = false
+   elseif msg == KEY_UP and key == GetKey("E") then 
+     toCast[2] = false
+   elseif msg == KEY_UP and key == GetKey("R") then
+     toCast[3] = false
+   end
+end
+
 function OnSendPacket(p)
+  Target = GetCustomTarget() --Tmrees
   if Config.tog then
     if p.header == 0x00E9 then -- Credits to PewPewPew
       p.pos=27
       --print(('0x%02X'):format(p:Decode1()))
       local opc = p:Decode1()
-      --print("Packet send: "..('0x%02X'):format(opc))
-      if opc == 0x02 and not toCast[0] then 
+      --PrintChat("Packet send: "..('0x%02X'):format(opc))
+      if Target ~= nil then
+        if opc == 0x02 and not toCast[0] then 
           p:Block()
           p.skip(p, 1)
           toCast[0] = true
-      elseif opc == 0xB3 and not toCast[1] then 
+        elseif opc == 0xD8 and not toCast[1] then 
           p:Block()
           p.skip(p, 1)
           toCast[1] = true
-      elseif opc == 0xD8 and not toCast[2] then 
+        elseif opc == 0xB3 and not toCast[2] then 
           p:Block()
           p.skip(p, 1)
           toCast[2] = true
-      elseif opc == 0xE7 and not toCast[3] then
+        elseif opc == 0xE7 and not toCast[3] then
           p:Block()
           p.skip(p, 1)
           toCast[3] = true
+        end
       end
     end
   end
@@ -660,7 +678,7 @@ end
 
 --[[ Packet Cast Helper ]]--
 function CCastSpell(Spell, xPos, zPos)
-  PrintChat("Cast "..Spell)
+  --PrintChat("Cast "..Spell)
   if VIP_USER and Config.prConfig.pc then
     Packet("S_CAST", {spellId = Spell, fromX = xPos, fromY = zPos, toX = xPos, toY = zPos}):send()
   else
