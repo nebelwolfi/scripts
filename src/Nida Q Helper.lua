@@ -26,7 +26,6 @@ end
 local Q = {name = "Javelin Toss", range = 1500, speed = 1300, delay = 0.125, width = 37, Ready = function() return myHero:CanUseSpell(_Q) == READY end}
 local QTargetSelector = TargetSelector(TARGET_NEAR_MOUSE, Q.range, DAMAGE_MAGIC)
 
-
 function OnLoad()
   Config = scriptConfig("Nida Q Helper ", " Nida Q Helper ")
   Config:addSubMenu("[Misc]: Settings", "prConfig")
@@ -41,18 +40,6 @@ function OnLoad()
   Config:addTS(QTargetSelector)
   print("Nida Q Helper loaded!")
 end
-
-function GetCustomTarget()
-  TargetSelector:update() 
-  if _G.MMA_Target and _G.MMA_Target.type == myHero.type then
-    return _G.MMA_Target
-  end
-  if _G.AutoCarry and _G.AutoCarry.Crosshair and _G.AutoCarry.Attack_Crosshair and _G.AutoCarry.Attack_Crosshair.target and _G.AutoCarry.Attack_Crosshair.target.type == myHero.type then 
-    return _G.AutoCarry.Attack_Crosshair.target 
-  end
-  return TargetSelector.target
-end
-
 
 function Check()
   QTargetSelector:update()

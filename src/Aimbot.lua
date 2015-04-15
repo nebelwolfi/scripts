@@ -1,6 +1,13 @@
 --[[
 
-Credits to Dienofail, Klokje for old I'mAiming
+             _               _               _   
+     /\     (_)             | |             | |  
+    /  \     _   _ __ ___   | |__     ___   | |_ 
+   / /\ \   | | | '_ ` _ \  | '_ \   / _ \  | __|
+  / ____ \  | | | | | | | | | |_) | | (_) | | |_ 
+ /_/    \_\ |_| |_| |_| |_| |_.__/   \___/   \__|
+                                                 
+                                                  
 
 ]]--
 
@@ -228,8 +235,9 @@ _G.Champs = {
                 [_E] = { speed = 1500, delay = 0.333, range = 1100, minionCollisionWidth = 0},
     },    
         ["Xerath"] = {
-        [_Q] = { speed = 3000, delay = 0.6, range = 1100, minionCollisionWidth = 0},
-        [_R] = { speed = 2000, delay = 0.25, range = 1100, minionCollisionWidth = 0}
+        [_W] = { speed = math.huge, delay = 0.5, range = 1100, minionCollisionWidth = 0},
+        [_E] = { speed = 1600, delay = 0.25, range = 1050, minionCollisionWidth = 50},
+        [_R] = { speed = math.huge, delay = 0.25, range = 5600, minionCollisionWidth = 0}
     },
         ["Yasuo"] = {
         [_Q] =  { speed = math.huge, delay = 250, range = 475, minionCollisionWidth = 0},
@@ -251,7 +259,7 @@ _G.Champs = {
 --[[ Skillshot list end ]]--
 
 --[[ Auto updater start and Encryption start ]]--
-local version = 0.29
+local version = 0.30
 local AUTO_UPDATE = true
 local UPDATE_HOST = "raw.github.com"
 local UPDATE_PATH = "/nebelwolfi/scripts/master/Aimbot.lua".."?rand="..math.random(1,10000)
@@ -315,6 +323,7 @@ function OnLoad()
     predictions[str[i]] = {spell.range, spell.speed, spell.delay, spell.minionCollisionWidth, i}
     toAim[i] = true
   end
+  Config:addTS(ts2)
   Config:addParam("tog", "Aimbot on/off", SCRIPT_PARAM_ONKEYTOGGLE, true, string.byte("T"))
   Config:addParam("rangeoffset", "Range Decrease Offset", SCRIPT_PARAM_SLICE, 0, 0, 200, 0)
   Config:permaShow("tog")
@@ -333,7 +342,9 @@ function OnTick()
           if (Config.throw or Config[str[i]]) and myHero:CanUseSpell(i) and IsLeeThresh() then -- move spell ready check to top
               if CastPosition and HitChance and HitChance >= Config.prConfig.hitchance and GetDistance(CastPosition, myHero) < spell.range - Config.rangeoffset then CCastSpell(i, CastPosition.x, CastPosition.z) end   
           elseif toCast[i] == true and myHero:CanUseSpell(i) and IsLeeThresh() then
-              if CastPosition and HitChance and HitChance >= Config.prConfig.hitchance and GetDistance(CastPosition, myHero) < spell.range - Config.rangeoffset then CCastSpell(i, CastPosition.x, CastPosition.z) end  
+              if CastPosition and HitChance and HitChance >= Config.prConfig.hitchance and GetDistance(CastPosition, myHero) < spell.range - Config.rangeoffset then CCastSpell(i, CastPosition.x, CastPosition.z)
+              elseif CastPosition and HitChance and HitChance >= Config.prConfig.hitchance-1 and GetDistance(CastPosition, myHero) < spell.range - Config.rangeoffset then CCastSpell(i, CastPosition.x, CastPosition.z) 
+              else CCastSpell(i, mousePos.x, mousePos.z) end  
               toCast[i] = false 
           end
       end 
@@ -422,9 +433,9 @@ end
 
 --Credit Trees
 function GetCustomTarget()
+    ts2:update()
     if _G.MMA_Target and _G.MMA_Target.type == myHero.type then return _G.MMA_Target end
     if _G.AutoCarry and _G.AutoCarry.Crosshair and _G.AutoCarry.Attack_Crosshair and _G.AutoCarry.Attack_Crosshair.target and _G.AutoCarry.Attack_Crosshair.target.type == myHero.type then return _G.AutoCarry.Attack_Crosshair.target end
-    ts2:update()
     --print('tstarget called')
     return ts2.target
 end
