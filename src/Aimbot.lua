@@ -285,7 +285,7 @@ _G.Champs = {
 --[[ Skillshot list end ]]--
 
 --[[ Auto updater start ]]--
-local version = 0.32
+local version = 0.33
 local AUTO_UPDATE = true
 local UPDATE_HOST = "raw.github.com"
 local UPDATE_PATH = "/nebelwolfi/scripts/master/Aimbot.lua".."?rand="..math.random(1,10000)
@@ -388,23 +388,24 @@ function OnTick()
       for i, spell in pairs(data) do
           if toCast[i] == true and myHero:CanUseSpell(i) then
             if Config.prConfig.pro == 1 then -- VPrediction
+              local CastPosition, HitChance, Position
               if spell.type == "linear" then
                 if spell.aoe then
-                    local CastPosition, HitChance, Position = VP:GetLineAOECastPosition(Target, spell.delay, spell.width, spell.range, spell.speed, myHero)
+                    CastPosition, HitChance, Position = VP:GetLineAOECastPosition(Target, spell.delay, spell.width, spell.range, spell.speed, myHero)
                 else
-                    local CastPosition, HitChance, Position = VP:GetLineCastPosition(Target, spell.delay, spell.width, spell.range, spell.speed, myHero, spell.collision)
+                    CastPosition, HitChance, Position = VP:GetLineCastPosition(Target, spell.delay, spell.width, spell.range, spell.speed, myHero, spell.collision)
                 end
               elseif spell.type == "circular" then
                 if spell.aoe then
-                    local CastPosition, HitChance, Position = VP:GetCircularAOECastPosition(Target, spell.delay, spell.width, spell.range, spell.speed, myHero)
+                    CastPosition, HitChance, Position = VP:GetCircularAOECastPosition(Target, spell.delay, spell.width, spell.range, spell.speed, myHero)
                 else
-                    local CastPosition, HitChance, Position = VP:GetCircularCastPosition(Target, spell.delay, spell.width, spell.range, spell.speed, myHero, spell.collision)
+                    CastPosition, HitChance, Position = VP:GetCircularCastPosition(Target, spell.delay, spell.width, spell.range, spell.speed, myHero, spell.collision)
                 end
               elseif spell.type == "cone" then
                 if spell.aoe then
-                    local CastPosition, HitChance, Position = VP:GetConeAOECastPosition(Target, spell.delay, spell.width, spell.range, spell.speed, myHero)
+                    CastPosition, HitChance, Position = VP:GetConeAOECastPosition(Target, spell.delay, spell.width, spell.range, spell.speed, myHero)
                 else
-                    local CastPosition, HitChance, Position = VP:GetLineCastPosition(Target, spell.delay, spell.width, spell.range, spell.speed, myHero, spell.collision)
+                    CastPosition, HitChance, Position = VP:GetLineCastPosition(Target, spell.delay, spell.width, spell.range, spell.speed, myHero, spell.collision)
                 end
               end
               if HitChance >= Config.prConfig.hitchance then
