@@ -349,6 +349,7 @@ function OnLoad()
   Config.prConfig:addParam("qqq", "--------------------------------------------------------", SCRIPT_PARAM_INFO,"")
   Config.prConfig:addParam("hitchance", "Accuracy", SCRIPT_PARAM_SLICE, 2, 0, 3, 0)
   Config.prConfig:addParam("qqq", "--------------------------------------------------------", SCRIPT_PARAM_INFO,"")
+  Config.prConfig:addParam("qqq", "RELOAD AFTER CHANGING PREDICTIONS", SCRIPT_PARAM_INFO,"")
   local predToUse = {"", "", ""}
   if FileExist(LIB_PATH.."VPrediction.lua") then predToUse[1] = "VPrediction" end
   if VIP_USER then
