@@ -363,7 +363,7 @@ function OnLoad()
 
   Config:addSubMenu("Supported skills", "skConfig")
   for i, spell in pairs(data) do
-    Config.skConfig:addParam(str[i], ""..i, ConfigType, false, string.byte(str[i]))
+    Config.skConfig:addParam(str[i], "", ConfigType, false, string.byte(str[i]))
     predictions[str[i]] = {spell.range, spell.speed, spell.delay, spell.width, i}
     toAim[i] = true
   end
