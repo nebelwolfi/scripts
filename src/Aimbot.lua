@@ -6,9 +6,8 @@
    / /\ \   | | | '_ ` _ \  | '_ \   / _ \  | __|
   / ____ \  | | | | | | | | | |_) | | (_) | | |_ 
  /_/    \_\ |_| |_| |_| |_| |_.__/   \___/   \__|
+                                          
                                                  
-                                                  
-
 ]]--
 
 if not VIP_USER then return end -- VIP only since we use packets everywhere
@@ -285,8 +284,8 @@ _G.Champs = {
 }
 --[[ Skillshot list end ]]--
 
---[[ Auto updater start and Encryption start ]]--
-local version = 0.31
+--[[ Auto updater start ]]--
+local version = 0.32
 local AUTO_UPDATE = true
 local UPDATE_HOST = "raw.github.com"
 local UPDATE_PATH = "/nebelwolfi/scripts/master/Aimbot.lua".."?rand="..math.random(1,10000)
@@ -312,7 +311,7 @@ if AUTO_UPDATE then
 end
 --[[ Auto updater end ]]--
 
---[[ Libraries start ]]--
+--[[ Libraries start and Encryption start ]]--
 if FileExist(LIB_PATH .. "/VPrediction.lua") then
   require("VPrediction")
   VP = VPrediction()
@@ -326,7 +325,6 @@ if VIP_USER and FileExist(LIB_PATH.."DivinePred.lua") and FileExist(LIB_PATH.."D
   DP = DivinePred() 
 end
 --[[ Libraries end ]]--
-
 
 if not Champs[myHero.charName] then return end -- not supported :(
 HookPackets() -- Credits to iCreative
@@ -343,7 +341,7 @@ local toAim = {false, false, false, false}
 
 function OnLoad()
 
-  Config = scriptConfig("Aimbot v"..version, "Aimbot v"..version)
+  Config = scriptConfig("Aimbot", "Aimbot")
   
   
   Config:addSubMenu("[Prediction]: Settings", "prConfig")
