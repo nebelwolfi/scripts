@@ -12,7 +12,6 @@
 ]]--
 
 if not VIP_USER then return end -- VIP only since we use packets everywhere
-local version = 0.31
 
 --[[ Skillshot list start ]]--
 _G.Champs = {
@@ -286,7 +285,8 @@ _G.Champs = {
 }
 --[[ Skillshot list end ]]--
 
---[[ Auto updater start and Encryption start ]]--
+--[[ Auto updater start ]]--
+local version = 0.31
 local AUTO_UPDATE = true
 local UPDATE_HOST = "raw.github.com"
 local UPDATE_PATH = "/nebelwolfi/scripts/master/Aimbot.lua".."?rand="..math.random(1,10000)
@@ -327,7 +327,7 @@ if VIP_USER and FileExist(LIB_PATH.."DivinePred.lua") and FileExist(LIB_PATH.."D
 end
 --[[ Libraries end ]]--
 
-
+--[[ Encryption start ]]--
 if not Champs[myHero.charName] then return end -- not supported :(
 HookPackets() -- Credits to iCreative
 local data = Champs[myHero.charName]
