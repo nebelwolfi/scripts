@@ -16,247 +16,273 @@ if not VIP_USER then return end -- VIP only since we use packets everywhere
 --[[ Skillshot list start ]]--
 _G.Champs = {
     ["Aatrox"] = {
-        [_Q] = { speed = 450, delay = 0.27, range = 650, minionCollisionWidth = 280},
-        [_E] = { speed = 1200, delay = 0.27, range = 1000, minionCollisionWidth = 80}
+        [_Q] = { speed = 450, delay = 0.25, range = 650, width = 145, collision = false, aoe = true, type = "circular"},
+        [_E] = { speed = 1200, delay = 0.25, range = 1075, width = 75, collision = false, aoe = false, type = "linear"}
     },
         ["Ahri"] = {
-        [_Q] = { speed = 1670, delay = 0.24, range = 895, minionCollisionWidth = 50},
-        [_E] = { speed = 1550, delay = 0.24, range = 920, minionCollisionWidth = 80}
+        [_Q] = { speed = 2500, delay = 0.25, range = 900, width = 100, collision = false, aoe = false, type = "linear"},
+        [_E] = { speed = 1000, delay = 0.25, range = 1000, width = 60, collision = true, aoe = false, type = "linear"}
     },
         ["Amumu"] = {
-        [_Q] = { speed = 2000, delay = 0.250, range = 1100, minionCollisionWidth = 80}
+        [_Q] = { speed = 2000, delay = 0.250, range = 1100, width = 80, collision = true, aoe = false, type = "linear"}
     },
         ["Anivia"] = {
-        [_Q] = { speed = 860.05, delay = 0.250, range = 1100, minionCollisionWidth = 110},
-        [_R] = { speed = math.huge, delay = 0.100, range = 615, minionCollisionWidth = 350}
+        [_Q] = { speed = 850, delay = 0.250, range = 1100, width = 110, collision = false, aoe = false, type = "linear"},
+        [_R] = { speed = math.huge, delay = 0.100, range = 615, width = 350, collision = false, aoe = true, type = "circular"}
     },
         ["Annie"] = {
-        [_W] = { speed = math.huge, delay = 0.25, range = 625, minionCollisionWidth = 0},
-        [_R] = { speed = math.huge, delay = 0.2, range = 600, minionCollisionWidth = 0}
+        [_W] = { speed = math.huge, delay = 0.25, range = 625, width = 0, collision = false, aoe = true, type = "cone"},
+        [_R] = { speed = math.huge, delay = 0.1, range = 600, width = 300, collision = false, aoe = true, type = "circular"}
     },
         ["Ashe"] = {
-        [_W] = { speed = 2000, delay = 0.120, range = 1200, minionCollisionWidth = 85},
-        [_R] = { speed = 1600, delay = 0.5, range = 1200, minionCollisionWidth = 0}
+        [_W] = { speed = 2000, delay = 0.120, range = 1200, width = 85, collision = true, aoe = false, type = "cone"},
+        [_R] = { speed = 1600, delay = 0.25, range = 25000, width = 120, collision = false, aoe = false, type = "linear"}
     },
         ["Blitzcrank"] = {
-        [_Q] = { speed = 1800, delay = 0.250, range = 1050, minionCollisionWidth =  90}
+        [_Q] = { speed = 1800, delay = 0.250, range = 900, width = 70, collision = true, aoe = false, type = "linear"}
     },
         ["Brand"] = {
-        [_Q] = { speed = 1600, delay = 0.625, range = 1100, minionCollisionWidth = 90},
-        [_W] = { speed = 900, delay = 0.25, range = 1100, minionCollisionWidth = 0},
+        [_Q] = { speed = 1600, delay = 0.625, range = 1100, width = 90, collision = false, aoe = false, type = "linear"},
+        [_W] = { speed = 900, delay = 0.25, range = 1100, width = 0, collision = false, aoe = false, type = "linear"}
     },
         ["Braum"] = {
-        [_Q] = { speed = 1600, delay = 225, range = 1000, minionCollisionWidth = 100},
-        [_R] = { speed = 1250, delay = 500, range = 1250, minionCollisionWidth = 0},
+        [_Q] = { speed = 1600, delay = 225, range = 1000, width = 100, collision = false, aoe = false, type = "linear"},
+        [_R] = { speed = 1250, delay = 500, range = 1250, width = 0, collision = false, aoe = false, type = "linear"}
     },    
         ["Caitlyn"] = {
-        [_Q] = { speed = 2200, delay = 0.625, range = 1300, minionCollisionWidth = 0},
-        [_E] = { speed = 2000, delay = 0.400, range = 1000, minionCollisionWidth = 80},
+        [_Q] = { speed = 2200, delay = 0.625, range = 1300, width = 0, collision = false, aoe = false, type = "linear"},
+        [_E] = { speed = 2000, delay = 0.400, range = 1000, width = 80, collision = false, aoe = false, type = "linear"}
     },
         ["Cassiopeia"] = {
-        [_Q] = { speed = math.huge, delay = 0.535, range = 850, minionCollisionWidth = 0},
-        [_W] = { speed = math.huge, delay = 0.350, range = 850, minionCollisionWidth = 80},
-        [_R] = { speed = math.huge, delay = 0.535, range = 850, minionCollisionWidth = 350}
+        [_Q] = { speed = math.huge, delay = 0.535, range = 850, width = 0, collision = false, aoe = false, type = "linear"},
+        [_W] = { speed = math.huge, delay = 0.350, range = 850, width = 80, collision = false, aoe = false, type = "linear"},
+        [_R] = { speed = math.huge, delay = 0.535, range = 850, width = 350, collision = false, aoe = false, type = "linear"}
     },
         ["Chogath"] = {
-        [_Q] = { speed = 950, delay = 0, range = 950, minionCollisionWidth = 0},
-        [_W] = { speed = math.huge, delay = 0.25, range = 700, minionCollisionWidth = 0},
+        [_Q] = { speed = 950, delay = 0, range = 950, width = 0, collision = false, aoe = false, type = "linear"},
+        [_W] = { speed = math.huge, delay = 0.25, range = 700, width = 0, collision = false, aoe = false, type = "linear"},
         },
         ["Corki"] = {
-        [_Q] = { speed = 1500, delay = 0.350, range = 840, minionCollisionWidth = 0},
-        [_R] = { speed = 2000, delay = 0.200, range = 1225, minionCollisionWidth = 60},
+        [_Q] = { speed = 1500, delay = 0.350, range = 840, width = 0, collision = false, aoe = false, type = "linear"},
+        [_R] = { speed = 2000, delay = 0.200, range = 1225, width = 60, collision = false, aoe = false, type = "linear"},
     },
         ["Darius"] = {
-        [_E] = { speed = 1500, delay = 0.550, range = 530, minionCollisionWidth = 0}
+        [_E] = { speed = 1500, delay = 0.550, range = 530, width = 0, collision = false, aoe = true, type = "cone"}
     },
         ["Diana"] = {
-        [_Q] = { speed = 2000, delay = 0.250, range = 830, minionCollisionWidth = 0}
+        [_Q] = { speed = 2000, delay = 0.250, range = 830, width = 0, collision = false, aoe = false, type = "linear"}
     },
         ["DrMundo"] = {
-        [_Q] = { speed = 2000, delay = 0.250, range = 1050, minionCollisionWidth = 80}
+        [_Q] = { speed = 2000, delay = 0.250, range = 1050, width = 75, collision = true, aoe = false, type = "linear"}
     },
         ["Draven"] = {
-        [_E] = { speed = 1400, delay = 0.250, range = 1100, minionCollisionWidth = 0},
-        [_R] = { speed = 2000, delay = 0.5, range = 2500, minionCollisionWidth = 0}
+        [_E] = { speed = 1400, delay = 0.250, range = 1100, width = 130, collision = false, aoe = false, type = "linear"},
+        [_R] = { speed = 2000, delay = 0.5, range = 25000, width = 160, collision = false, aoe = false, type = "linear"}
     },
         ["Elise"] = {
-        [_E] = { speed = 1450, delay = 0.250, range = 975, minionCollisionWidth = 80}
+        [_E] = { speed = 1450, delay = 0.250, range = 975, width = 70, collision = true, aoe = false, type = "linear"}
     },
         ["Ezreal"] = {
-        [_Q] = { speed = 2000, delay = 0.251, range = 1200, minionCollisionWidth = 80},
-        [_W] = { speed = 1600, delay = 0.25, range = 1050, minionCollisionWidth = 0},
-        [_R] = { speed = 2000, delay = 1, range = 20000, minionCollisionWidth = 150}
+        [_Q] = { speed = 2000, delay = 0.25, range = 1200, width = 80, collision = true, aoe = false, type = "linear"},
+        [_W] = { speed = 1500, delay = 0.25, range = 1050, width = 80, collision = false, aoe = false, type = "linear"},
+        [_R] = { speed = 2000, delay = 1, range = 20000, width = 160, collision = false, aoe = false, type = "linear"}
     },
         ["Fizz"] = {
-        [_R] = { speed = 1350, delay = 0.250, range = 1150, minionCollisionWidth = 0}
+        [_R] = { speed = 1350, delay = 0.250, range = 1275, width = 80, collision = false, aoe = false, type = "linear"}
     },
         ["Galio"] = {
-        [_Q] = { speed = 850, delay = 0.25, range = 940, minionCollisionWidth = 0},
-        --[_E] = { speed = 2000, delay = 0.400, range = 1180, minionCollisionWidth = 0},
+        [_Q] = { speed = 1300, delay = 0.25, range = 900, width = 175, collision = false, aoe = true, type = "circular"},
+        [_E] = { speed = 2000, delay = 0.400, range = 1000, width = 40, collision = false, aoe = false, type = "linear"}
     },
         ["Gragas"] = {
-        [_Q] = { speed = 1000, delay = 0.250, range = 1100, minionCollisionWidth = 0}
+        [_Q] = { speed = 1000, delay = 0.250, range = 1100, width = 180, collision = false, aoe = true, type = "circular"},
+        [_R] = { speed = 1000, delay = 0.250, range = 1050, width = 400, collision = false, aoe = true, type = "circular"}
     },
         ["Graves"] = {
-        [_Q] = { speed = 1950, delay = 0.265, range = 950, minionCollisionWidth = 85},
-        [_W] = { speed = 1650, delay = 0.300, range = 950, minionCollisionWidth = 0},
-        [_R] = { speed = 2100, delay = 0.219, range = 1000, minionCollisionWidth = 30}
+        [_Q] = { speed = 1950, delay = 0.265, range = 750, width = 85, collision = false, aoe = false, type = "cone"},
+        [_W] = { speed = 1650, delay = 0.300, range = 700, width = 250, collision = false, aoe = true, type = "circular"},
+        [_R] = { speed = 2100, delay = 0.219, range = 1000, width = 30, collision = false, aoe = false, type = "linear"}
     },
         ["Heimerdinger"] = {
-                [_W] = { speed = 1200, delay = 0.200, range = 1100, minionCollisionWidth = 70},
-                [_E] = { speed = 1000, delay = 0.1, range = 925, minionCollisionWidth = 0},
-        },
+        [_W] = { speed = 900, delay = 0.500, range = 1325, width = 100, collision = true, aoe = false, type = "linear"},
+        [_E] = { speed = 2500, delay = 0.250, range = 970, width = 180, collision = false, aoe = true, type = "circular"}
+    },
         ["Irelia"] = {
-        [_R] = { speed = 1700, delay = 0.250, range = 1000, minionCollisionWidth = 0}
+        [_R] = { speed = 1700, delay = 0.250, range = 1200, width = 10, collision = false, aoe = false, type = "linear"}
     },
         ["JarvanIV"] = {
-                [_Q] = { speed = 1400, delay = 0.2, range = 800, minionCollisionWidth = 0},
-                [_E] = { speed = 200, delay = 0.2, range = 850, minionCollisionWidth = 0},
-        },
+        [_Q] = { speed = 1400, delay = 0.2, range = 770, width = 0, collision = false, aoe = false, type = "linear"},
+        [_E] = { speed = 200, delay = 0.2, range = 850, width = 0, collision = false, aoe = false, type = "linear"}
+    },
         ["Jinx"] = {
-                [_W] = { speed = 3300, delay = 0.600, range = 1500, minionCollisionWidth = 70},
-                [_E] = { speed = 887, delay = 0.500, range = 950, minionCollisionWidth = 0},
-                [_R] = { speed = 2500, delay = 0.600, range = 2000 , minionCollisionWidth = 0}
-        },
+        [_W] = { speed = 3300, delay = 0.600, range = 1450, width = 70, collision = false, aoe = false, type = "linear"},
+        [_E] = { speed = 887, delay = 0.500, range = 830, width = 0, collision = false, aoe = true, type = "circular"},
+        [_R] = { speed = 1700, delay = 0.600, range = 20000, width = 120, collision = false, aoe = true, type = "circular"}
+    },
         ["Karma"] = {
-        [_Q] = { speed = 1700, delay = 0.250, range = 1050, minionCollisionWidth = 80}
+        [_Q] = { speed = 1700, delay = 0.250, range = 1050, width = 70, collision = true, aoe = false, type = "linear"}
     },
         ["Karthus"] = {
-        [_Q] = { speed = 1750, delay = 0.25, range = 875, minionCollisionWidth = 0},
+        [_Q] = { speed = 1750, delay = 0.25, range = 875, width = 140, collision = false, aoe = true, type = "circular"}
     },
         ["Kennen"] = {
-        [_Q] = { speed = 1700, delay = 0.180, range = 1050, minionCollisionWidth = 70}
+        [_Q] = { speed = 1700, delay = 0.180, range = 1050, width = 70, collision = true, aoe = false, type = "linear"}
     },
         ["Khazix"] = {
-        [_W] = { speed = 828.5, delay = 0.225, range = 1000, minionCollisionWidth = 100}
+        [_W] = { speed = 1700, delay = 0.25, range = 1025, width = 70, collision = true, aoe = false, type = "linear"}
     },
         ["KogMaw"] = {
-        [_R] = { speed = 1050, delay = 0.250, range = 2200, minionCollisionWidth = 0}
+        [_Q] = { speed = 1050, delay = 0.250, range = 1000, width = 10, collision = true, aoe = false, type = "linear"},
+        [_E] = { speed = 500, delay = 0.250, range = 1000, width = 180, collision = false, aoe = false, type = "linear"},
+        [_R] = { speed = 1050, delay = 0.250, range = 2200, width = 225, collision = false, aoe = true, type = "circular"}
     },
         ["Leblanc"] = {
-        [_E] = { speed = 1600, delay = 0.250, range = 960, minionCollisionWidth = 0},
-        [_R] = { speed = 1600, delay = 0.250, range = 960, minionCollisionWidth = 0},
+        [_E] = { speed = 1600, delay = 0.250, range = 960, width = 70, collision = true, aoe = false, type = "linear"}
     },
         ["LeeSin"] = {
-        [_Q] = { speed = 1800, delay = 0.250, range = 1100, minionCollisionWidth = 100}
+        [_Q] = { speed = 1800, delay = 0.250, range = 1100, width = 100, collision = true, aoe = false, type = "linear"}
     },
         ["Leona"] = {
-        [_E] = { speed = 2000, delay = 0.250, range = 900, minionCollisionWidth = 0},
-        [_R] = { speed = 2000, delay = 0.250, range = 1200, minionCollisionWidth = 0},
+        [_E] = { speed = 2000, delay = 0.250, range = 950, width = 110, collision = false, aoe = false, type = "linear"},
+        [_R] = { speed = 1500, delay = 0.250, range = 1200, width = 300, collision = false, aoe = true, type = "circular"}
     },
         ["Lissandra"] = {
-        [_Q] = { speed = 1800, delay = 0.250, range = 725, minionCollisionWidth = 00}
+        [_Q] = { speed = 1800, delay = 0.250, range = 725, width = 20, collision = true, aoe = false, type = "linear"}
     },
         ["Lucian"] = {
-        [_W] = { speed = 1470, delay = 0.288, range = 1000, minionCollisionWidth = 25}
+        [_W] = { speed = 1600, delay = 0.300, range = 1000, width = 80, collision = true, aoe = false, type = "linear"}
     },
         ["Lulu"] = {
-        [_Q] = { speed = 1530, delay = 0.250, range = 945, minionCollisionWidth = 80}
+        [_Q] = { speed = 1450, delay = 0.250, range = 1000, width = 50, collision = false, aoe = false, type = "linear"}
     },
         ["Lux"] = {
-        [_Q] = { speed = 1200, delay = 0.245, range = 1300, minionCollisionWidth = 50},
-        [_E] = { speed = 1400, delay = 0.245, range = 1100, minionCollisionWidth = 0},
-        [_R] = { speed = math.huge, delay = 0.245, range = 3500, minionCollisionWidth = 0}
+        [_Q] = { speed = 1200, delay = 0.245, range = 1300, width = 50, collision = true, aoe = false, type = "linear"},
+        [_E] = { speed = 1400, delay = 0.245, range = 1100, width = 0, collision = false, aoe = true, type = "circular"},
+        [_R] = { speed = math.huge, delay = 0.245, range = 3500, width = 0, collision = false, aoe = false, type = "linear"},
+    },
+        ["Malphite"] = {
+        [_R] = { speed = 550, delay = 0.0, range = 1000, width = 300, collision = false, aoe = true, type = "circular"}
     },
         ["Malzahar"] = {
-        [_Q] = { speed = 1170, delay = 0.600, range = 900, minionCollisionWidth = 50}
+        [_Q] = { speed = 1170, delay = 0.600, range = 900, width = 50, collision = false, aoe = false, type = "linear"},
+        [_W] = { speed = math.huge, delay = 0.125, range = 800, width = 250, collision = false, aoe = true, type = "circular"}
     },
         ["Mordekaiser"] = {
-        [_E] = { speed = math.huge, delay = 0.25, range = 700, minionCollisionWidth = 0},
-        },
+        [_E] = { speed = math.huge, delay = 0.25, range = 700, width = 0, collision = false, aoe = true, type = "cone"},
+    },
         ["Morgana"] = {
-        [_Q] = { speed = 1200, delay = 0.250, range = 1300, minionCollisionWidth = 80}
+        [_Q] = { speed = 1200, delay = 0.250, range = 1300, width = 80, collision = true, aoe = false, type = "linear"}
     },
         ["Nami"] = {
-        [_Q] = { speed = math.huge, delay = 0.8, range = 850, minionCollisionWidth = 0}
+        [_Q] = { speed = math.huge, delay = 0.8, range = 850, width = 0, collision = false, aoe = true, type = "circular"}
     },
         ["Nautilus"] = {
-        [_Q] = { speed = 2000, delay = 0.250, range = 1080, minionCollisionWidth = 100}
+        [_Q] = { speed = 2000, delay = 0.250, range = 1080, width = 80, collision = true, aoe = false, type = "linear"}
     },
         ["Nidalee"] = {
-        [_Q] = { speed = 1300, delay = 0.125, range = 1500, minionCollisionWidth = 60},
+        [_Q] = { speed = 1300, delay = 0.125, range = 1500, width = 60, collision = true, aoe = false, type = "linear"},
     },
         ["Nocturne"] = {
-        [_Q] = { speed = 1600, delay = 0.250, range = 1200, minionCollisionWidth = 0}
+        [_Q] = { speed = 1400, delay = 0.250, range = 1125, width = 60, collision = false, aoe = false, type = "linear"}
     },
         ["Olaf"] = {
-        [_Q] = { speed = 1600, delay = 0.25, range = 1000, minionCollisionWidth = 0}
+        [_Q] = { speed = 1600, delay = 0.25, range = 1000, width = 90, collision = false, aoe = false, type = "linear"}
     },
         ["Quinn"] = {
-        [_Q] = { speed = 1600, delay = 0.25, range = 1050, minionCollisionWidth = 100}
+        [_Q] = { speed = 1550, delay = 0.25, range = 1050, width = 80, collision = true, aoe = false, type = "linear"}
+    },
+        ["Rengar"] = {
+        [_E] = { speed = 1500, delay = 0.50, range = 1000, width = 80, collision = false, aoe = false, type = "linear"}
+    },
+        ["Riven"] = {
+        [_R] = { speed = 2200, delay = 0.5, range = 1100, width = 200, collision = false, aoe = false, type = "cone"}
     },
         ["Rumble"] = {
-        [_E] = { speed = 2000, delay = 0.250, range = 950, minionCollisionWidth = 80}
+        [_E] = { speed = 2000, delay = 0.250, range = 950, width = 80, collision = false, aoe = false, type = "linear"}
     },
         ["Sejuani"] = {
-        [_R] = { speed = 1300, delay = 0.200, range = 1175, minionCollisionWidth = 0}
+        [_R] = { speed = 1600, delay = 0.250, range = 1200, width = 110, collision = false, aoe = false, type = "linear"}
+    },
+        ["Shyvana"] = {
+        [_E] = { speed = 1500, delay = 0.250, range = 925, width = 60, collision = false, aoe = false, type = "linear"}
     },
         ["Sivir"] = {
-        [_Q] = { speed = 1330, delay = 0.250, range = 1075, minionCollisionWidth = 0}
+        [_Q] = { speed = 1330, delay = 0.250, range = 1075, width = 0, collision = false, aoe = false, type = "linear"}
     },
         ["Skarner"] = {
-        [_E] = { speed = 1200, delay = 0.250, range = 760, minionCollisionWidth = 0}
+        [_E] = { speed = 1200, delay = 0.600, range = 350, width = 60, collision = false, aoe = false, type = "linear"}
+    },
+        ["Sona"] = {
+        [_R] = { speed = 2400, delay = 0.240, range = 1000, width = 160, collision = true, aoe = false, type = "linear"}
     },
         ["Swain"] = {
-        [_Q] = { speed = math.huge, delay = 0.500, range = 900, minionCollisionWidth = 0}
+        [_W] = { speed = math.huge, delay = 0.850, range = 900, width = 125, collision = false, aoe = true, type = "circular"}
     },
         ["Syndra"] = {
-        [_Q] = { speed = math.huge, delay = 0.400, range = 800, minionCollisionWidth = 0}
+        [_Q] = { speed = math.huge, delay = 0.600, range = 790, width = 125, collision = false, aoe = true, type = "circular"},
+        [_E] = { speed = 2500, delay = 0.250, range = 700, width = 45, collision = false, aoe = true, type = "cone"}
     },
         ["Thresh"] = {
-        [_Q] = { speed = 1900, delay = 0.500, range = 1075, minionCollisionWidth = 80}
+        [_Q] = { speed = 1900, delay = 0.500, range = 1100, width = 65, collision = true, aoe = false, type = "linear"}
     },
         ["Twitch"] = {
-        [_W] = {speed = 1750, delay = 0.283, range = 900, minionCollisionWidth = 0}
+        [_W] = {speed = 1750, delay = 0.250, range = 950, width = 275, collision = false, aoe = true, type = "circular"}
     },
         ["TwistedFate"] = {
-        [_Q] = { speed = 1450, delay = 0.200, range = 1450, minionCollisionWidth = 0}
+        [_Q] = { speed = 1500, delay = 0.250, range = 1200, width = 80, collision = false, aoe = false, type = "cone"}
     },
         ["Urgot"] = {
-        [_Q] = { speed = 1600, delay = 0.175, range = 1000, minionCollisionWidth = 100},
-        [_E] = { speed = 1750, delay = 0.25, range = 900, minionCollisionWidth = 0}
+        [_Q] = { speed = 1600, delay = 0.175, range = 1400, width = 80, collision = true, aoe = false, type = "linear"},
+        [_E] = { speed = 1600, delay = 0.25, range = 920, width = 100, collision = false, aoe = true, type = "circular"}
     },
         ["Varus"] = {
-       --[_Q] = { speed = 1850, delay = 0.1, range = 1475, minionCollisionWidth = 0},
-        [_E] = { speed = 1500, delay = 0.245, range = 925, minionCollisionWidth = 0},
-        [_R] = { speed = 1950, delay = 0.5, range = 1075, minionCollisionWidth = 0}
+       --[_Q] = { speed = 1850, delay = 0.1, range = 1475, width = 0},
+        [_E] = { speed = 1500, delay = 0.25, range = 925, width = 240, collision = false, aoe = true, type = "circular"},
+        [_R] = { speed = 1950, delay = 0.5, range = 800, width = 100, collision = false, aoe = false, type = "linear"}
     },
         ["Veigar"] = {
-        [_W] = { speed = 900, delay = 0.25, range = 900, minionCollisionWidth = 0}
+        [_Q] = { speed = 1200, delay = 0.25, range = 875, width = 75, collision = true, aoe = false, type = "linear"},
+        [_W] = { speed = 900, delay = 1.25, range = 900, width = 110, collision = false, aoe = true, type = "circular"}
     },
         ["Viktor"] = {
-                [_W] = { speed = math.huge, delay = 0.25, range = 625, minionCollisionWidth = 0},
-                [_E] = { speed = 1200, delay = 0.25, range = 1225, minionCollisionWidth = 0},
-                [_R] = { speed = 1000, delay = 0.25, range = 700, minionCollisionWidth = 0},
+        [_W] = { speed = 750, delay = 0.6, range = 700, width = 125, collision = false, aoe = true, type = "circular"},
+        [_E] = { speed = 1200, delay = 0.25, range = 1200, width = 0, collision = false, aoe = false, type = "linear"},
+        [_R] = { speed = 1000, delay = 0.25, range = 700, width = 0, collision = false, aoe = true, type = "circular"},
     },
         ["Velkoz"] = {
-                [_Q] = { speed = 1300, delay = 0.066, range = 1100, minionCollisionWidth = 50},
-                [_W] = { speed = 1700, delay = 0.064, range = 1050, minionCollisionWidth = 0},
-                [_E] = { speed = 1500, delay = 0.333, range = 1100, minionCollisionWidth = 0},
+        [_Q] = { speed = 1300, delay = 0.066, range = 1050, width = 50, collision = true, aoe = false, type = "linear"},
+        [_W] = { speed = 1700, delay = 0.064, range = 1050, width = 80, collision = false, aoe = false, type = "linear"},
+        [_E] = { speed = 1500, delay = 0.333, range = 850, width = 120, collision = false, aoe = true, type = "circular"},
+        [_E] = { speed = math.huge, delay = 0.333, range = 1550, width = 50, collision = false, aoe = false, type = "linear"}
     },    
         ["Xerath"] = {
-        [_Q] = { speed = 3000, delay = 0.6, range = 1100, minionCollisionWidth = 0},
-        [_R] = { speed = 2000, delay = 0.25, range = 1100, minionCollisionWidth = 0}
+        [_W] = { speed = math.huge, delay = 0.5, range = 1100, width = 325, collision = false, aoe = true, type = "circular"},
+        [_E] = { speed = 1600, delay = 0.25, range = 1050, width = 125, collision = true, aoe = false, type = "linear"},
+        [_R] = { speed = 300, delay = 0.25, range = 5600, width = 265, collision = false, aoe = true, type = "circular"}
     },
         ["Yasuo"] = {
-        [_Q] =  { speed = math.huge, delay = 250, range = 475, minionCollisionWidth = 0},
+        [_Q] =  { speed = math.huge, delay = 250, range = 475, width = 40, collision = false, aoe = false, type = "linear"},
+    },
+        ["Zac"] = {
+        [_Q] = { speed = 2500, delay = 0.110, range = 500, width = 110, collision = false, aoe = false, type = "linear"},
     },
         ["Zed"] = {
-        [_Q] = { speed = 1700, delay = 0.2, range = 925, minionCollisionWidth = 0},
+        [_Q] = { speed = 1700, delay = 0.25, range = 925, width = 50, collision = false, aoe = false, type = "linear"},
     },
         ["Ziggs"] = {
-        [_Q] = { speed = 1722, delay = 0.218, range = 850, minionCollisionWidth = 0},
-                [_W] = { speed = 1727, delay = 0.249, range = 1000, minionCollisionWidth = 0},
-                [_E] = { speed = 2694, delay = 0.125, range = 900, minionCollisionWidth = 0},
-                [_R] = { speed = 1856, delay = 0.1014, range = 2500, minionCollisionWidth = 0},
+        [_Q] = { speed = 1750, delay = 0.5, range = 1400, width = 80, collision = true, aoe = false, type = "linear"},
+        [_W] = { speed = 1800, delay = 0.25, range = 970, width = 275, collision = false, aoe = true, type = "circular"},
+        [_E] = { speed = 2700, delay = 0.8, range = 900, width = 235, collision = false, aoe = true, type = "circular"},
+        [_R] = { speed = 1750, delay = 0.1014, range = 5300, width = 525, collision = false, aoe = true, type = "circular"},
+    },
+        ["Zilean"] = {
+        [_Q] = { speed = math.huge, delay = 0.5, range = 900, width = 150, collision = false, aoe = true, type = "circular"},
     },
         ["Zyra"] = {
-                 [_Q] = { speed = math.huge, delay = 0.7, range = 800, minionCollisionWidth = 0},
-         [_E] = { speed = 1150, delay = 0.16, range = 1100, minionCollisionWidth = 0}
+        [_Q] = { speed = math.huge, delay = 0.7, range = 800, width = 85, collision = false, aoe = true, type = "circular"},
+        [_E] = { speed = 1150, delay = 0.25, range = 1100, width = 70, collision = false, aoe = false, type = "linear"}
     }
 }
 --[[ Skillshot list end ]]--
 
-_G.ScriptCode = Base64Decode("fL/Z0sllZnV7dX9legZxe5FvZXF3cXdlYXNkco71ZXF3cndlYbZk8XfmpXF3MvdlYXQlcXerZrJ3uLgmY/TlcncmJnJ3zvjlYkmk8nhrZrN3srhnYYmlcnmm5nN38XhlYjNl8Xi7JvJ5FnhlYc5kcXd8JX33NzinYXNmcXimZ3R3TvjlYk5lcXd85Xv3d/moYbkmtHflZ/F6znllYpDmcXd9ZbV7iHdm4XkmtHelZ/F6jvllYo6mcXd8ZXH3dXllYXtk8/1rp7R3jHllYYpkePdrJ7R3sXllYZDmcXirp7R3irdnZYpkdPdlZ3F6srlpYfmmtHe75/N7jrllYnNmcXqm53V3jrllYnkmtXfKp3F38nlqYZCm8Xh8pXP3cXllZLSmdnfrp7R3MvlqYckm83uCp3F4iPdl4XNmcXqmJ3Z3jrllYjllt3drp7d3svlrYYmmc3tC5nF4THhlYYqkcvcrJrd3cnlsYVClcXgrZrh3TvjlYXsk8gUr5rh3dzmsYXpmuXssZvN6TLhlYYpkcfeEZfF3N7itYVCl8Xcr5rh3dzmsYXpmuXssZvN6dXllY7nnuXfrKLl3MnpuYXmouneoafF3zvrlY/5ncncr6Lp3+zouaDlnu3fvqDt+N/qvYf0nO34raLx3+7owaDnnvHdwaXF3vHtlY/ZocXcoaXF3dHxlYbZpcXfJqXF5/HtlYzZocXdoanF3tHxlYfZpcXcJqXF5VvtlYXsk9Q5KKXF3eTdp+VhocndtJfUPVrtmYXskdRBK6XJ3eTfp+lgocndtJXURVntnYXsk9RGEZfF3p3dlYXaXpKqYmKRKsHt0YXNk49jck9jg5d/aw6HH4ORlaZd3cXeUz9jG1uPc1N3d2qbYxOXN4evYlN7Y5OvK06Kl2uTH1OWl3ezGYXdrcXdlpOPY39uiYXdpcXdl0tLr2XdpaHNkcenG09Xm3ndoYXNkcXdlVbB6cXdlYXPsNLdpcXF3ccqos7y0xda1psW/cXtwYXNksuDSx+Drn+PawnNoendlZdnr5efYm6KTcXtyZXF3uNzZuNjGw9zY2t3rcXuPYXNkoOXKx9bj6ObRx9yT5NrXzuHr5KbSwubY1umUptrk0+bZj+nJ4+rO1N93dYVlYXO31unbyuPN1unYyuLScXtqZXF35fDVxnNoendlZeXm3+zSw9jWcXtsZXF33+zSw9jWcXt9ZXF3v9zcgenJ4+rO1N+X0u3Gyt/F0+PKhed3dZdlYXO54dvG2drl2KOF0d/J0urKhdXm357ZgePW1urYhbewcXtxYXNktdzRxuq41OvO0OFkdHdlZXF3cX+lZZBkcXex1NLb1tuF1dvJkePG2dbq5ZfbxuXX2ubThZntcXtnYXNkmndphHF3cbzX0+LWkdvU3N/j4NjJyuHLke3K1+Tg4OWFyuHK4Hdpb3F3cb3Ozdip6eDY2XF7endlYb+ts9a1psW/cXt2YXNkoM2119bb2trZyuLSn+PaxnF7eXdlYeXJ4uzO19Z3dYNlYXO6wenKydra5eDUz3NodHdlZcfHcXtsYXNktN/G0uHqcXtsYXNk3vCtyuPmcXtuYXNk1N/G17/Y3txlZX9kcXet1ODiwdjIzNjY5HdpdHF3ccvG09rJ5crK0dba5ebXYXd2cXdlubLJuLy5wMGpssnEssDMxLxlZHNkcXdl1Qi3dYRlYXOossSmrLbWvrisqrZkdXplZXHWwndpY3NkcchlaXR3cXfEuHNoc3dlZch3dXplYXPDtndpZ3F3cbxlZXZkcXfEt3F7c3dlYcVkdY5lZXHKtMmuscfDwbi3pr7WwMWwpsyowM6zZXV+cXdlsOGw4NjJZXV+cXdlsOG42trQZXWAcXdlsOG739uy2Nh3dYRlYXOz38rK09XH0trQxudkdYNlZXHA5MPKxsfM49zYzXF7gXdlYbrJ5bra2OXm3svG09rJ5XdpcHF3cbqowubYxOfK0d13endlYXtkcXdtZXF3cndqaHNkcb1lpXH4sXdlIXNkcXjmZXENcXhmvrNkcpZl5XF6cXdlZXlkcXfV19rl5XdppHNkcbPL1N/rkdrUzeLWrpmIm6ewqt3Lg7Gg07Wmzt7Z4OufnaLGr7OUy+Dl5bWFndnT3+uFyODj4Omig5aqt72rq7eZr3dpanNkcaWhlNfm3+ujYXNkcXdmZXF3cXdlYXNkcXdlZXF3cXdlYXNkgndlZYJ3cXdlYXdqcXdla3G3cbxl4XPpcXdmSnF3cZSlYXWDcfdlZnF3cXtyYXNktebc093m0turyt/JcXhlZXGIcXdlcnNkcXdla3p3cXdqYXNksndlZfZ38XcmoXNkd/ilZrI4cXe7ofRkjrdlZpB38XdpYXNkdY9lZXHK5trIxubX1+zR0eqX5ufJwufJ1aWFjXF7dndlYZOhr5dlaX93cXe4xuXa1um7yuPq2ubTYXeTcXdljp2X4enK1OaEt7CF2ejg1NyF1eKE3ebGyZHr2dyF1uPI0uvKyZHt1unYyuLSn3dlZXF3dHdlYXNncXtlZXF3cXdlYXNkcXdlZXF3cXdqYXNkcXdmanJ7cn1mYXNkcXdlZXF3cXdlYXNkcXeZZXF3uXdlYXNkfvNlZXF9sbdlovNkcfxl5XHN8fdl4vNkcTxl5XENMXdmfvPkcn9lZfF9cbdlbTOkcfhlZnE4sXhlfrNkc31lpXF+sbhlbfOlcfglZnE4cXllZ7SmcbpmZXGUsXdoZ3OkcX6lpnGD8bhl4vNmcTglZ3F9crplorRncZSlZXR9cbdlaLOlcYPlpnH48XplIjNncX1mqXG4sntl4vRocTgmaXF483tlfrPkdX1lpXF+sbhlbfOlcfjlZ3E4MXllZ3SncbimaHGUsXdoZ3OkcX6lpnGD8bhl4nNpcTilanF98rxlojRpcQJm5XE4cn1lBbTkcZSl5XR9cbdlbTOkcfila3E48X1lfrNkc30lq3G8cXdmfnNlco6lavG9crdlqPQqc8PmJnM9MvdmYrVncbxnZXP6c3dlJ3WrcT6nLHZ9NPdmPnVkctSmZXG9Mvdm7HTkcz7mrHN+M75nqHWsc/6nrXM3c/dmBbTkc7/m5nP/8j9mg/NkcRolXvB9cbdlbTOscfxl5XSUsfdmZ3OkcYPlpnH4cYBlIrNtcX3mrnG6cvdl53Srcf6mrHQ4MoBl/nRkcpSlZXF9cbdlbfOlcfhlb3E4sYFlZ3SocbjmaXH48ntlIvRucXjnaXGUsfdpZ3OkcYMlr3H4cYBlfrPkcj+msAeWcfdlj3NkcXtsZXF3tObTx9zLcXtyZXF35NrXyuPYtObTy9recXtuYXNksuDSx+Drke1lZX5kcXfGydXK5tmyxuHZcXt8ZXF3zMfXxtfN1OvO1N/Uq5e4xufY2uXM2HF7endlYePWtObTy9recXtuYXNk0tvJtdLp0uRlZXZkcXfVyHF7jHdlYcjX1pe1xtTi1uvYgcfTkbrG2OWXxOfKzd/XcXt4ZXF3xLq3qsO40Memt7LE0MazsLmqcXtpZXF34ujWYXedcXdlkp6knqSSjqCRnqSSkp6knqSSjqCRnqSSkp6knqSSjqCRnqSSkp6knqSSjqCRnqSSkp6knqSSjqBkdYllZXHKtMmuscfDwbi3pr7WusWrsHNocndlZXF7e3dlYdvN5drNxt/a1ndpanNkcbjIyObp0treYXd3cXdluLTJuse5wMOlw7iyxMTDurqqYXZkcXdlZXF3sXplYXNkcXdlZXR3cXdlYXNssXtpZXF34enUYXd3cXdltePm1eDI1dzT35e51JHM5NyfYXd2cXdluLTJuse5wMOlw7iyxL3AxMtlZHNkcXdlZWG2dYNlYXO6wenKydra5eDUz3NogndlZcTs4efU0+fJ1ZfY0Nrj3eplZXxkcXfY0LTm393OyHNod3dlZeHY2unYYXdrcXdl2OXp2uXMYXdpcXdlx+rr1ndpZ3NkcenG09jccXtrYXNk5OfKytV3dX1lYXPI1uPG3nF7hndlYeDN3+DU07Tm3ePO1NzT387OyeXfcXhmZXlkcXfGydXLxHdpZXNkcevUzHF7f3dlYbTN3tnU2ZHm36bUx9lkdZBlZXHKtMmuscfDwbi3pr7WwMWwpsy4wL6ssbZ3dXllYXO4cXtxZXF349jTyNjT193YyuV3dY1lYXO20uXMypG71trXxtTX1pe0y9fq1utlZHNkcXdlZdq3dYFlYXPU1unSxsTf4O5lZXhkcXfTxt7ccXtsYXNkxdjXzNbrcXdlYXNscXdlZXF4cXhsYoFlgHh1ZoN4fndlYXNkcXdlZXF3cXdlYXOucXdl0HF3cXdlcAxkcXdrZbF3eLelYY5kcXd8JZX3d3elYXrksXdsJbF3iXemYYrklPdrpbJ3jvflYXxk8XdqZfF3ifemYYpkcfeEZfF3dzemYbhkcXiCZXJ4iLeF4bpls3l9pTN5iDdk4LZl8Xfr5rN3/TinZHhm8XesZ7R5+HmnYzqmtHls6LR5tzqoYfNn8XkCZvJ7t3mlYbpmNXvAp3F3iHdm4blmsXfrJ/F4uPnnZc5mcXd85Xn3tzmoYb+mNXslZ/F4zvnlYs5mcXd8ZXj3t/mpYdDm8XfAZ3F3iHdr4Q5lcXd85Yj3THhlYYpkiPerZ7F3uPklZbomNXt/JfJ7iDd64blmtnflZ3F6NzmoYdDm8Xjsp7R5N3mlYTqmNnzzJ3N8ivfnZYqkhPer57Z38XnlYjomtnpsaLd6zrllY4okgverJ3F5ibcrZYpkgverJ7R3vbkpZTNm8XjC5/F4zHllYYrkgPer57V3zvnlYc5mcXd85X/3DHhlYYrkdvdAZnF3iHdq4blmsXes5zF7uDkpZY0k8nt8JXT3t3mqYfNmcXorJ7R3zvnlYvqmtHkrZ7F3OLkqZgEmc3x+5fN7iLdm4bnmtnflZ/F4ODmqZHpnt3rCp3F5iHdt4Q5lcXd8JXb3THhlYYqkdverZ7F3uPklZbomNXuzZzJ7izfmZYokdPerZ7Z38XllZDkmtHfC5/F4+LmoYzlmsXcspzZ8/zlnZozk83t8pXL3t/mqYfNm8XgsJ7Z6eHqrZNCmcXl85XL3t/mqYfNm8Xgr57d3ODkqZnnnt3dsaLd9zrllY3slN3iH5XF3FDdD4JJk8XeBZXF3dX5lYXOn4OXLzth3dXtlYXPY4N5laXp3cXfV07bT393OzHF7dXdlYePW4HdoZXF3cXdlUbJogXdlZbjc5bra1OfT3svG19jc5XdlZXlkcXfVxtrp5HdpdnNkceTO09rm37rUzd/N5ODU08jg1evNYXZkcXdlZXF3cXtoYXNkx8dlaYV3cXesxuew2uXKqNLq5cfU1NzY2ubTZXV9cXdlxdjQ0vBlaXd3cXfXwuHL1ndpa3F3cerVxtjIcXtsZXF33vCtxuXTcXtrZXF35d/X0OpkdYNlZXG60uW61Ni34dzR0XF7fXdlYbzXvdzKudnp1urNYXducXdlzdrr1N/Gz9bJcXtxZXF3uNzZpdzX5djTyNZ3dYNlYXPW0uXMyuDd1+rK1XNofHdlZbS60urZtOPJ3eNlaXN3cXfdYXdmcXdl33F4cntuYXNk3uba2NbH4OplYnNkcXdlanF3cXdlYn9leHhzZoJ3cXdlYXNkcXdlZXF3cXdlznNkce5lZXF5cXuZYXNk93elZYn3cXd8oXXk97elZTL3cXcC4XNlifflZYh3cvfrITNkDHdlZYi3cfftYTTliLdu5fd3sXd94XNkiLdn5fe3sXcmoXRkDvdlZon38Xd8YXTk9/cmZQx3cXd8oXPk+Xem6Ih3d/frYbNkifdlZYi3c/frobNkMjdmZQ73cXh94fNkiHdm5fd3M3cAYXNkiLdl5fl3svt8IXXk93elZYn3cXd8YXXk97elZTK3c3cC4XNlifflZYg3cffr4TVkDHdlZYh3cfftYbTpkHflZXx3cXdpaHNkccKqvtDMwXdpaHNkcb7K2bzc6ndpY3NkcchlaHF3cXdlYXNkcndpZ3F3cc5lZHNkcXdlZWG2dXllYXOpcXplZXF3cXdloXdmcXdlt3F6cXdlYXNkebdlZXF3dHdlYXNkcolmdnF3cXdlYXNkcXdlZXF3cXfeYXNkBXdlZXJ3dsdlYXOqcTdlwvH3ccBlYXOqsTdlrPE3cdJlYXN7MYjlrDG3cY9lInN7cYjlb/E488MlonPB8Xdm6nF3cc9lo3R78YblfbE5cY6lZPPq8blmALF3cY7lY/Pq8TlmAHF3cY4lYvPwMbllArF3cv5lpHMkcXdlZrJ6cRSl4XTs8brqfPGC8Y8lJHN7sXrl67G6chKlYXN78Xnl67E6chJlYXN7MXjl8TG5cRSlYXTrcbplJXF3cXimZHMBsfdm7fE6947laPN8cTtlfLF68f2lo3T/sXdlfPF58f2lI3T/cXdlfDF48QMlo3MBsXdm7HG6cTdlYXNlsnplArH3cv/lJPd78XrlfbE7cY5lZPPq8btmALF3cY6lY/Pq8TtmAHF3cY7lYvPwMbllArF3cv5lpHMkcXdlZrJ6cRSl4XTs8bruhHH3cYplYXNogXdlZbjc5bra1OfT3svG19jc5XdpaHNkcbrU09fg2HdpZXNkcevUzHF7eHdlYdvJ0tvK13F6cXdlYXOE3rdpaXF3cefU1HNncXdlZXF3rLdpaXNkcbvKyODb1qhlYXZkcXdlZXF3sXplYXNkcXdlZXV9cXdlo9/T1OJlaXZ3cXfYzNzUcXplZXF3cXdVoHRldHdlZXF3ceKlZHNkcXdlxde3dHdlYXNkUeOlaHF3cXdlYXukcXdlZXV3cXdmbXNkcohmd3F3cXdlYXNkcXdlZXF3cXf7YXNkHXdlZXF3dK1lYXNqcbdlbLG3cY/loXN7cXrla3G3cYMloXPqcbhlgvH3cn6lonN88bhlfPF38Xpl4XODcXdmfPGA8XplYXODcXdmfDF/8X1loXNrsbdlfTG4cY5lZPNqcbdlcTG3cf1lonOB8fdmbLG4cY9lo3N78XflaHH3cZZlYXR7sXzlaHF3cZZlYXR78Xvla3G3cX6loXN8sbllfHF68X1loXNwMbdl63G4cZTl4XRrsbhlffG5cY7lYfNncfdlhHF3co5lYvNncXdlhHF3co6lYfNncfdlhHF3cpZl4XNvcXdlaXh3cXfS2rvJ4+ZlaXp3cXfIydTWv9jSynF7eHdlYb/J1srO03F7fndlYbrJ5crVyt3jtdjZwnNodHdlZdDIcXtqYXNk39jSynF7f3dlYbXQ2uXJsuDl3Mi0z9hkdX5lZXHL2enK1NtkdX9lZXHL2enK1Nu1cXtrZXF3ytjY1uJkdX5lZXHQ0ura0MRkcXdlZXJ3cXdlYXNkcXdlZXF3cXdlYXNkcXcUZXF3JndlYXNkc61lZXF8cXdlbXOkcZSlZXJ9sTdlaPOkcZJlZXGOsXnlZ7MkcX7lpXF+Mbdlp3Mlcb4lJXGPsXdlePNk8X2lJXF+8bdlgHNkcn2lJXF+sbhlfHNkcY6lbPF9sTdlaLOlcX7lpnGScXdleHNq8X2lJXF+sbhlaDOlcZJlZXGOMXvlZ7MkcX6lpnF+MbhlaHOmcZJlZXGOsXrlZ7MkcX6lpnF+MbhlaHOmcX4lpXG9cThlqDMkcY+lZXGOcXjlZ7MkcX6lpnF+MbhlaHOmcZZlZXJ9cbllgHNkcpZl5XGAcXdlZXpkcXfa1dXY5dxlZXZkcXfErHF7fHdlYcCxsta5xuPe1utlZXhkcXfZ3uHccXtsYXNk3vCtyuPmcXtvYXNksuzZ1LTY4+neYXducXdlqOPm5OrNwtzWcXt2ZXF3suvZwtbP0LrX1OTq2djO03NoeHdlZeXY497K1XNkcXdlZ3F3cXhyYXNkcXdlZXF3cXdlYXNkcXdlHnF3cTZlYXNncX5/ZXF3N3elYU5kcXd8ZXX3N7elYTrkMXgsJTF4THdlYYokc/crZbJ3crhmYb6lcnevZnH6u7jl5L3lcfuvpvH7u/hl5lDk8XgxJTN4TrdlYopkcvcrZbR3cXhlYbNl8XflZnF4TrdlY5Jk8XdyZXF3dYBlYXO6usfEusS8w3dpaHNkcbrU09fg2HdpanNkcefXqODl1+DMYXdncXdl1dR3dX5lYXO00trQyuV3dX5lYXO30LqmuMV3dX9lYXPX4dzR0brbcXtrYXNk1+nU0sl3dX1lYXPK4+bSvnF7dXdlYefTyXdpaXF3cevUunNodndlZeTc39tlZX1kcXeoxuTrxOfKzd9kcXdlZXJ3cXdlYXNkcXdlZXF3cXdlYXNkcXdmZXF3cndlYXNkcXdlZXF3cXdlYXNk")
-_G.ScriptENV = _ENV
-SSL({212,159,117,78,103,108,106,110,10,169,92,16,15,45,109,89,138,186,116,18,156,217,87,203,47,176,248,191,238,65,230,254,216,32,162,36,62,34,27,35,21,90,41,193,179,101,46,81,104,180,8,165,24,218,82,86,5,71,160,252,188,233,4,197,111,177,9,196,39,157,145,242,98,149,214,245,229,250,93,220,147,158,224,189,222,161,60,227,123,95,128,148,54,239,94,51,67,125,69,221,88,127,79,50,97,173,137,205,175,14,172,99,64,52,198,57,202,102,28,234,83,126,226,143,135,153,58,255,168,140,73,129,77,7,195,131,119,61,236,228,100,178,184,204,2,105,59,185,30,136,55,237,244,240,29,163,107,118,211,141,25,199,66,33,49,12,115,74,166,225,85,121,209,43,219,23,130,80,3,253,142,146,40,232,144,201,38,20,22,6,37,190,164,207,139,150,246,53,170,235,11,132,19,249,70,183,208,31,152,241,243,151,134,63,42,17,72,120,154,223,182,1,76,124,114,68,181,13,133,75,174,210,113,112,26,192,167,44,155,171,56,84,231,91,48,206,96,247,194,213,251,200,215,122,187,254,254,254,254,221,88,125,202,79,101,198,88,57,50,172,172,137,35,21,169,254,254,254,254,97,127,254,221,88,125,202,79,101,79,88,57,97,14,127,172,35,198,57,52,97,14,79,101,69,50,67,52,21,101,28,50,67,57,254,153,188,254,27,9,27,254,57,50,88,14,254,99,52,97,14,57,35,27,39,52,52,172,52,254,97,14,254,245,172,67,221,97,14,79,71,27,101,101,104,21,254,52,88,57,202,52,14,254,88,14,221,169,254,254,254,254,97,127,254,221,88,125,202,79,101,79,88,57,97,14,127,172,35,198,57,52,97,14,79,101,125,83,57,88,21,101,28,50,67,57,254,153,188,254,27,9,27,254,57,50,88,14,254,99,52,97,14,57,35,27,39,52,52,172,52,254,97,14,254,245,172,67,221,97,14,79,71,27,101,101,180,21,254,52,88,57,202,52,14,254,88,14,221,169,254,254,254,254,97,127,254,221,88,125,202,79,101,79,88,57,97,14,127,172,35,198,57,52,97,14,79,101,198,202,125,21,101,28,50,67,57,254,153,188,254,27,9,27,254,57,50,88,14,254,99,52,97,14,57,35,27,39,52,52,172,52,254,97,14,254,245,172,67,221,97,14,79,71,27,101,101,8,21,254,52,88,57,202,52,14,254,88,14,221,169,254,254,254,254,97,127,254,221,88,125,202,79,101,79,88,57,97,14,127,172,35,198,57,52,97,14,79,101,198,202,125,21,101,28,50,67,57,254,153,188,254,27,9,27,254,57,50,88,14,254,99,52,97,14,57,35,27,39,52,52,172,52,254,97,14,254,245,172,67,221,97,14,79,71,27,101,101,165,21,254,52,88,57,202,52,14,254,88,14,221,169,254,254,254,254,97,127,254,221,88,125,202,79,101,79,88,57,97,14,127,172,35,221,88,125,202,79,101,79,88,57,97,14,127,172,21,101,28,50,67,57,254,153,188,254,27,9,27,254,57,50,88,14,254,99,52,97,14,57,35,27,39,52,52,172,52,254,97,14,254,245,172,67,221,97,14,79,71,27,101,101,24,21,254,52,88,57,202,52,14,254,88,14,221,169,254,254,254,254,97,127,254,221,88,125,202,79,101,79,88,57,97,14,127,172,35,221,88,125,202,79,101,198,88,57,50,172,172,137,21,101,28,50,67,57,254,153,188,254,27,9,27,254,57,50,88,14,254,99,52,97,14,57,35,27,39,52,52,172,52,254,97,14,254,245,172,67,221,97,14,79,71,27,101,101,218,21,254,52,88,57,202,52,14,254,88,14,221,169,254,254,254,254,97,127,254,221,88,125,202,79,101,79,88,57,97,14,127,172,35,145,88,57,60,88,125,158,88,198,202,205,57,21,101,28,50,67,57,254,153,188,254,27,9,27,254,57,50,88,14,254,99,52,97,14,57,35,27,39,52,52,172,52,254,97,14,254,245,172,67,221,97,14,79,71,27,101,101,82,21,254,52,88,57,202,52,14,254,88,14,221,169,254,254,254,254,97,127,254,221,88,125,202,79,101,79,88,57,97,14,127,172,35,221,88,125,202,79,101,79,88,57,97,14,127,172,21,101,127,202,14,69,254,153,188,254,221,88,125,202,79,101,79,88,57,97,14,127,172,254,57,50,88,14,254,99,52,97,14,57,35,27,39,52,52,172,52,254,97,14,254,245,172,67,221,97,14,79,71,27,101,101,86,21,254,52,88,57,202,52,14,254,88,14,221,169,254,254,254,254,97,127,254,221,88,125,202,79,101,79,88,57,205,172,69,67,205,35,221,88,125,202,79,101,79,88,57,97,14,127,172,193,104,21,254,57,50,88,14,254,99,52,97,14,57,35,27,39,52,52,172,52,254,97,14,254,245,172,67,221,97,14,79,71,27,101,101,5,21,254,52,88,57,202,52,14,254,88,14,221,169,254,254,254,254,97,127,254,221,88,125,202,79,101,79,88,57,97,14,127,172,35,158,88,67,221,196,60,93,158,196,21,101,28,50,67,57,254,153,188,254,27,9,27,254,57,50,88,14,254,99,52,97,14,57,35,27,39,52,52,172,52,254,97,14,254,245,172,67,221,97,14,79,71,27,101,101,104,81,21,254,52,88,57,202,52,14,254,88,14,221,169,254,254,254,254,97,127,254,99,67,69,137,67,79,88,101,205,172,67,221,88,221,101,221,88,125,202,79,101,79,88,57,97,14,127,172,35,158,88,67,221,196,60,93,158,196,21,101,28,50,67,57,254,153,188,254,27,9,27,254,57,50,88,14,254,99,52,97,14,57,35,27,39,52,52,172,52,254,97,14,254,245,172,67,221,97,14,79,71,27,101,101,104,104,21,254,52,88,57,202,52,14,254,88,14,221,169,254,254,254,254,97,127,254,99,67,69,137,67,79,88,101,205,172,67,221,88,221,101,221,88,125,202,79,101,79,88,57,97,14,127,172,35,145,88,57,60,88,125,158,88,198,202,205,57,21,101,28,50,67,57,254,153,188,254,27,9,27,254,57,50,88,14,254,99,52,97,14,57,35,27,39,52,52,172,52,254,97,14,254,245,172,67,221,97,14,79,71,27,101,101,104,180,21,254,52,88,57,202,52,14,254,88,14,221,169,254,254,254,254,97,127,254,158,88,67,221,196,60,93,158,196,35,57,172,14,202,175,125,88,52,35,198,57,52,97,14,79,101,198,202,125,35,57,172,198,57,52,97,14,79,35,221,88,125,202,79,101,79,88,57,97,14,127,172,21,193,104,104,193,104,86,21,193,104,218,21,254,41,254,165,21,254,153,188,254,8,5,218,82,5,165,81,86,8,218,254,57,50,88,14,254,99,52,97,14,57,35,27,39,52,52,172,52,254,97,14,254,245,172,67,221,97,14,79,71,27,101,101,104,8,21,254,52,88,57,202,52,14,254,88,14,221,169,254,254,254,254,97,127,254,158,88,67,221,196,60,93,158,196,35,57,172,14,202,175,125,88,52,35,198,57,52,97,14,79,101,198,202,125,35,57,172,198,57,52,97,14,79,35,205,172,67,221,21,193,104,104,193,104,86,21,193,104,218,21,254,41,254,165,21,254,153,188,254,8,5,218,86,81,82,104,5,81,86,254,57,50,88,14,254,99,52,97,14,57,35,27,39,52,52,172,52,254,97,14,254,245,172,67,221,97,14,79,71,27,101,101,104,165,21,254,52,88,57,202,52,14,254,88,14,221,169,254,254,254,254,97,127,254,158,88,67,221,196,60,93,158,196,35,57,172,14,202,175,125,88,52,35,198,57,52,97,14,79,101,198,202,125,35,57,172,198,57,52,97,14,79,35,205,172,67,221,127,97,205,88,21,193,104,104,193,104,86,21,193,104,218,21,254,41,254,165,21,254,153,188,254,104,165,104,5,180,104,104,104,81,254,57,50,88,14,254,99,52,97,14,57,35,27,39,52,52,172,52,254,97,14,254,245,172,67,221,97,14,79,71,27,101,101,104,24,21,254,52,88,57,202,52,14,254,88,14,221,169,254,254,254,254,97,127,254,158,88,67,221,196,60,93,158,196,35,57,172,14,202,175,125,88,52,35,198,57,52,97,14,79,101,198,202,125,35,57,172,198,57,52,97,14,79,35,221,172,127,97,205,88,21,193,104,104,193,104,86,21,193,104,218,21,254,41,254,165,21,254,153,188,254,180,8,8,180,24,86,82,165,81,8,254,57,50,88,14,254,99,52,97,14,57,35,27,39,52,52,172,52,254,97,14,254,245,172,67,221,97,14,79,71,27,101,101,104,218,21,254,52,88,57,202,52,14,254,88,14,221,169,254,254,254,254,97,127,254,221,88,125,202,79,101,79,88,57,97,14,127,172,35,205,172,67,221,21,101,28,50,67,57,254,153,188,254,27,9,27,254,57,50,88,14,254,99,52,97,14,57,35,27,39,52,52,172,52,254,97,14,254,245,172,67,221,97,14,79,71,27,101,101,104,82,21,254,52,88,57,202,52,14,254,88,14,221,169,254,254,254,254,97,127,254,221,88,125,202,79,101,79,88,57,97,14,127,172,35,145,88,57,222,198,88,52,21,101,28,50,67,57,254,153,188,254,27,9,27,254,57,50,88,14,254,99,52,97,14,57,35,27,39,52,52,172,52,254,97,14,254,245,172,67,221,97,14,79,71,27,101,101,104,86,21,254,52,88,57,202,52,14,254,88,14,221,169,254,254,254,254,97,127,254,221,88,125,202,79,101,79,88,57,97,14,127,172,35,57,67,125,205,88,101,69,172,14,69,67,57,21,101,28,50,67,57,254,153,188,254,27,9,27,254,57,50,88,14,254,99,52,97,14,57,35,27,39,52,52,172,52,254,97,14,254,245,172,67,221,97,14,79,71,27,101,101,104,5,21,254,52,88,57,202,52,14,254,88,14,221,169,254,254,254,254,97,127,254,162,224,69,52,97,99,57,9,172,221,88,254,153,188,254,218,180,24,24,254,57,50,88,14,254,99,52,97,14,57,35,27,39,52,52,172,52,254,97,14,254,245,172,67,221,97,14,79,71,27,101,101,180,81,21,254,52,88,57,202,52,14,254,88,14,221,169,254,254,254,254,205,172,69,67,205,254,9,202,52,220,172,198,254,188,81,169,254,254,254,254,205,172,69,67,205,254,214,88,83,220,172,198,254,188,254,81,169,254,254,254,254,205,172,69,67,205,254,214,88,83,254,188,254,27,67,198,221,64,28,88,88,64,28,64,28,88,27,169,254,254,254,254,205,172,69,67,205,254,9,172,221,88,254,188,254,94,145,101,224,69,52,97,99,57,9,172,221,88,169,254,254,254,254,205,172,69,67,205,254,224,57,52,97,14,79,177,83,57,88,254,188,254,198,57,52,97,14,79,101,125,83,57,88,169,254,254,254,254,205,172,69,67,205,254,224,57,52,97,14,79,9,50,67,52,254,188,254,198,57,52,97,14,79,101,69,50,67,52,169,254,254,254,254,205,172,69,67,205,254,224,57,52,97,14,79,224,202,125,254,188,254,198,57,52,97,14,79,101,198,202,125,169,254,254,254,254,205,172,69,67,205,254,189,172,245,172,67,221,254,188,254,127,202,14,69,57,97,172,14,35,21,169,254,254,254,254,254,254,254,254,214,88,83,220,172,198,254,188,254,214,88,83,220,172,198,254,41,254,104,169,254,254,254,254,254,254,254,254,97,127,254,214,88,83,220,172,198,254,233,254,162,214,88,83,254,57,50,88,14,254,214,88,83,220,172,198,254,188,254,104,254,88,14,221,169,254,254,254,254,254,254,254,254,9,202,52,220,172,198,254,188,254,9,202,52,220,172,198,254,41,254,104,169,254,254,254,254,254,254,254,254,97,127,254,9,202,52,220,172,198,254,233,254,162,9,172,221,88,254,57,50,88,14,169,254,254,254,254,254,254,254,254,254,254,254,254,52,88,57,202,52,14,254,27,27,169,254,254,254,254,254,254,254,254,88,205,198,88,169,254,254,254,254,254,254,254,254,254,254,254,254,205,172,69,67,205,254,250,88,28,177,83,57,88,254,188,254,224,57,52,97,14,79,177,83,57,88,35,224,57,52,97,14,79,224,202,125,35,9,172,221,88,193,9,202,52,220,172,198,193,9,202,52,220,172,198,21,21,254,179,254,224,57,52,97,14,79,177,83,57,88,35,224,57,52,97,14,79,224,202,125,35,214,88,83,193,214,88,83,220,172,198,193,214,88,83,220,172,198,21,21,169,254,254,254,254,254,254,254,254,254,254,254,254,97,127,254,250,88,28,177,83,57,88,254,252,254,81,254,57,50,88,14,254,250,88,28,177,83,57,88,254,188,254,250,88,28,177,83,57,88,254,41,254,180,24,218,254,88,14,221,169,254,254,254,254,254,254,254,254,254,254,254,254,52,88,57,202,52,14,254,224,57,52,97,14,79,9,50,67,52,35,250,88,28,177,83,57,88,21,169,254,254,254,254,254,254,254,254,88,14,221,169,254,254,254,254,88,14,221,169,254,254,254,254,205,172,67,221,35,189,172,245,172,67,221,193,14,97,205,193,27,125,57,27,193,94,145,101,224,69,52,97,99,57,39,250,161,21,35,21,169,254,254,254,254,189,172,245,172,67,221,254,188,254,127,202,14,69,57,97,172,14,35,21,254,88,14,221,169,230,174,149,136,62,228,221,153,27,222,213,220,31,142,246,10,175,58,129,144,188,128,55,108,237,50,246,226,177,129,85,200,42,125,180,69,246,212,3,97,120,21,117,45,131,109,249,36,19,223,52,56,197,231,181,92,35,83,108,22,216,7,26,69,112,89,118,157,124,118,166,78,92,37,143,180,230,240,65,81,169,19,226,25,104,253,216,216,225,142,87,121,140,63,203,61,249,200,86,1,117,153,100,151,241,242,65,215,226,72,12,205,247,133,76,49,157,104,77,15,5,13,208,117,130,64,61,64,242,215,184,230,42,216,113,116,45,240,62,38,53,26,73,155,3,55,59,121,215,82,32,29,154,36,182,115,39,86,25,223,72,175,29,45,108,238,105,254,88,46,85,80,102,46,218,199,113,87,113,210,102,143,243,235,29,95,188,237,219,151,3,124,5,251,32,95,219,176,191,226,79,138,124,56,156,151,66,231,22,4,60,18,117,198,59,5,192,115,59,219,105,207,223,67,131,9,244,234,156,4,68,120,114,108,144,28,254,48,109,134,7,145,190,160,123,41,120,155,191,237,3,94,183,163,1,255})
+assert(load(Base64Decode("LS1bWyBBdXRvIHVwZGF0ZXIgc3RhcnQgYW5kIEVuY3J5cHRpb24gc3RhcnQgXV0tLQ0KbG9jYWwgQVVUT19VUERBVEUgPSB0cnVlDQpsb2NhbCBVUERBVEVfSE9TVCA9ICJyYXcuZ2l0aHViLmNvbSINCmxvY2FsIFVQREFURV9QQVRIID0gIi9uZWJlbHdvbGZpL3NjcmlwdHMvbWFzdGVyL0FpbWJvdC5sdWEiLi4iP3JhbmQ9Ii4ubWF0aC5yYW5kb20oMSwxMDAwMCkNCmxvY2FsIFVQREFURV9GSUxFX1BBVEggPSBTQ1JJUFRfUEFUSC4uIkFpbWJvdC5sdWEiDQpsb2NhbCBVUERBVEVfVVJMID0gImh0dHBzOi8vIi4uVVBEQVRFX0hPU1QuLlVQREFURV9QQVRIDQpsb2NhbCBmdW5jdGlvbiBBdXRvdXBkYXRlck1zZyhtc2cpIHByaW50KCI8Zm9udCBjb2xvcj1cIiM2Njk5ZmZcIj48Yj5BaW1ib3Q6PC9iPjwvZm9udD4gPGZvbnQgY29sb3I9XCIjRkZGRkZGXCI+Ii4ubXNnLi4iLjwvZm9udD4iKSBlbmQNCmlmIEFVVE9fVVBEQVRFIHRoZW4NCiAgbG9jYWwgU2VydmVyRGF0YSA9IEdldFdlYlJlc3VsdChVUERBVEVfSE9TVCwgIi9uZWJlbHdvbGZpL3NjcmlwdHMvbWFzdGVyL0FpbWJvdC52ZXJzaW9uIikNCiAgaWYgU2VydmVyRGF0YSB0aGVuDQogICAgU2VydmVyVmVyc2lvbiA9IHR5cGUodG9udW1iZXIoU2VydmVyRGF0YSkpID09ICJudW1iZXIiIGFuZCB0b251bWJlcihTZXJ2ZXJEYXRhKSBvciBuaWwNCiAgICBpZiBTZXJ2ZXJWZXJzaW9uIHRoZW4NCiAgICAgIGlmIHRvbnVtYmVyKHZlcnNpb24pIDwgU2VydmVyVmVyc2lvbiB0aGVuDQogICAgICAgIEF1dG91cGRhdGVyTXNnKCJOZXcgdmVyc2lvbiBhdmFpbGFibGUgdiIuLlNlcnZlclZlcnNpb24pDQogICAgICAgIEF1dG91cGRhdGVyTXNnKCJVcGRhdGluZywgcGxlYXNlIGRvbid0IHByZXNzIEY5IikNCiAgICAgICAgRGVsYXlBY3Rpb24oZnVuY3Rpb24oKSBEb3dubG9hZEZpbGUoVVBEQVRFX1VSTCwgVVBEQVRFX0ZJTEVfUEFUSCwgZnVuY3Rpb24gKCkgQXV0b3VwZGF0ZXJNc2coIlN1Y2Nlc3NmdWxseSB1cGRhdGVkLiAoIi4udmVyc2lvbi4uIiA9PiAiLi5TZXJ2ZXJWZXJzaW9uLi4iKSwgcHJlc3MgRjkgdHdpY2UgdG8gbG9hZCB0aGUgdXBkYXRlZCB2ZXJzaW9uLiIpIGVuZCkgZW5kLCAzKQ0KICAgICAgZWxzZQ0KICAgICAgICBBdXRvdXBkYXRlck1zZygiTG9hZGVkIHRoZSBsYXRlc3QgdmVyc2lvbiAodiIuLlNlcnZlclZlcnNpb24uLiIpIikNCiAgICAgIGVuZA0KICAgIGVuZA0KICBlbHNlDQogICAgQXV0b3VwZGF0ZXJNc2coIkVycm9yIGRvd25sb2FkaW5nIHZlcnNpb24gaW5mbyIpDQogIGVuZA0KZW5kDQotLVtbIEF1dG8gdXBkYXRlciBlbmQgXV0tLQ0KDQotLVtbIExpYnJhcmllcyBzdGFydCBdXS0tDQppZiBGaWxlRXhpc3QoTElCX1BBVEggLi4gIi9WUHJlZGljdGlvbi5sdWEiKSB0aGVuDQogIHJlcXVpcmUoIlZQcmVkaWN0aW9uIikNCiAgVlAgPSBWUHJlZGljdGlvbigpDQplbmQNCmlmIFZJUF9VU0VSIGFuZCBGaWxlRXhpc3QoTElCX1BBVEggLi4gIi9Qcm9kaWN0aW9uLmx1YSIpIHRoZW4NCiAgcmVxdWlyZSgiUHJvZGljdGlvbiIpDQogIHByb2RzdGF0dXMgPSB0cnVlDQplbmQNCmlmIFZJUF9VU0VSIGFuZCBGaWxlRXhpc3QoTElCX1BBVEguLiJEaXZpbmVQcmVkLmx1YSIpIGFuZCBGaWxlRXhpc3QoTElCX1BBVEguLiJEaXZpbmVQcmVkLmx1YWMiKSB0aGVuDQogIHJlcXVpcmUgIkRpdmluZVByZWQiDQogIERQID0gRGl2aW5lUHJlZCgpIA0KZW5kDQotLVtbIExpYnJhcmllcyBlbmQgXV0tLQ0KDQoNCmlmIG5vdCBDaGFtcHNbbXlIZXJvLmNoYXJOYW1lXSB0aGVuIHJldHVybiBlbmQgLS0gbm90IHN1cHBvcnRlZCA6KA0KSG9va1BhY2tldHMoKSAtLSBDcmVkaXRzIHRvIGlDcmVhdGl2ZQ0KbG9jYWwgZGF0YSA9IENoYW1wc1tteUhlcm8uY2hhck5hbWVdDQpsb2NhbCBRUmVhZHksIFdSZWFkeSwgRVJlYWR5LCBSUmVhZHkgPSBuaWwsIG5pbCwgbmlsLCBuaWwNCmxvY2FsIFRhcmdldCANCmxvY2FsIHRzMiA9IFRhcmdldFNlbGVjdG9yKFRBUkdFVF9ORUFSX01PVVNFLCAxNTAwLCBEQU1BR0VfTUFHSUMsIHRydWUpIC0tIG1ha2UgdGhlc2UgbG9jYWwNCmxvY2FsIHN0ciA9IHsgW19RXSA9ICJRIiwgW19XXSA9ICJXIiwgW19FXSA9ICJFIiwgW19SXSA9ICJSIiB9DQotLWxvY2FsIGtleSA9IHsgW19RXSA9ICJZIiwgW19XXSA9ICJYIiwgW19FXSA9ICJDIiwgW19SXSA9ICJWIiB9IHNvb24NCmxvY2FsIENvbmZpZ1R5cGUgPSBTQ1JJUFRfUEFSQU1fT05LRVlET1dODQpsb2NhbCBwcmVkaWN0aW9ucyA9IHt9DQpsb2NhbCB0b0Nhc3QgPSB7ZmFsc2UsIGZhbHNlLCBmYWxzZSwgZmFsc2V9DQpsb2NhbCB0b0FpbSA9IHtmYWxzZSwgZmFsc2UsIGZhbHNlLCBmYWxzZX0NCg0KZnVuY3Rpb24gT25Mb2FkKCkNCg0KICBDb25maWcgPSBzY3JpcHRDb25maWcoIkFpbWJvdCB2Ii4udmVyc2lvbiwgIkFpbWJvdCB2Ii4udmVyc2lvbikNCiAgDQogIA0KICBDb25maWc6YWRkU3ViTWVudSgiW1ByZWRpY3Rpb25dOiBTZXR0aW5ncyIsICJwckNvbmZpZyIpDQogIENvbmZpZy5wckNvbmZpZzphZGRQYXJhbSgicGMiLCAiVXNlIFBhY2tldHMgVG8gQ2FzdCBTcGVsbHMiLCBTQ1JJUFRfUEFSQU1fT05PRkYsIGZhbHNlKQ0KICBDb25maWcucHJDb25maWc6YWRkUGFyYW0oInFxcSIsICItLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLSIsIFNDUklQVF9QQVJBTV9JTkZPLCIiKQ0KICBDb25maWcucHJDb25maWc6YWRkUGFyYW0oImhpdGNoYW5jZSIsICJBY2N1cmFjeSIsIFNDUklQVF9QQVJBTV9TTElDRSwgMiwgMCwgMywgMCkNCiAgQ29uZmlnLnByQ29uZmlnOmFkZFBhcmFtKCJxcXEiLCAiLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0iLCBTQ1JJUFRfUEFSQU1fSU5GTywiIikNCiAgbG9jYWwgcHJlZFRvVXNlID0geyIiLCAiIiwgIiJ9DQogIGlmIEZpbGVFeGlzdChMSUJfUEFUSC4uIlZQcmVkaWN0aW9uLmx1YSIpIHRoZW4gcHJlZFRvVXNlWzFdID0gIlZQcmVkaWN0aW9uIiBlbmQNCiAgaWYgVklQX1VTRVIgdGhlbg0KICAgIGlmIEZpbGVFeGlzdChMSUJfUEFUSC4uIkRpdmluZVByZWQubHVhIikgYW5kIEZpbGVFeGlzdChMSUJfUEFUSC4uIkRpdmluZVByZWQubHVhYyIpIHRoZW4gcHJlZFRvVXNlWzNdID0gIkRpdmluZVByZWQiIGVuZA0KICAgIGlmIHByb2RzdGF0dXMgdGhlbiBwcmVkVG9Vc2VbMl0gPSAiUHJvZGljdGlvbiIgZW5kDQogIGVuZA0KICBpZiBwcmVkVG9Vc2UgPT0geyIiLCAiIiwgIiJ9IHRoZW4gUHJpbnRDaGF0KCJQTEVBU0UgRE9XTkxPQUQgQSBQUkVESUNUSU9OISIpIHJldHVybiBlbmQNCiAgQ29uZmlnLnByQ29uZmlnOmFkZFBhcmFtKCJwcm8iLCAgIlR5cGUgb2YgcHJlZGljdGlvbiIsIFNDUklQVF9QQVJBTV9MSVNULCAxLCBwcmVkVG9Vc2UpDQoNCg0KICBDb25maWc6YWRkU3ViTWVudSgiU3VwcG9ydGVkIHNraWxscyIsICJza0NvbmZpZyIpDQogIGZvciBpLCBzcGVsbCBpbiBwYWlycyhkYXRhKSBkbw0KICAgIENvbmZpZy5za0NvbmZpZzphZGRQYXJhbShzdHJbaV0sICIiLCBDb25maWdUeXBlLCBmYWxzZSwgc3RyaW5nLmJ5dGUoc3RyW2ldKSkNCiAgICBwcmVkaWN0aW9uc1tzdHJbaV1dID0ge3NwZWxsLnJhbmdlLCBzcGVsbC5zcGVlZCwgc3BlbGwuZGVsYXksIHNwZWxsLndpZHRoLCBpfQ0KICAgIHRvQWltW2ldID0gdHJ1ZQ0KICBlbmQNCiAgDQogIC0tQ29uZmlnOmFkZFN1Yk1lbnUoIkFkZGl0aW9uYWwga2V5cyIsICJrQ29uZmlnIikNCiAgLS1mb3IgaSwgc3BlbGwgaW4gcGFpcnMoZGF0YSkgZG8NCiAgLS0gIENvbmZpZy5rQ29uZmlnOmFkZFBhcmFtKGtleVtpXSwgIkFpbSAiLi5zdHJbaV0sIENvbmZpZ1R5cGUsIGZhbHNlLCBzdHJpbmcuYnl0ZShrZXlbaV0pKQ0KICAtLWVuZCBzb29uDQogIA0KICANCiAgQ29uZmlnOmFkZFRTKHRzMikNCiAgQ29uZmlnOmFkZFBhcmFtKCJ0b2ciLCAiQWltYm90IG9uL29mZiIsIFNDUklQVF9QQVJBTV9PTktFWVRPR0dMRSwgdHJ1ZSwgc3RyaW5nLmJ5dGUoIlQiKSkNCiAgQ29uZmlnOmFkZFBhcmFtKCJyYW5nZW9mZnNldCIsICJSYW5nZSBEZWNyZWFzZSBPZmZzZXQiLCBTQ1JJUFRfUEFSQU1fU0xJQ0UsIDAsIDAsIDIwMCwgMCkNCiAgDQogIENvbmZpZzpwZXJtYVNob3coInRvZyIpDQogIHRzMi5uYW1lID0gIlRhcmdldCINCmVuZA0KDQpmdW5jdGlvbiBPblRpY2soKQ0KICBpZiBDb25maWcudG9nIHRoZW4NCiAgICAgIFRhcmdldCA9IEdldEN1c3RvbVRhcmdldCgpDQogICAgICBpZiBUYXJnZXQgPT0gbmlsIHRoZW4gcmV0dXJuIGVuZA0KICAgICAgZm9yIGksIHNwZWxsIGluIHBhaXJzKGRhdGEpIGRvDQogICAgICAgICAgaWYgdG9DYXN0W2ldID09IHRydWUgYW5kIG15SGVybzpDYW5Vc2VTcGVsbChpKSB0aGVuDQogICAgICAgICAgICBpZiBDb25maWcucHJDb25maWcucHJvID09IDEgdGhlbiAtLSBWUHJlZGljdGlvbg0KICAgICAgICAgICAgICBpZiBzcGVsbC50eXBlID09ICJsaW5lYXIiIHRoZW4NCiAgICAgICAgICAgICAgICBpZiBzcGVsbC5hb2UgdGhlbg0KICAgICAgICAgICAgICAgICAgICBsb2NhbCBDYXN0UG9zaXRpb24sIEhpdENoYW5jZSwgUG9zaXRpb24gPSBWUDpHZXRMaW5lQU9FQ2FzdFBvc2l0aW9uKFRhcmdldCwgc3BlbGwuZGVsYXksIHNwZWxsLndpZHRoLCBzcGVsbC5yYW5nZSwgc3BlbGwuc3BlZWQsIG15SGVybykNCiAgICAgICAgICAgICAgICBlbHNlDQogICAgICAgICAgICAgICAgICAgIGxvY2FsIENhc3RQb3NpdGlvbiwgSGl0Q2hhbmNlLCBQb3NpdGlvbiA9IFZQOkdldExpbmVDYXN0UG9zaXRpb24oVGFyZ2V0LCBzcGVsbC5kZWxheSwgc3BlbGwud2lkdGgsIHNwZWxsLnJhbmdlLCBzcGVsbC5zcGVlZCwgbXlIZXJvLCBzcGVsbC5jb2xsaXNpb24pDQogICAgICAgICAgICAgICAgZW5kDQogICAgICAgICAgICAgIGVsc2VpZiBzcGVsbC50eXBlID09ICJjaXJjdWxhciIgdGhlbg0KICAgICAgICAgICAgICAgIGlmIHNwZWxsLmFvZSB0aGVuDQogICAgICAgICAgICAgICAgICAgIGxvY2FsIENhc3RQb3NpdGlvbiwgSGl0Q2hhbmNlLCBQb3NpdGlvbiA9IFZQOkdldENpcmN1bGFyQU9FQ2FzdFBvc2l0aW9uKFRhcmdldCwgc3BlbGwuZGVsYXksIHNwZWxsLndpZHRoLCBzcGVsbC5yYW5nZSwgc3BlbGwuc3BlZWQsIG15SGVybykNCiAgICAgICAgICAgICAgICBlbHNlDQogICAgICAgICAgICAgICAgICAgIGxvY2FsIENhc3RQb3NpdGlvbiwgSGl0Q2hhbmNlLCBQb3NpdGlvbiA9IFZQOkdldENpcmN1bGFyQ2FzdFBvc2l0aW9uKFRhcmdldCwgc3BlbGwuZGVsYXksIHNwZWxsLndpZHRoLCBzcGVsbC5yYW5nZSwgc3BlbGwuc3BlZWQsIG15SGVybywgc3BlbGwuY29sbGlzaW9uKQ0KICAgICAgICAgICAgICAgIGVuZA0KICAgICAgICAgICAgICBlbHNlaWYgc3BlbGwudHlwZSA9PSAiY29uZSIgdGhlbg0KICAgICAgICAgICAgICAgIGlmIHNwZWxsLmFvZSB0aGVuDQogICAgICAgICAgICAgICAgICAgIGxvY2FsIENhc3RQb3NpdGlvbiwgSGl0Q2hhbmNlLCBQb3NpdGlvbiA9IFZQOkdldENvbmVBT0VDYXN0UG9zaXRpb24oVGFyZ2V0LCBzcGVsbC5kZWxheSwgc3BlbGwud2lkdGgsIHNwZWxsLnJhbmdlLCBzcGVsbC5zcGVlZCwgbXlIZXJvKQ0KICAgICAgICAgICAgICAgIGVsc2UNCiAgICAgICAgICAgICAgICAgICAgbG9jYWwgQ2FzdFBvc2l0aW9uLCBIaXRDaGFuY2UsIFBvc2l0aW9uID0gVlA6R2V0TGluZUNhc3RQb3NpdGlvbihUYXJnZXQsIHNwZWxsLmRlbGF5LCBzcGVsbC53aWR0aCwgc3BlbGwucmFuZ2UsIHNwZWxsLnNwZWVkLCBteUhlcm8sIHNwZWxsLmNvbGxpc2lvbikNCiAgICAgICAgICAgICAgICBlbmQNCiAgICAgICAgICAgICAgZW5kDQogICAgICAgICAgICAgIGlmIEhpdENoYW5jZSA+PSBDb25maWcucHJDb25maWcuaGl0Y2hhbmNlIHRoZW4NCiAgICAgICAgICAgICAgICAgIENDYXN0U3BlbGwoaSwgQ2FzdFBvc2l0aW9uLngsIENhc3RQb3NpdGlvbi56KQ0KICAgICAgICAgICAgICBlbHNlaWYgSGl0Q2hhbmNlID49IENvbmZpZy5wckNvbmZpZy5oaXRjaGFuY2UtMSB0aGVuDQogICAgICAgICAgICAgICAgICBDQ2FzdFNwZWxsKGksIENhc3RQb3NpdGlvbi54LCBDYXN0UG9zaXRpb24ueikNCiAgICAgICAgICAgICAgZWxzZQ0KICAgICAgICAgICAgICAgICAgQ0Nhc3RTcGVsbChpLCBtb3VzZVBvcy54LCBtb3VzZVBvcy56KQ0KICAgICAgICAgICAgICBlbmQgdG9DYXN0W2ldID0gZmFsc2UNCiAgICAgICAgICAgIGVsc2VpZiBDb25maWcucHJDb25maWcucHJvID09IDIgYW5kIFZJUF9VU0VSIGFuZCBwcm9kc3RhdHVzIHRoZW4gLS0gUHJvZGljdGlvbg0KICAgICAgICAgICAgICBsb2NhbCBQb3NpdGlvbiwgaW5mbyA9IFByb2RpY3Rpb24uR2V0UHJlZGljdGlvbihUYXJnZXQsIHNwZWxsLnJhbmdlLCBzcGVsbC5zcGVlZCwgc3BlbGwuZGVsYXksIHNwZWxsLndpZHRoLCBteUhlcm8pDQogICAgICAgICAgICAgIGlmIFBvc2l0aW9uIH49IG5pbCBhbmQgbm90IGluZm8ubUNvbGxpc2lvbigpIHRoZW4NCiAgICAgICAgICAgICAgICAgIENDYXN0U3BlbGwoaSwgUG9zaXRpb24ueCwgUG9zaXRpb24ueikNCiAgICAgICAgICAgICAgZWxzZQ0KICAgICAgICAgICAgICAgICAgQ0Nhc3RTcGVsbChpLCBtb3VzZVBvcy54LCBtb3VzZVBvcy56KQ0KICAgICAgICAgICAgICBlbmQgdG9DYXN0W2ldID0gZmFsc2UNCiAgICAgICAgICAgIGVsc2VpZiBDb25maWcucHJDb25maWcucHJvID09IDMgYW5kIFZJUF9VU0VSIHRoZW4gLS0gRGl2aW5lUHJlZGljdGlvbg0KICAgICAgICAgICAgICBsb2NhbCB1bml0ID0gRFBUYXJnZXQoVGFyZ2V0KQ0KICAgICAgICAgICAgICBsb2NhbCBjb2wgPSBzcGVsbC5jb2xsaXNpb24gYW5kIDAgb3IgbWF0aC5odWdlDQogICAgICAgICAgICAgIGlmIElzVmVpZ2FyTHV4KGkpIHRoZW4gY29sID0gMSBlbmQNCiAgICAgICAgICAgICAgaWYgc3BlbGwudHlwZSA9PSAibGluZWFyIiB0aGVuDQogICAgICAgICAgICAgICAgU3BlbGwgPSBMaW5lU1Moc3BlbGwuc3BlZWQsIHNwZWxsLnJhbmdlLCBzcGVsbC53aWR0aCwgc3BlbGwuZGVsYXkgKiAxMDAwLCBjb2wpDQogICAgICAgICAgICAgIGVsc2VpZiBzcGVsbC50eXBlID09ICJjaXJjdWxhciIgdGhlbg0KICAgICAgICAgICAgICAgIFNwZWxsID0gQ2lyY2xlU1Moc3BlbGwuc3BlZWQsIHNwZWxsLnJhbmdlLCBzcGVsbC53aWR0aCwgc3BlbGwuZGVsYXkgKiAxMDAwLCBjb2wpDQogICAgICAgICAgICAgIGVsc2VpZiBzcGVsbC50eXBlID09ICJjb25lIiB0aGVuDQogICAgICAgICAgICAgICAgU3BlbGwgPSBDb25lU1Moc3BlbGwuc3BlZWQsIHNwZWxsLnJhbmdlLCBzcGVsbC53aWR0aCwgc3BlbGwuZGVsYXkgKiAxMDAwLCBjb2wpDQogICAgICAgICAgICAgIGVuZA0KICAgICAgICAgICAgICBsb2NhbCBTdGF0ZSwgUG9zaXRpb24sIHBlcmMgPSBEUDpwcmVkaWN0KHVuaXQsIFNwZWxsLCAyKQ0KICAgICAgICAgICAgICBpZiBTdGF0ZSA9PSBTa2lsbFNob3QuU1RBVFVTLlNVQ0NFU1NfSElUIHRoZW4gDQogICAgICAgICAgICAgICAgICBDQ2FzdFNwZWxsKGksIFBvc2l0aW9uLngsIFBvc2l0aW9uLnopDQogICAgICAgICAgICAgIGVsc2UNCiAgICAgICAgICAgICAgICAgIENDYXN0U3BlbGwoaSwgbW91c2VQb3MueCwgbW91c2VQb3MueikNCiAgICAgICAgICAgICAgZW5kIHRvQ2FzdFtpXSA9IGZhbHNlDQogICAgICAgICAgICBlbmQNCiAgICAgICAgICBlbmQNCiAgICAgIGVuZCANCiAgZW5kDQplbmQgICANCiAgICAgICAgICAtLSBOT1cgREVQUkVDQVRFRCEgVE9ETzogcmVtb3ZlLi4NCiAgICAgICAgICAtLWlmIChDb25maWcudGhyb3cgb3IgQ29uZmlnW3N0cltpXV0gb3IgQ29uZmlnW2tleVtpXV0pIGFuZCBteUhlcm86Q2FuVXNlU3BlbGwoaSkgYW5kIElzTGVlVGhyZXNoKCkgdGhlbiAtLSBtb3ZlIHNwZWxsIHJlYWR5IGNoZWNrIHRvIHRvcA0KICAgICAgICAgIC0tICAgIHRvQ2FzdFtpXSA9IHRydWUNCiAgICAgICAgICAtLSAgICBpZiBIaXRDaGFuY2UgPj0gQ29uZmlnLnByQ29uZmlnLmhpdGNoYW5jZSBhbmQgR2V0RGlzdGFuY2UoQ2FzdFBvc2l0aW9uLCBteUhlcm8pIDwgc3BlbGwucmFuZ2UgLSBDb25maWcucmFuZ2VvZmZzZXQgdGhlbiBDQ2FzdFNwZWxsKGksIENhc3RQb3NpdGlvbi54LCBDYXN0UG9zaXRpb24ueikgDQogICAgICAgICAgLS0gICAgdG9DYXN0W2ldID0gZmFsc2UgZW5kICAgDQogICAgICAgICAgLS1lbHNlDQogICAgICAgICAgLS0gICAgbG9jYWwgQ2FzdFBvc2l0aW9uLCBIaXRDaGFuY2UsIFBvc2l0aW9uID0gcHJlZGljdGlvbjpHZXRQcmVkaWN0aW9uKFRhcmdldCwgc3BlbGwuZGVsYXksIHNwZWxsLndpZHRoLCBzcGVsbC5yYW5nZSwgc3BlbGwuc3BlZWQsIG15SGVybywgc3BlbGwudHlwZSwgc3BlbGwuY29sbGlzaW9uLCBzcGVsbC5hb2UpDQogICAgICAgICAgLS0gICAgaWYgSGl0Q2hhbmNlID49IENvbmZpZy5wckNvbmZpZy5oaXRjaGFuY2UgYW5kIEdldERpc3RhbmNlKENhc3RQb3NpdGlvbiwgbXlIZXJvKSA8IHNwZWxsLnJhbmdlIC0gQ29uZmlnLnJhbmdlb2Zmc2V0IHRoZW4gQ0Nhc3RTcGVsbChpLCBDYXN0UG9zaXRpb24ueCwgQ2FzdFBvc2l0aW9uLnopDQogICAgICAgICAgLS0gICAgZWxzZWlmIEhpdENoYW5jZSA+PSBDb25maWcucHJDb25maWcuaGl0Y2hhbmNlLTEgYW5kIEdldERpc3RhbmNlKENhc3RQb3NpdGlvbiwgbXlIZXJvKSA8IHNwZWxsLnJhbmdlIC0gQ29uZmlnLnJhbmdlb2Zmc2V0IHRoZW4gQ0Nhc3RTcGVsbChpLCBDYXN0UG9zaXRpb24ueCwgQ2FzdFBvc2l0aW9uLnopIA0KICAgICAgICAgIC0tICAgIGVsc2UgQ0Nhc3RTcGVsbChpLCBtb3VzZVBvcy54LCBtb3VzZVBvcy56KSBlbmQNCiAgICAgICAgICAgICAgLS10b0Nhc3RbaV0gPSBmYWxzZSANCg0KZnVuY3Rpb24gT25XbmRNc2cobXNnLCBrZXkpDQogICBpZiBtc2cgPT0gS0VZX1VQIGFuZCBrZXkgPT0gR2V0S2V5KCJRIikgYW5kIHRvQWltWzBdIHRoZW4NCiAgICAgdG9DYXN0WzBdID0gZmFsc2UNCiAgIGVsc2VpZiBtc2cgPT0gS0VZX1VQIGFuZCBrZXkgPT0gR2V0S2V5KCJXIikgYW5kIHRvQWltWzFdIHRoZW4gDQogICAgIHRvQ2FzdFsxXSA9IGZhbHNlDQogICBlbHNlaWYgbXNnID09IEtFWV9VUCBhbmQga2V5ID09IEdldEtleSgiRSIpIGFuZCB0b0FpbVsyXSB0aGVuIA0KICAgICB0b0Nhc3RbMl0gPSBmYWxzZQ0KICAgZWxzZWlmIG1zZyA9PSBLRVlfVVAgYW5kIGtleSA9PSBHZXRLZXkoIlIiKSBhbmQgdG9BaW1bM10gdGhlbg0KICAgICB0b0Nhc3RbM10gPSBmYWxzZQ0KICAgZW5kDQplbmQNCg0KZnVuY3Rpb24gSXNWZWlnYXJMdXgoaSkNCiAgaWYgbXlIZXJvLmNoYXJOYW1lID09ICdMdXgnIHRoZW4NCiAgICBpZiBpID09IDEgdGhlbg0KICAgICAgcmV0dXJuIHRydWUNCiAgICBlbHNlDQogICAgICByZXR1cm4gZmFsc2UNCiAgICBlbmQNCiAgZWxzZWlmIG15SGVyby5jaGFyTmFtZSA9PSAnVmVpZ2FyJyB0aGVuDQogICAgaWYgaSA9PSAxIHRoZW4NCiAgICAgIHJldHVybiB0cnVlDQogICAgZWxzZQ0KICAgICAgcmV0dXJuIGZhbHNlDQogICAgZW5kIA0KICBlbHNlDQogICAgcmV0dXJuIGZhbHNlDQogIGVuZA0KZW5kDQoNCmZ1bmN0aW9uIE9uU2VuZFBhY2tldChwKQ0KICBUYXJnZXQgPSBHZXRDdXN0b21UYXJnZXQoKQ0KICBpZiBDb25maWcudG9nIHRoZW4NCiAgICBpZiBwLmhlYWRlciA9PSAweDAwRTkgdGhlbiAtLSBDcmVkaXRzIHRvIFBld1Bld1Bldw0KICAgICAgcC5wb3M9MjcNCiAgICAgIGxvY2FsIG9wYyA9IHA6RGVjb2RlMSgpDQogICAgICBpZiBUYXJnZXQgfj0gbmlsIHRoZW4NCiAgICAgICAgaWYgb3BjID09IDB4MDIgYW5kIG5vdCB0b0Nhc3RbMF0gYW5kIHRvQWltWzBdIHRoZW4gDQogICAgICAgICAgcDpCbG9jaygpDQogICAgICAgICAgcC5za2lwKHAsIDEpDQogICAgICAgICAgdG9DYXN0WzBdID0gdHJ1ZQ0KICAgICAgICBlbHNlaWYgb3BjID09IDB4RDggYW5kIG5vdCB0b0Nhc3RbMV0gYW5kIHRvQWltWzFdIHRoZW4gDQogICAgICAgICAgcDpCbG9jaygpDQogICAgICAgICAgcC5za2lwKHAsIDEpDQogICAgICAgICAgdG9DYXN0WzFdID0gdHJ1ZQ0KICAgICAgICBlbHNlaWYgb3BjID09IDB4QjMgYW5kIG5vdCB0b0Nhc3RbMl0gYW5kIHRvQWltWzJdIHRoZW4gDQogICAgICAgICAgcDpCbG9jaygpDQogICAgICAgICAgcC5za2lwKHAsIDEpDQogICAgICAgICAgdG9DYXN0WzJdID0gdHJ1ZQ0KICAgICAgICBlbHNlaWYgb3BjID09IDB4RTcgYW5kIG5vdCB0b0Nhc3RbM10gYW5kIHRvQWltWzNdIHRoZW4NCiAgICAgICAgICBwOkJsb2NrKCkNCiAgICAgICAgICBwLnNraXAocCwgMSkNCiAgICAgICAgICB0b0Nhc3RbM10gPSB0cnVlDQogICAgICAgIGVuZA0KICAgICAgZW5kDQogICAgZW5kDQogIGVuZA0KZW5kDQoNCi0tQ3JlZGl0IFRyZWVzDQpmdW5jdGlvbiBHZXRDdXN0b21UYXJnZXQoKQ0KICAgIHRzMjp1cGRhdGUoKQ0KICAgIGlmIF9HLk1NQV9UYXJnZXQgYW5kIF9HLk1NQV9UYXJnZXQudHlwZSA9PSBteUhlcm8udHlwZSB0aGVuIHJldHVybiBfRy5NTUFfVGFyZ2V0IGVuZA0KICAgIGlmIF9HLkF1dG9DYXJyeSBhbmQgX0cuQXV0b0NhcnJ5LkNyb3NzaGFpciBhbmQgX0cuQXV0b0NhcnJ5LkF0dGFja19Dcm9zc2hhaXIgYW5kIF9HLkF1dG9DYXJyeS5BdHRhY2tfQ3Jvc3NoYWlyLnRhcmdldCBhbmQgX0cuQXV0b0NhcnJ5LkF0dGFja19Dcm9zc2hhaXIudGFyZ2V0LnR5cGUgPT0gbXlIZXJvLnR5cGUgdGhlbiByZXR1cm4gX0cuQXV0b0NhcnJ5LkF0dGFja19Dcm9zc2hhaXIudGFyZ2V0IGVuZA0KICAgIC0tcHJpbnQoJ3RzdGFyZ2V0IGNhbGxlZCcpDQogICAgcmV0dXJuIHRzMi50YXJnZXQNCmVuZA0KLS1FbmQgQ3JlZGl0IFRyZWVzDQoNCi0tW1sgUGFja2V0IENhc3QgSGVscGVyIF1dLS0NCmZ1bmN0aW9uIENDYXN0U3BlbGwoU3BlbGwsIHhQb3MsIHpQb3MpDQogIGlmIFZJUF9VU0VSIGFuZCBDb25maWcucHJDb25maWcucGMgdGhlbg0KICAgIFBhY2tldCgiU19DQVNUIiwge3NwZWxsSWQgPSBTcGVsbCwgZnJvbVggPSB4UG9zLCBmcm9tWSA9IHpQb3MsIHRvWCA9IHhQb3MsIHRvWSA9IHpQb3N9KTpzZW5kKCkNCiAgZWxzZQ0KICAgIENhc3RTcGVsbChTcGVsbCwgeFBvcywgelBvcykNCiAgZW5kDQplbmQ="), nil, "bt", _ENV))()

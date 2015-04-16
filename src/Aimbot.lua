@@ -285,7 +285,7 @@ _G.Champs = {
 }
 --[[ Skillshot list end ]]--
 
---[[ Auto updater start ]]--
+--[[ Auto updater start and Encryption start ]]--
 local version = 0.31
 local AUTO_UPDATE = true
 local UPDATE_HOST = "raw.github.com"
@@ -327,7 +327,7 @@ if VIP_USER and FileExist(LIB_PATH.."DivinePred.lua") and FileExist(LIB_PATH.."D
 end
 --[[ Libraries end ]]--
 
---[[ Encryption start ]]--
+
 if not Champs[myHero.charName] then return end -- not supported :(
 HookPackets() -- Credits to iCreative
 local data = Champs[myHero.charName]
