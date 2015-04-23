@@ -285,15 +285,15 @@ _G.Champs = {
 --[[ Skillshot list end ]]--
 
 --[[ Auto updater start ]]--
-local version = 0.33
+local version = 0.39
 local AUTO_UPDATE = true
 local UPDATE_HOST = "raw.github.com"
-local UPDATE_PATH = "/nebelwolfi/scripts/master/Aimbot.lua".."?rand="..math.random(1,10000)
+local UPDATE_PATH = "/nebelwolfi/BoL/master/Aimbot.lua".."?rand="..math.random(1,10000)
 local UPDATE_FILE_PATH = SCRIPT_PATH.."Aimbot.lua"
 local UPDATE_URL = "https://"..UPDATE_HOST..UPDATE_PATH
 local function AutoupdaterMsg(msg) print("<font color=\"#6699ff\"><b>Aimbot:</b></font> <font color=\"#FFFFFF\">"..msg..".</font>") end
 if AUTO_UPDATE then
-  local ServerData = GetWebResult(UPDATE_HOST, "/nebelwolfi/scripts/master/Aimbot.version")
+  local ServerData = GetWebResult(UPDATE_HOST, "/nebelwolfi/BoL/master/Aimbot.version")
   if ServerData then
     ServerVersion = type(tonumber(ServerData)) == "number" and tonumber(ServerData) or nil
     if ServerVersion then
@@ -311,121 +311,216 @@ if AUTO_UPDATE then
 end
 --[[ Auto updater end ]]--
 
---[[ Libraries start and Encryption start ]]--
+--[[ Libraries start ]]--
 if FileExist(LIB_PATH .. "/VPrediction.lua") then
   require("VPrediction")
   VP = VPrediction()
 end
-if VIP_USER and FileExist(LIB_PATH .. "/Prodiction.lua") then
-  require("Prodiction")
-  prodstatus = true
-end
+
 if VIP_USER and FileExist(LIB_PATH.."DivinePred.lua") and FileExist(LIB_PATH.."DivinePred.luac") then
   require "DivinePred"
   DP = DivinePred() 
 end
+
+--[[ VPred & DivinePred only!
+if FileExist(LIB_PATH .. "/HPrediction.lua") then
+  require("HPrediction")
+  HP = HPrediction()
+end
+if VIP_USER and FileExist(LIB_PATH .. "/Prodiction.lua") then
+  require("Prodiction")
+  prodstatus = true
+end]]
 --[[ Libraries end ]]--
 
+--[[ Script start ]]--
 if not Champs[myHero.charName] then return end -- not supported :(
 HookPackets() -- Credits to iCreative
 local data = Champs[myHero.charName]
 local QReady, WReady, EReady, RReady = nil, nil, nil, nil
 local Target 
-local ts2 = TargetSelector(TARGET_NEAR_MOUSE, 1500, DAMAGE_MAGIC, true) -- make these local
+local QSel, WSel, ESel, RSel
 local str = { [_Q] = "Q", [_W] = "W", [_E] = "E", [_R] = "R" }
 --local key = { [_Q] = "Y", [_W] = "X", [_E] = "C", [_R] = "V" } soon
-local ConfigType = SCRIPT_PARAM_ONKEYDOWN
 local predictions = {}
 local toCast = {false, false, false, false}
 local toAim = {false, false, false, false}
+enemyMinions = minionManager(MINION_ENEMY, 1500, myHero, MINION_SORT_HEALTH_ASC)
 
 function OnLoad()
 
   Config = scriptConfig("Aimbot", "Aimbot")
   
   
-  Config:addSubMenu("[Prediction]: Settings", "prConfig")
-  Config.prConfig:addParam("pc", "Use Packets To Cast Spells", SCRIPT_PARAM_ONOFF, false)
-  Config.prConfig:addParam("qqq", "--------------------------------------------------------", SCRIPT_PARAM_INFO,"")
-  Config.prConfig:addParam("hitchance", "Accuracy", SCRIPT_PARAM_SLICE, 2, 0, 3, 0)
-  Config.prConfig:addParam("qqq", "--------------------------------------------------------", SCRIPT_PARAM_INFO,"")
-  Config.prConfig:addParam("qqq", "RELOAD AFTER CHANGING PREDICTIONS", SCRIPT_PARAM_INFO,"")
-  local predToUse = {"", "", ""}
+  Config:addSubMenu("Settings", "misc")
+  Config.misc:addParam("pc", "Use Packets To Cast Spells", SCRIPT_PARAM_ONOFF, false)
+  Config.misc:addParam("debug", "Debug mode", SCRIPT_PARAM_ONOFF, false)
+  Config.misc:addParam("qqq", " ", SCRIPT_PARAM_INFO,"")
+  
+  local predToUse = {"", ""} --, "", ""
   if FileExist(LIB_PATH.."VPrediction.lua") then predToUse[1] = "VPrediction" end
   if VIP_USER then
-    if FileExist(LIB_PATH.."DivinePred.lua") and FileExist(LIB_PATH.."DivinePred.luac") then predToUse[3] = "DivinePred" end
-    if prodstatus then predToUse[2] = "Prodiction" end
+    if FileExist(LIB_PATH.."DivinePred.lua") and FileExist(LIB_PATH.."DivinePred.luac") then predToUse[2] = "DivinePred" end
+    --if prodstatus then predToUse[2] = "Prodiction" end
   end
-  if predToUse == {"", "", ""} then PrintChat("PLEASE DOWNLOAD A PREDICTION!") return end
-  Config.prConfig:addParam("pro",  "Type of prediction", SCRIPT_PARAM_LIST, 1, predToUse)
-
-
+  --if FileExist(LIB_PATH.."HPrediction.lua") then predToUse[2] = "HPrediction" end
+  
+  if predToUse == {"", ""} then PrintChat("PLEASE DOWNLOAD A PREDICTION!") return end
+  
+  Config.misc:addParam("rangeoffset", "Range Decrease Offset", SCRIPT_PARAM_SLICE, 0, 0, 200, 0)
+  Config.misc:addParam("qqq", " ", SCRIPT_PARAM_INFO,"")
+  Config.misc:addParam("qqq", "RELOAD AFTER CHANGING PREDICTIONS! (2x F9)", SCRIPT_PARAM_INFO,"")
+  Config.misc:addParam("pro",  "Type of prediction", SCRIPT_PARAM_LIST, 1, predToUse)
+  if Config.misc.pro == 1 then 
+  Config.misc:addParam("hitchance", "Accuracy (Default: 2)", SCRIPT_PARAM_SLICE, 2, 0, 3, 1)
+  else
+  Config.misc:addParam("hitchance", "Accuracy (Default: 1.2)", SCRIPT_PARAM_SLICE, 1.2, 0, 1.5, 1)
+  end
+    
+ 
   Config:addSubMenu("Supported skills", "skConfig")
   for i, spell in pairs(data) do
-    Config.skConfig:addParam(str[i], "", ConfigType, false, string.byte(str[i]))
+    Config.skConfig:addParam(str[i], "", SCRIPT_PARAM_ONKEYDOWN, false, string.byte(str[i]))
     predictions[str[i]] = {spell.range, spell.speed, spell.delay, spell.width, i}
     toAim[i] = true
   end
+  --SetupHPred()
   
   --Config:addSubMenu("Additional keys", "kConfig")
   --for i, spell in pairs(data) do
   --  Config.kConfig:addParam(key[i], "Aim "..str[i], ConfigType, false, string.byte(key[i]))
   --end soon
   
-  
-  Config:addTS(ts2)
+  --Config:addTS(ts2)
   Config:addParam("tog", "Aimbot on/off", SCRIPT_PARAM_ONKEYTOGGLE, true, string.byte("T"))
-  Config:addParam("rangeoffset", "Range Decrease Offset", SCRIPT_PARAM_SLICE, 0, 0, 200, 0)
   
   Config:permaShow("tog")
-  ts2.name = "Target"
+  if toAim[0] then QSel = TargetSelector(TARGET_NEAR_MOUSE, data[0].range, DAMAGE_MAGIC, true) end
+  if toAim[1] then WSel = TargetSelector(TARGET_NEAR_MOUSE, data[1].range, DAMAGE_MAGIC, true) end
+  if toAim[2] then ESel = TargetSelector(TARGET_NEAR_MOUSE, data[2].range, DAMAGE_MAGIC, true) end
+  if toAim[3] then RSel = TargetSelector(TARGET_NEAR_MOUSE, data[3].range, DAMAGE_MAGIC, true) end
+end
+
+function SetupHPred()
+
+ if toAim[0] then 
+  Spell_Q.collisionM[myHero.charName] = data[0].collision
+  Spell_Q.collisionH[myHero.charName] = data[0].collision
+  Spell_Q.delay[myHero.charName] = data[0].delay
+  Spell_Q.range[myHero.charName] = data[0].range
+  Spell_Q.speed[myHero.charName] = data[0].speed
+  Spell_Q.type[myHero.charName] = "DelayLine"
+  if data[0].type == "linear" then
+    Spell_Q.type[myHero.charName] = "DelayLine"
+    Spell_Q.width[myHero.charName] = data[0].width
+  elseif data[0].type == "circular" and data[0].speed ~= math.huge then
+    Spell_Q.type[myHero.charName] = "DelayCircle"
+    Spell_Q.radius[myHero.charName] = data[0].width
+  elseif data[0].type == "circular" and data[0].speed == math.huge then
+    Spell_Q.type[myHero.charName] = "PromptCircle"
+    Spell_Q.radius[myHero.charName] = data[0].width
+  end
+ end
+ 
+ if toAim[1] then 
+  Spell_W.collisionM[myHero.charName] = data[1].collision
+  Spell_W.collisionH[myHero.charName] = data[1].collision
+  Spell_W.delay[myHero.charName] = data[1].delay
+  Spell_W.range[myHero.charName] = data[1].range
+  Spell_W.speed[myHero.charName] = data[1].speed
+  Spell_W.type[myHero.charName] = "DelayLine"
+  if data[1].type == "linear" then
+    Spell_W.type[myHero.charName] = "DelayLine"
+    Spell_W.width[myHero.charName] = data[1].width
+  elseif data[1].type == "circular" and data[1].speed ~= math.huge then
+    Spell_W.type[myHero.charName] = "DelayCircle"
+    Spell_W.radius[myHero.charName] = data[1].width
+  elseif data[1].type == "circular" and data[1].speed == math.huge then
+    Spell_W.type[myHero.charName] = "PromptCircle"
+    Spell_W.radius[myHero.charName] = data[1].width
+  end
+ end
+ 
+ if toAim[2] then 
+  Spell_E.collisionM[myHero.charName] = data[2].collision
+  Spell_E.collisionH[myHero.charName] = data[2].collision
+  Spell_E.delay[myHero.charName] = data[2].delay
+  Spell_E.range[myHero.charName] = data[2].range
+  Spell_E.speed[myHero.charName] = data[2].speed
+  Spell_E.type[myHero.charName] = "DelayLine"
+  if data[2].type == "linear" then
+    Spell_E.type[myHero.charName] = "DelayLine"
+    Spell_E.width[myHero.charName] = data[2].width
+  elseif data[2].type == "circular" and data[2].speed ~= math.huge then
+    Spell_E.type[myHero.charName] = "DelayCircle"
+    Spell_E.radius[myHero.charName] = data[2].width
+  elseif data[2].type == "circular" and data[2].speed == math.huge then
+    Spell_E.type[myHero.charName] = "PromptCircle"
+    Spell_E.radius[myHero.charName] = data[2].width
+  end
+ end
+ 
+ if toAim[3] then 
+  Spell_R.collisionM[myHero.charName] = data[3].collision
+  Spell_R.collisionH[myHero.charName] = data[3].collision
+  Spell_R.delay[myHero.charName] = data[3].delay
+  Spell_R.range[myHero.charName] = data[3].range
+  Spell_R.speed[myHero.charName] = data[3].speed
+  Spell_R.type[myHero.charName] = "DelayLine"
+  if data[3].type == "linear" then
+    Spell_R.type[myHero.charName] = "DelayLine"
+    Spell_R.width[myHero.charName] = data[3].width
+  elseif data[3].type == "circular" and data[3].speed ~= math.huge then
+    Spell_R.type[myHero.charName] = "DelayCircle"
+    Spell_R.radius[myHero.charName] = data[3].width
+  elseif data[3].type == "circular" and data[3].speed == math.huge then
+    Spell_R.type[myHero.charName] = "PromptCircle"
+    Spell_R.radius[myHero.charName] = data[3].width
+  end
+ end
 end
 
 function OnTick()
-  if Config.tog then
-      Target = GetCustomTarget()
-      if Target == nil then return end
+  if Config.tog and not myHero.dead and not recall then 
       for i, spell in pairs(data) do
-          if toCast[i] == true and myHero:CanUseSpell(i) then
-            if Config.prConfig.pro == 1 then -- VPrediction
-              local CastPosition, HitChance, Position
-              if spell.type == "linear" then
-                if spell.aoe then
-                    CastPosition, HitChance, Position = VP:GetLineAOECastPosition(Target, spell.delay, spell.width, spell.range, spell.speed, myHero)
-                else
-                    CastPosition, HitChance, Position = VP:GetLineCastPosition(Target, spell.delay, spell.width, spell.range, spell.speed, myHero, spell.collision)
-                end
-              elseif spell.type == "circular" then
-                if spell.aoe then
-                    CastPosition, HitChance, Position = VP:GetCircularAOECastPosition(Target, spell.delay, spell.width, spell.range, spell.speed, myHero)
-                else
-                    CastPosition, HitChance, Position = VP:GetCircularCastPosition(Target, spell.delay, spell.width, spell.range, spell.speed, myHero, spell.collision)
-                end
-              elseif spell.type == "cone" then
-                if spell.aoe then
-                    CastPosition, HitChance, Position = VP:GetConeAOECastPosition(Target, spell.delay, spell.width, spell.range, spell.speed, myHero)
-                else
-                    CastPosition, HitChance, Position = VP:GetLineCastPosition(Target, spell.delay, spell.width, spell.range, spell.speed, myHero, spell.collision)
-                end
-              end
-              if HitChance >= Config.prConfig.hitchance then
+          Target = GetCustomTarget(i)
+          if Target == nil then return end
+          if (toCast[i] == true or Config[str[i]]) and myHero:CanUseSpell(i) then
+            if Config.misc.pro == 1 then -- VPrediction
+              local CastPosition, HitChance, Position = VPredict(Target, spell)
+              if Config.misc.debug then PrintChat("1 - Attempt to aim!") end
+              if HitChance >= Config.misc.hitchance then
+                  if Config.misc.debug then PrintChat("2 - Aimed skill! Precision: "..HitChance) end
                   CCastSpell(i, CastPosition.x, CastPosition.z)
-              elseif HitChance >= Config.prConfig.hitchance-1 then
+              elseif HitChance >= Config.misc.hitchance-1 then
+                  if Config.misc.debug then PrintChat("2 - Aimed skill! Precision: "..HitChance) end
                   CCastSpell(i, CastPosition.x, CastPosition.z)
               else
-                  CCastSpell(i, mousePos.x, mousePos.z)
+                  local enemies = EnemiesAround(Target, 100) -- Maybe needs some adjustment
+                  if enemies > 0 then
+                    if Config.misc.debug then PrintChat("2 - Checking other enemies around target...") end
+                    Target = GetNextCustomTarget(i, Target)
+                   if ValidTarget(unit) then
+                    local CastPosition, HitChance, Position = VPredict(Target, spell)
+                    if HitChance >= Config.misc.hitchance then
+                      if not myHero:CanUseSpell(i) then return end
+                      if Config.misc.debug then PrintChat("3 - Aimed skill! Precision: "..HitChance) end
+                      CCastSpell(i, CastPosition.x, CastPosition.z)
+                    end
+                   end
+                   if myHero:CanUseSpell(i) then
+                    if Config.misc.debug then PrintChat("3 - No better target found - to mouse") end
+                    CCastSpell(i, mousePos.x, mousePos.z)
+                   end
+                  else
+                    if Config.misc.debug then PrintChat("2 - To mouse") end
+                    CCastSpell(i, mousePos.x, mousePos.z)
+                  end
               end toCast[i] = false
-            elseif Config.prConfig.pro == 2 and VIP_USER and prodstatus then -- Prodiction
-              local Position, info = Prodiction.GetPrediction(Target, spell.range, spell.speed, spell.delay, spell.width, myHero)
-              if Position ~= nil and not info.mCollision() then
-                  CCastSpell(i, Position.x, Position.z)
-              else
-                  CCastSpell(i, mousePos.x, mousePos.z)
-              end toCast[i] = false
-            elseif Config.prConfig.pro == 3 and VIP_USER then -- DivinePrediction
+            elseif Config.misc.pro == 2 and VIP_USER then -- DivinePrediction
               local unit = DPTarget(Target)
-              local col = spell.collision and 0 or math.huge
-              if IsVeigarLux(i) then col = 1 end
+              local col = (spell.aoe and spell.collision) and 0 or math.huge
+              if IsVeigarLuxQ(i) then col = 1 end
               if spell.type == "linear" then
                 Spell = LineSS(spell.speed, spell.range, spell.width, spell.delay * 1000, col)
               elseif spell.type == "circular" then
@@ -433,28 +528,60 @@ function OnTick()
               elseif spell.type == "cone" then
                 Spell = ConeSS(spell.speed, spell.range, spell.width, spell.delay * 1000, col)
               end
-              local State, Position, perc = DP:predict(unit, Spell, 2)
+              local State, Position, perc = DP:predict(unit, Spell, Config.misc.hitchance)
+              if Config.misc.debug then PrintChat("Attempt to aim!") end
               if State == SkillShot.STATUS.SUCCESS_HIT then 
+                  if Config.misc.debug then PrintChat("Aimed skill! Precision: "..perc) end
                   CCastSpell(i, Position.x, Position.z)
               else
+                  if Config.misc.debug then PrintChat("To mouse :/") end
                   CCastSpell(i, mousePos.x, mousePos.z)
               end toCast[i] = false
+            --[[elseif Config.misc.pro == 3 then -- HPrediction
+              local Position, HitChance = HP:GetPredict(str[i], Target, myHero)
+              if Config.misc.debug then PrintChat("Attempt to aim! ") end
+              if HitChance >= Config.misc.hitchance then
+                  if Config.misc.debug then PrintChat("Aimed skill! Precision: "..HitChance) end
+                  CCastSpell(i, Position.x, Position.z)
+              elseif HitChance >= Config.misc.hitchance-1 then
+                  if Config.misc.debug then PrintChat("Aimed skill! Precision: "..Config.misc.hitchance-1) end
+                  CCastSpell(i, Position.x, Position.z)
+              else
+                  if Config.misc.debug then PrintChat("To mouse :/ "..HitChance) end
+                  CCastSpell(i, mousePos.x, mousePos.z)
+              end toCast[i] = false]]
             end
           end
       end 
   end
 end   
-          -- NOW DEPRECATED! TODO: remove..
-          --if (Config.throw or Config[str[i]] or Config[key[i]]) and myHero:CanUseSpell(i) and IsLeeThresh() then -- move spell ready check to top
-          --    toCast[i] = true
-          --    if HitChance >= Config.prConfig.hitchance and GetDistance(CastPosition, myHero) < spell.range - Config.rangeoffset then CCastSpell(i, CastPosition.x, CastPosition.z) 
-          --    toCast[i] = false end   
-          --else
-          --    local CastPosition, HitChance, Position = prediction:GetPrediction(Target, spell.delay, spell.width, spell.range, spell.speed, myHero, spell.type, spell.collision, spell.aoe)
-          --    if HitChance >= Config.prConfig.hitchance and GetDistance(CastPosition, myHero) < spell.range - Config.rangeoffset then CCastSpell(i, CastPosition.x, CastPosition.z)
-          --    elseif HitChance >= Config.prConfig.hitchance-1 and GetDistance(CastPosition, myHero) < spell.range - Config.rangeoffset then CCastSpell(i, CastPosition.x, CastPosition.z) 
-          --    else CCastSpell(i, mousePos.x, mousePos.z) end
-              --toCast[i] = false 
+
+function EnemiesAround(Unit, range)
+  local c=0
+  for i=1,heroManager.iCount do hero = heroManager:GetHero(i) if hero.team ~= myHero.team and hero.x and hero.y and hero.z and GetDistance(hero, Unit) < range then c=c+1 end end return c
+end
+
+function VPredict(Target, spell)
+  if spell.type == "linear" then
+  if spell.aoe then
+    return VP:GetLineAOECastPosition(Target, spell.delay, spell.width, spell.range, spell.speed, myHero)
+  else
+    return VP:GetLineCastPosition(Target, spell.delay, spell.width, spell.range, spell.speed, myHero, spell.collision)
+  end
+  elseif spell.type == "circular" then
+  if spell.aoe then
+    return VP:GetCircularAOECastPosition(Target, spell.delay, spell.width, spell.range, spell.speed, myHero)
+  else
+    return VP:GetCircularCastPosition(Target, spell.delay, spell.width, spell.range, spell.speed, myHero, spell.collision)
+  end
+  elseif spell.type == "cone" then
+  if spell.aoe then
+    return VP:GetConeAOECastPosition(Target, spell.delay, spell.width, spell.range, spell.speed, myHero)
+  else
+    return VP:GetLineCastPosition(Target, spell.delay, spell.width, spell.range, spell.speed, myHero, spell.collision)
+  end
+  end
+end
 
 function OnWndMsg(msg, key)
    if msg == KEY_UP and key == GetKey("Q") and toAim[0] then
@@ -468,7 +595,7 @@ function OnWndMsg(msg, key)
    end
 end
 
-function IsVeigarLux(i)
+function IsVeigarLuxQ(i)
   if myHero.charName == 'Lux' then
     if i == 1 then
       return true
@@ -487,47 +614,75 @@ function IsVeigarLux(i)
 end
 
 function OnSendPacket(p)
-  Target = GetCustomTarget()
-  if Config.tog then
+  if Config.tog and not myHero.dead and not recall then
     if p.header == 0x00E9 then -- Credits to PewPewPew
-      p.pos=27
-      local opc = p:Decode1()
-      if Target ~= nil then
+        p.pos=27
+        local opc = p:Decode1()
         if opc == 0x02 and not toCast[0] and toAim[0] then 
-          p:Block()
-          p.skip(p, 1)
-          toCast[0] = true
+          Target = GetCustomTarget(0)
+          if Target ~= nil then
+            p:Block()
+            p.skip(p, 1)
+            toCast[0] = true
+          end
         elseif opc == 0xD8 and not toCast[1] and toAim[1] then 
-          p:Block()
-          p.skip(p, 1)
-          toCast[1] = true
+          Target = GetCustomTarget(1)
+          if Target ~= nil then
+            p:Block()
+            p.skip(p, 1)
+            toCast[1] = true
+          end
         elseif opc == 0xB3 and not toCast[2] and toAim[2] then 
-          p:Block()
-          p.skip(p, 1)
-          toCast[2] = true
+          Target = GetCustomTarget(2)
+          if Target ~= nil then
+            p:Block()
+            p.skip(p, 1)
+            toCast[2] = true
+          end
         elseif opc == 0xE7 and not toCast[3] and toAim[3] then
-          p:Block()
-          p.skip(p, 1)
-          toCast[3] = true
+          Target = GetCustomTarget(3)
+          if Target ~= nil then
+            p:Block()
+            p.skip(p, 1)
+            toCast[3] = true
+          end
         end
-      end
     end
   end
 end
 
---Credit Trees
-function GetCustomTarget()
-    ts2:update()
+function GetCustomTarget(i)
+    if toAim[0] then QSel:update() end
+    if toAim[1] then WSel:update() end
+    if toAim[2] then ESel:update() end
+    if toAim[3] then RSel:update() end
     if _G.MMA_Target and _G.MMA_Target.type == myHero.type then return _G.MMA_Target end
     if _G.AutoCarry and _G.AutoCarry.Crosshair and _G.AutoCarry.Attack_Crosshair and _G.AutoCarry.Attack_Crosshair.target and _G.AutoCarry.Attack_Crosshair.target.type == myHero.type then return _G.AutoCarry.Attack_Crosshair.target end
-    --print('tstarget called')
-    return ts2.target
+    if i == 0 then
+      return QSel.target
+    elseif i == 1 then
+      return WSel.target
+    elseif i == 2 then
+      return ESel.target
+    elseif i == 3 then
+      return RSel.target
+    else
+      return nil
+    end
 end
---End Credit Trees
+
+function GetNextCustomTarget(i, Target)
+    for _, unit in pairs(GetEnemyHeroes()) do
+      if ValidTarget(unit) and unit ~= Target then
+        return unit
+      end
+    end
+    return Target
+end
 
 --[[ Packet Cast Helper ]]--
 function CCastSpell(Spell, xPos, zPos)
-  if VIP_USER and Config.prConfig.pc then
+  if VIP_USER and Config.misc.pc then
     Packet("S_CAST", {spellId = Spell, fromX = xPos, fromY = zPos, toX = xPos, toY = zPos}):send()
   else
     CastSpell(Spell, xPos, zPos)
