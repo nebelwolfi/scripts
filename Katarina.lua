@@ -34,10 +34,11 @@ function AfterObjectLoopEvent(myHer0)
         end
         if dmg > hp then
         	DrawText("Killable",20,drawPos.x,drawPos.y,0xffffffff)
+        	DrawDmgOverHpBar(unit,hp,0,hp,0xffffffff)
         else
         	DrawText(math.floor(100 * dmg / hp).."%",20,drawPos.x,drawPos.y,0xffffffff)
+        	DrawDmgOverHpBar(unit,hp,0,dmg,0xffffffff)
         end
-        DrawDmgOverHpBar(unit,hp,0,dmg,0xffffffff)
 		if not KeyIsDown(0x20) then return end
     	if IsInDistance(unit, 675) and CanUseSpell(myHero, _Q) == READY then
     		CastTargetSpell(unit, _Q)
