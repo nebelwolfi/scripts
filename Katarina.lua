@@ -21,7 +21,7 @@ function AfterObjectLoopEvent(myHer0)
 	    local targetPos = GetOrigin(unit)
 	    local drawPos = WorldToScreen(1,targetPos.x,targetPos.y,targetPos.z)
         if CanUseSpell(myHero, _Q) == READY then
-        	dmg = dmg + CalcDamage(myHero, unit, 0, 35+25*GetCastLevel(myHero,_Q)+0.45*AP)
+        	dmg = dmg + CalcDamage(myHero, unit, 0, 35+25*GetCastLevel(myHero,_Q)+0.45*AP) * 1.25
         end
         if CanUseSpell(myHero, _W) == READY then
         	dmg = dmg + CalcDamage(myHero, unit, 0, 5+35*GetCastLevel(myHero,_W)+0.25*AP+0.6*TotalDmg)
@@ -29,13 +29,13 @@ function AfterObjectLoopEvent(myHer0)
         if CanUseSpell(myHero, _E) == READY then
         	dmg = dmg + CalcDamage(myHero, unit, 0, 10+30*GetCastLevel(myHero,_E)+0.25*AP)
         end
-        if CanUseSpell(myHero, _R) == READY then
+        if CanUseSpell(myHero, _R) ~= ONCOOLDOWN and GetCastLevel(myHero,_R) > 0 then
         	dmg = dmg + CalcDamage(myHero, unit, 0, 30+10*GetCastLevel(myHero,_R)+0.2*AP+0.3*GetBonusDmg(myHero)) * 10
         end
         if dmg > hp then
         	DrawText("Killable",20,drawPos.x,drawPos.y,0xffffffff)
         else
-        	DrawText(math.floor(dmg/hp*100).."%",20,drawPos.x,drawPos.y,0xffffffff)
+        	DrawText(math.floor(100 * dmg / hp).."%",20,drawPos.x,drawPos.y,0xffffffff)
         end
 		if not KeyIsDown(0x20) then return end
     	if IsInDistance(unit, 675) and CanUseSpell(myHero, _Q) == READY then
