@@ -9,12 +9,28 @@ function AfterObjectLoopEvent(myHer0)
 	waitTickCount = waitTickCount - 1
 	local unit = GetCurrentTarget()
 	if waitTickCount > 0 and lastTargetName == GetObjectName(unit) then return end
-	if not KeyIsDown(0x20) then return end
 	local movePos = GenerateMovePos()
 	if GetDistanceSqr(GetMousePos()) > GetHitBox(myHero)*GetHitBox(myHero) then
 		MoveToXYZ(movePos.x, 0, movePos.z)
 	end
 	if ValidTarget(unit) then
+        local dmg = 0
+        local AP = GetBonusAP(myHero)
+        local TotalDmg = GetBonusDmg(myHero)+GetBaseDamage(myHero)
+        if CanUseSpell(myHero, _Q) == READY then
+        	dmg = dmg + CalcDamage(myHero, unit, 0, 35+25*GetCastLevel(myHero,_Q)+0.45*AP)
+        end
+        if CanUseSpell(myHero, _W) == READY then
+        	dmg = dmg + CalcDamage(myHero, unit, 0, 5+35*GetCastLevel(myHero,_W)+0.25*AP+0.6*TotalDmg)
+        end
+        if CanUseSpell(myHero, _E) == READY then
+        	dmg = dmg + CalcDamage(myHero, unit, 0, 10+30*GetCastLevel(myHero,_E)+0.25*AP)
+        end
+        if CanUseSpell(myHero, _R) == READY then
+        	dmg = dmg + CalcDamage(myHero, unit, 0, 30+10*GetCastLevel(myHero,_R)+0.2*AP+0.3*GetBonusDmg(myHero)) * 10
+        end
+        DrawDmgOverHpBar(unit,GetCurrentHP(unit),0,dmg,0xffff0000)
+		if not KeyIsDown(0x20) then return end
     	if IsInDistance(unit, 675) and CanUseSpell(myHero, _Q) == READY then
     		CastTargetSpell(unit, _Q)
 		elseif IsInDistance(unit, 375) and CanUseSpell(myHero, _W) == READY then
