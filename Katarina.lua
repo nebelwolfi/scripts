@@ -10,7 +10,7 @@ function AfterObjectLoopEvent(myHer0)
 	local unit = GetCurrentTarget()
 	if waitTickCount > 0 and lastTargetName == GetObjectName(unit) then return end
 	local movePos = GenerateMovePos()
-	if GetDistanceSqr(GetMousePos()) > GetHitBox(myHero)*GetHitBox(myHero) then
+	if KeyIsDown(0x20) and GetDistanceSqr(GetMousePos()) > GetHitBox(myHero)*GetHitBox(myHero) then
 		MoveToXYZ(movePos.x, 0, movePos.z)
 	end
 	if ValidTarget(unit) then
