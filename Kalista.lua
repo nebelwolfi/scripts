@@ -3,10 +3,13 @@
   local myHeroPos = nil
   local walk = false
 
-  function ObjectLoopEvent(unit, myHer0)
+  function AfterObjectLoopEvent(myHer0)
     myHero = myHer0
     myHeroPos = GetOrigin(myHero)
-    if (GetObjectType(unit) == Obj_AI_Hero or GetObjectType(unit) == Obj_AI_Minion or GetObjectType(unit) == Obj_AI_Camp) and ValidTarget(unit, 1000) then
+    local movePos = GenerateMovePos()
+    local unit = GetCurrentTarget()
+    if not KeyIsDown(0x20) then return end
+    if ValidTarget(unit, 1000) then
       local TotalDmg = GetBonusDmg(myHero)+GetBaseDamage(myHero)
       local dmgE = (GotBuff(unit,"kalistaexpungemarker") > 0 and (10 + (10 * GetCastLevel(myHero,_E)) + (TotalDmg * 0.6)) + (GotBuff(unit,"kalistaexpungemarker")-1) * (kalE(GetCastLevel(myHero,_E)) + (0.15 + 0.03 * GetCastLevel(myHero,_E))*TotalDmg) or 0)
       local dmg = CalcDamage(myHero, unit, dmgE)
@@ -18,17 +21,11 @@
         if hp > 0 and dmg >= hp then CastTargetSpell(unit, _E) end
       end
     end
-  end
-
-  function AfterObjectLoopEvent(myHer0)
-    local movePos = GenerateMovePos()
-    local unit = GetCurrentTarget()
-    if not KeyIsDown(0x20) then return end
     if ValidTarget(unit, GetRange(myHero)) then
       local QPred = GetPredictionForPlayer(myHeroPos,unit,GetMoveSpeed(unit),1750,250,1150,70,true,true)
       if walk then
         walk = false
-        MoveToXYZ(mousePos.x, mousePos.y, mousePos.z)
+        MoveToXYZ(movePos.x, movePos.y, movePos.z)
       elseif CanUseSpell(myHero, _Q) == READY and QPred.HitChance == 1 then
         walk = true
         CastSkillShot(_Q,QPred.PredPos.x,QPred.PredPos.y,QPred.PredPos.z)
@@ -63,7 +60,6 @@
   end
 
   function CalcDamage(source, target, addmg, apdmg)
-    if source == nil or target == nil then return 0 end
     local ADDmg             = addmg or 0
     local APDmg             = apdmg or 0
     local ArmorPen          = math.floor(GetArmorPenFlat(source))
