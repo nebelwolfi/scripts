@@ -63,6 +63,7 @@
   end
 
   function CalcDamage(source, target, addmg, apdmg)
+    if source == nil or target == nil then return 0 end
     local ADDmg             = addmg or 0
     local APDmg             = apdmg or 0
     local ArmorPen          = math.floor(GetArmorPenFlat(source))
