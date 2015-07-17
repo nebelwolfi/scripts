@@ -15,6 +15,7 @@ function AfterObjectLoopEvent(myHer0)
 	end
 	if ValidTarget(unit) then
         local dmg = 0
+        local hp  = GetCurrentHP(unit)
         local AP = GetBonusAP(myHero)
         local TotalDmg = GetBonusDmg(myHero)+GetBaseDamage(myHero)
         if CanUseSpell(myHero, _Q) == READY then
@@ -29,7 +30,7 @@ function AfterObjectLoopEvent(myHer0)
         if CanUseSpell(myHero, _R) == READY then
         	dmg = dmg + CalcDamage(myHero, unit, 0, 30+10*GetCastLevel(myHero,_R)+0.2*AP+0.3*GetBonusDmg(myHero)) * 10
         end
-        if dmg > GetCurrentHP(unit) then
+        if dmg > hp then
         	DrawText("Killable",20,drawPos.x,drawPos.y,0xffffffff)
         else
         	DrawText(math.floor(dmg/hp*100).."%",20,drawPos.x,drawPos.y,0xffffffff)
