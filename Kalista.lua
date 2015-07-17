@@ -3,7 +3,8 @@
   local myHeroPos = nil
   local walk = false
 
-  function ObjectLoopEvent(unit, myHero)
+  function ObjectLoopEvent(unit, myHer0)
+    myHero = myHer0
     if (GetObjectType(unit) == Obj_AI_Hero or GetObjectType(unit) == Obj_AI_Minion or GetObjectType(unit) == Obj_AI_Camp) and ValidTarget(unit, 1000) then
       MessageBox(0,"hi","hi",0)
       local TotalDmg = GetBonusDmg(myHero)+GetBaseDamage(myHero)
