@@ -18,6 +18,8 @@ function AfterObjectLoopEvent(myHer0)
         local hp  = GetCurrentHP(unit)
         local AP = GetBonusAP(myHero)
         local TotalDmg = GetBonusDmg(myHero)+GetBaseDamage(myHero)
+	    local targetPos = GetOrigin(unit)
+	    local drawPos = WorldToScreen(1,targetPos.x,targetPos.y,targetPos.z)
         if CanUseSpell(myHero, _Q) == READY then
         	dmg = dmg + CalcDamage(myHero, unit, 0, 35+25*GetCastLevel(myHero,_Q)+0.45*AP)
         end
