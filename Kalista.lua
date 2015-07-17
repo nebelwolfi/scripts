@@ -22,7 +22,7 @@
   function AfterObjectLoopEvent(myHer0)
     myHero = myHer0
     myHeroPos = GetOrigin(myHero)
-    local mousePos = GetMousePos()
+    local movePos = GenerateMovePos()
     local unit = GetCurrentTarget()
     if not KeyIsDown(0x20) then return end
     if ValidTarget(unit, GetRange(myHero)) then
@@ -38,7 +38,7 @@
         AttackUnit(unit)
       end
     else
-      MoveToXYZ(mousePos.x, mousePos.y, mousePos.z)
+      MoveToXYZ(movePos.x, movePos.y, movePos.z)
     end
   end
 
@@ -75,4 +75,11 @@
     local MagicArmor        = GetMagicResist(target)*MagicPenPercent-MagicPen
     local MagicArmorPercent = MagicArmor > 0 and math.floor(MagicArmor*100/(100+MagicArmor))/100 or math.ceil(MagicArmor*100/(100-MagicArmor))/100
     return math.floor(ADDmg*(1-ArmorPercent))+math.floor(APDmg*(1-MagicArmorPercent))
+  end
+
+  function GenerateMovePos()
+    local mPos = GetMousePos()
+    local tV = {x = (mPos.x-myHeroPos.x), z = (mPos.z-myHeroPos.z)}
+    local len = math.sqrt(tV.x * tV.x + tV.z * tV.z)
+    return {x = myHeroPos.x + 250 * tV.x / len, y = 0, z = myHeroPos.z + 250 * tV.z / len}
   end
