@@ -57,7 +57,7 @@
   end
 
   function GetDistance(p1,p2)
-    p2 = p2 or myHeroPos or GetOrigin(myHero)
+    p2 = p2 or myHeroPos
     local dx = p1.x - p2.x
     local dz = (p1.z or p1.y) - (p2.z or p2.y)
     return dx*dx + dz*dz
