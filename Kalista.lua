@@ -9,7 +9,7 @@
     if (GetObjectType(unit) == Obj_AI_Hero or GetObjectType(unit) == Obj_AI_Minion or GetObjectType(unit) == Obj_AI_Camp) and ValidTarget(unit, 1000) then
       local TotalDmg = GetBonusDmg(myHero)+GetBaseDamage(myHero)
       local dmgE = (GotBuff(unit,"kalistaexpungemarker") > 0 and (10 + (10 * GetCastLevel(myHero,_E)) + (TotalDmg * 0.6)) + (GotBuff(unit,"kalistaexpungemarker")-1) * (kalE(GetCastLevel(myHero,_E)) + (0.15 + 0.03 * GetCastLevel(myHero,_E))*TotalDmg) or 0)
-      local dmg = CalcDamage(unit, dmgE, "AD")
+      local dmg = CalcDamage(myHero, unit, dmgE)
       local hp = GetCurrentHP(unit)
       local targetPos = GetOrigin(unit)
       local drawPos = WorldToScreen(1,targetPos.x,targetPos.y,targetPos.z)
