@@ -2,6 +2,7 @@ local version = 1
 local myHero = nil
 local myHeroPos = nil
 local waitTickCount = 0
+local ultDelay = 250 -- if it cancels too early increase this!
 
 function AfterObjectLoopEvent(myHer0)
 	myHero = myHer0
@@ -56,7 +57,7 @@ end
 function OnProcessSpell(unit, spell)
 	if unit and unit == myHero and spell then
 		if spell.name:lower():find("katarinar") then
-			waitTickCount = 250
+			waitTickCount = ultDelay
 		end
 	end
 end
