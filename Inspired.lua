@@ -37,11 +37,11 @@ function GetDistance(p1,p2)
     return math.sqrt(GetDistanceSqr(p1,p2))
 end
 
-function EnemiesAround(Unit, range)
+function EnemiesAround(pos, range)
     local c = 0
-    if Unit == nil then return 0 end
+    if pos == nil then return 0 end
     for k,v in pairs(GetEnemyHeroes()) do 
-        if ValidTarget(v, range) then
+        if v and ValidTarget(v) and GetDistanceSqr(pos,GetOrigin(v)) < range*range then
             c = c + 1
         end
     end
