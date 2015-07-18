@@ -1,5 +1,6 @@
 local waitTickCount = 0
 local afterUltTickDelay = 250 -- if it cancels too early increase this
+local lastTargetName = ""
 
 function AfterObjectLoopEvent(myHero)
 	waitTickCount = waitTickCount - 1
