@@ -24,7 +24,7 @@ function ValidTarget(unit, range)
 end
 
 function IsInDistance(p1,r)
-    return GetDistance(GetOrigin(p1)) < r*r
+    return GetDistanceSqr(GetOrigin(p1)) < r*r
 end
 
 function GetDistance(p1,p2)
