@@ -14,7 +14,7 @@ function AfterObjectLoopEvent(myHero)
         if hp > 0 and dmg >= hp then CastTargetSpell(unit, _E) end
       end
     end
-    if ValidTarget(unit, GetRange(myHero)) then
+    if ValidTarget(unit, 1150) then
       local QPred = GetPredictionForPlayer(myHeroPos,unit,GetMoveSpeed(unit),1750,250,1150,70,true,true)
       if walk then
         walk = false
@@ -24,7 +24,9 @@ function AfterObjectLoopEvent(myHero)
         CastSkillShot(_Q,QPred.PredPos.x,QPred.PredPos.y,QPred.PredPos.z)
       else
         walk = true
-        AttackUnit(unit)
+        if ValidTarget(unit, GetRange(myHero)) then
+          AttackUnit(unit)
+        end
       end
     else
       MoveToXYZ(movePos.x, movePos.y, movePos.z)
