@@ -6,7 +6,7 @@ function AfterObjectLoopEvent(myHero)
 		ballPos = GetOrigin(GetBall())
 	end
 	if ballPos and ballDel + 1750 < GetTickCount() then
-		DrawCircle(ballPos.x,ballPos.y,ballPos.z,150,5,150,0xff00ff00)
+		--DrawCircle(ballPos.x,ballPos.y,ballPos.z,150,5,150,0xff00ff00)
 	end
 	if not KeyIsDown(0x20) then return end
 	local unit = GetTarget(1000)
