@@ -31,7 +31,7 @@ end
 
 function ValidTarget(unit, range)
     range = range or math.huge
-    if unit == nil or GetOrigin(unit) == nil or IsDead(unit) or not IsVisible(unit) or GetTeam(unit) == GetTeam(myHero) or not IsDistance(unit, range) then return false end
+    if unit == nil or GetOrigin(unit) == nil or IsDead(unit) or not IsVisible(unit) or GetTeam(unit) == GetTeam(myHero) or not IsInDistance(unit, range) then return false end
     return true
 end
 
@@ -66,13 +66,18 @@ function CalcDamage(source, target, addmg, apdmg)
     return math.floor(ADDmg*(1-ArmorPercent))+math.floor(APDmg*(1-MagicArmorPercent))
 end
 
-function GetTarget(unit, range)
-	local threshold, target = math.huge
+function GetTarget(range)
+	local LessToKill = 100
+	local LessToKilli = 0
+	local target = nil
 	for baseName, enemy in pairs(enemyHeroes) do
 		if ValidTarget(enemy, range) then
-			local result = (GetCurrentHP(enemy) + GetMagicShield(enemy) + GetDmgShield(enemy)) / (GetBonusAP(enemy) + (GetBaseDamage(enemy) + GetBonusDmg(enemy)) * GetAttackSpeed(enemy))
-			if result < threshold then
-				target = enemy; threshold = result
+			DamageToHero = CalcDamage(myHero, enemy, 100, 100)
+			ToKill = GetCurrentHP(enemy) / DamageToHero
+			if ((ToKill < LessToKill) or (LessToKilli == 0)) then
+				LessToKill = ToKill
+				LessToKilli = i
+				target = enemy
 			end
 		end
 	end
