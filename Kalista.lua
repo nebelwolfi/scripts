@@ -1,6 +1,6 @@
 function AfterObjectLoopEvent(myHero)
     local movePos = GenerateMovePos()
-    local unit = GetCurrentTarget()
+    local unit = GetTarget(GetRange(myHero))
     if not KeyIsDown(0x20) then return end
     if ValidTarget(unit, 1000) then
       local TotalDmg = GetBonusDmg(myHero)+GetBaseDamage(myHero)
