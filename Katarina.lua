@@ -42,7 +42,7 @@ function AfterObjectLoopEvent(myHero)
     		CastTargetSpell(myHero, _W)
 		elseif IsInDistance(unit, 700) and CanUseSpell(myHero, _E) == READY then
     		CastTargetSpell(unit, _E)
-		elseif IsInDistance(unit, 550) and CanUseSpell(myHero, _W) == ONCOOLDOWN and CanUseSpell(myHero, _Q) == ONCOOLDOWN and CanUseSpell(myHero, _E) == ONCOOLDOWN and CanUseSpell(myHero, _R) ~= ONCOOLDOWN and GetCastLevel(myHero,_R) > 0 then
+		elseif IsInDistance(unit, 550) and CanUseSpell(myHero, _Q) ~= READY and CanUseSpell(myHero, _W) ~= READY and CanUseSpell(myHero, _E) ~= READY and CanUseSpell(myHero, _R) ~= ONCOOLDOWN and GetCastLevel(myHero,_R) > 0 then
     		CastTargetSpell(myHero, _R)
 		end
 		lastTargetName = GetObjectName(unit)
