@@ -1,10 +1,8 @@
 local waitTickCount = 0
-local afterUltTickDelay = 250 -- if it cancels too early increase this
-local lastTargetName = ""
 
 function AfterObjectLoopEvent(myHero)
 	waitTickCount = waitTickCount - 1
-	if waitTickCount > 0 then return end
+	if waitTickCount > GetTickCount() then return end
 	local movePos = GenerateMovePos()
 	if KeyIsDown(0x41) and GetDistanceSqr(GetMousePos()) > GetHitBox(myHero)*GetHitBox(myHero) then
 		MoveToXYZ(movePos.x, 0, movePos.z)
@@ -53,7 +51,7 @@ end
 function OnProcessSpell(unit, spell)
 	if unit and unit == myHero and spell then
 		if spell.name:lower():find("katarinar") then
-			waitTickCount = afterUltTickDelay
+			waitTickCount = GetTickCount() + 2500
 		end
 	end
 end
