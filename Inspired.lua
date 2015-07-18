@@ -37,6 +37,50 @@ function GetDistance(p1,p2)
     return math.sqrt(GetDistanceSqr(p1,p2))
 end
 
+function EnemiesAround(Unit, range)
+    local c = 0
+    if Unit == nil then return 0 end
+    for k,v in pairs(GetEnemyHeroes()) do 
+        if ValidTarget(v, range) then
+            c = c + 1
+        end
+    end
+    return c
+end
+
+function ClosestEnemy(pos)
+    local enemy = nil
+    for k,v in pairs(GetEnemyHeroes()) do 
+        if not enemy and v then enemy = v end
+        if enemy and v and GetDistanceSqr(GetOrigin(enemy),pos) > GetDistanceSqr(GetOrigin(v),pos) then
+            enemy = v
+        end
+    end
+    return enemy
+end
+
+function ClosestMinion(pos)
+    local minion = nil
+    for k,v in pairs(GetEnemyMinions()) do 
+        if not minion and v then minion = v end
+        if minion and v and GetDistanceSqr(GetOrigin(minion),pos) > GetDistanceSqr(GetOrigin(v),pos) then
+            minion = v
+        end
+    end
+    return minion
+end
+
+function GetLowestMinion(pos)
+    local minion = nil
+    for k,v in pairs(GetEnemyMinions()) do 
+        if not minion and v then minion = v end
+        if minion and v and GetCurrentHP(v) < GetCurrentHP(minion) then
+            minion = v
+        end
+    end
+    return minion
+end
+
 function GetMyHeroPos()
     return GetOrigin(GetMyHero()) 
 end
