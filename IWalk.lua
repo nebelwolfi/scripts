@@ -14,11 +14,13 @@ function AfterObjectLoopEvent(myHero)
         if ValidTarget(unit, myRange) and GetTickCount() > orbTable.lastAA + orbTable.animation then
             AttackUnit(unit)
         elseif GetTickCount() > orbTable.lastAA + orbTable.windUp then
-        	if ValidTarget(unit, myRange) and GetTickCount() < orbTable.lastAA + orbTable.animation and WindUp(unit) then orbTable.lastAA = 0 end
-        	if GetDistanceSqr(GetMousePos()) > 75*75 then
-	            local movePos = GenerateMovePos()
-	            MoveToXYZ(movePos.x, movePos.y, movePos.z)
-	        end
+            if ValidTarget(unit, myRange) and GetTickCount() < orbTable.lastAA + orbTable.animation and WindUp(unit) then orbTable.lastAA = 0 end
+            if GetDistanceSqr(GetMousePos()) > 75*75 then
+                local movePos = GenerateMovePos()
+                if GetDistance(GetMousePos()) > GetHitBox(myHero) then
+                    MoveToXYZ(movePos.x, 0, movePos.z)
+                end
+            end
         end
     end
 end
@@ -33,7 +35,7 @@ end
 
 function WindUp(unit)
     if ValidTarget(unit) then
-      	local str = {[_Q] = "Q", [_W] = "W", [_E] = "E", [_R] = "R"}
+        local str = {[_Q] = "Q", [_W] = "W", [_E] = "E", [_R] = "R"}
         if aaResetTable then
           for _,k in pairs(aaResetTable) do
             if CanUseSpell(myHero, k) and GetDistanceSqr(GetOrigin(unit)) < myRange * myRange then
