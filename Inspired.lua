@@ -1,5 +1,5 @@
 _G.enemyHeroes = {}
-_G.myHero = nil
+_G.myHero = GetMyHero()
 _G.myHeroPos = nil
 
 function ObjectLoopEvent(object, myHer0)
