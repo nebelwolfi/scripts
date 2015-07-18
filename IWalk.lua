@@ -14,7 +14,7 @@ function AfterObjectLoopEvent(myHero)
         if ValidTarget(unit, myRange) and GetTickCount() > orbTable.lastAA + orbTable.animation then
             AttackUnit(unit)
         elseif GetTickCount() > orbTable.lastAA + orbTable.windUp then
-        	if ValidTarget(unit, myRange) and WindUp(unit) then return end
+        	if ValidTarget(unit, myRange) and GetTickCount() < orbTable.lastAA + orbTable.animation and WindUp(unit) then orbTable.lastAA = 0 end
         	if GetDistanceSqr(GetMousePos()) > 75*75 then
 	            local movePos = GenerateMovePos()
 	            MoveToXYZ(movePos.x, movePos.y, movePos.z)
@@ -71,7 +71,6 @@ function WindUp(unit)
             end
           end
         end
-      	return self:CastItems(unit)
     end
     return false
 end
