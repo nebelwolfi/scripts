@@ -43,6 +43,7 @@ function AfterObjectLoopEvent(myHero)
       CastTargetSpell(unit, _E)
     elseif IsInDistance(unit, 550) and CanUseSpell(myHero, _Q) ~= READY and CanUseSpell(myHero, _W) ~= READY and CanUseSpell(myHero, _E) ~= READY and CanUseSpell(myHero, _R) ~= ONCOOLDOWN and GetCastLevel(myHero,_R) > 0 then
       HoldPosition()
+      waitTickCount = GetTickCount() + 50
       CastTargetSpell(myHero, _R)
     end
     lastTargetName = GetObjectName(unit)
