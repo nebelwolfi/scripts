@@ -1,5 +1,3 @@
-package.path = package.path .. ';C:/GOS/?.lua;'
-
 local reloading = 0
 
 function AfterObjectLoopEvent(myHero)
