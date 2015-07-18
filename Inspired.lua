@@ -1,11 +1,12 @@
 _G.enemyHeroes = {}
-_G.myHero = GetMyHero()
+_G.myHero = nil
 _G.myHeroPos = nil
 
 function ObjectLoopEvent(object, myHer0)
+    _G.myHero = myHer0
     _G.myHeroPos = GetOrigin(myHer0)
-    if not _G.enemyHeroes[GetObjectBaseName(object)] and GetObjectType(object) == GetObjectType(myHero) and GetTeam(object) ~= GetTeam(myHero) then
-        _G.enemyHeroes[GetObjectBaseName(object)] = object -- ty Jorj
+    if not _G.enemyHeroes[GetNetworkID(object)] and GetObjectType(object) == GetObjectType(myHero) and GetTeam(object) ~= GetTeam(myHero) then
+        _G.enemyHeroes[GetNetworkID(object)] = object
     end
 end
 
@@ -53,9 +54,9 @@ function CalcDamage(source, target, addmg, apdmg)
     return math.floor(ADDmg*(1-ArmorPercent))+math.floor(APDmg*(1-MagicArmorPercent))
 end
 
-function GetTarget(range) -- ty Jorj
+function GetTarget(range)
     local threshold, target = math.huge
-    for baseName, enemy in pairs(enemyHeroes) do
+    for nID, enemy in pairs(enemyHeroes) do
         if ValidTarget(enemy, range) then
             local result = (GetCurrentHP(enemy) + GetMagicShield(enemy) + GetDmgShield(enemy)) / (GetBonusAP(enemy) + (GetBaseDamage(enemy) + GetBonusDmg(enemy)) * GetAttackSpeed(enemy))
             if result < threshold then
