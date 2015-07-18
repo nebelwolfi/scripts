@@ -23,6 +23,15 @@ function AfterObjectLoopEvent(myHero)
 		if CanUseSpell(myHero, _E) == READY and ballPos and GetDistanceSqr(ballPos,GetOrigin(unit)) < 80*80 and GetDistanceSqr(GetMyHeroPos(),GetOrigin(unit)) < GetDistanceSqr(GetMyHeroPos(),ballPos) then
     		CastTargetSpell(myHero, _E)
 		end
+		local rdmg = 105+105*GetCastLevel(myHero,_R)+1.2*GetBonusAP(myHero)
+		if CanUseSpell(myHero, _R) == READY and CalcDamage(myHero, unit, 0, apdmg) >= GetCurrentHP(unit) and (ballPos and GetDistanceSqr(ballPos,GetOrigin(unit)) < 375*375 or GetDistanceSqr(GetMyHeroPos(),GetOrigin(unit)) < 375*375) then
+    		CastTargetSpell(myHero, _R)
+		end
+		if CanUseSpell(myHero, _R) == READY and ballPos and EnemiesAround(ballPos, 375) then
+    		CastTargetSpell(myHero, _R)
+		end
+        local movePos = GenerateMovePos()
+        MoveToXYZ(movePos.x, movePos.y, movePos.z)
 	end
 end
 
