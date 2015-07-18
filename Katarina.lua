@@ -11,7 +11,7 @@ function AfterObjectLoopEvent(myHer0)
 	local unit = GetCurrentTarget()
 	if waitTickCount > 0 and lastTargetName == GetObjectName(unit) then return end
 	local movePos = GenerateMovePos()
-	if KeyIsDown(0x20) and GetDistanceSqr(GetMousePos()) > GetHitBox(myHero)*GetHitBox(myHero) then
+	if KeyIsDown(0x41) and GetDistanceSqr(GetMousePos()) > GetHitBox(myHero)*GetHitBox(myHero) then
 		MoveToXYZ(movePos.x, 0, movePos.z)
 	end
 	if ValidTarget(unit) then
@@ -40,7 +40,7 @@ function AfterObjectLoopEvent(myHer0)
         	DrawText(math.floor(100 * dmg / hp).."%",20,drawPos.x,drawPos.y,0xffffffff)
         	DrawDmgOverHpBar(unit,hp,0,dmg,0xffffffff)
         end
-		if not KeyIsDown(0x20) then return end
+		if not KeyIsDown(0x41) then return end
     	if IsInDistance(unit, 675) and CanUseSpell(myHero, _Q) == READY then
     		CastTargetSpell(unit, _Q)
 		elseif IsInDistance(unit, 375) and CanUseSpell(myHero, _W) == READY then
