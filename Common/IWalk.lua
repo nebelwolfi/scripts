@@ -6,6 +6,10 @@ aaResetTable3 = ({ ["Jax"] = {_Q}, ["Lucian"] = {_Q}, ["Teemo"] = {_Q}, ["Trista
 aaResetTable4 = ({ ["Lucian"] = {_E},  ["Vayne"] = {_Q} })[GetObjectName(GetMyHero())]
 IWalkTarget = nil
 
+function AfterObjectLoopEvent(x)
+  IWalk()
+end
+
 function IWalk()
     myRange = GetRange(GetMyHero())
     IWalkTarget = GetTarget(myRange)
@@ -28,15 +32,11 @@ function GetIWalkTarget()
 end
 
 function OnProcessSpell(unit, spell)
-    if unit and unit == myHero and spell and spell.name:lower():find("attack") and GetObjectName(GetMyHero()) ~= "Kalista" then
-        orbTable.lastAA = GetTickCount()
-        orbTable.windUp = spell.windUpTime * 1000
-        orbTable.animation = spell.animationTime * 1000
-    end
+    IProcessSpell(unit, spell)
 end
 
 function IProcessSpell(unit, spell)
-    if unit and unit == myHero and spell and spell.name:lower():find("attack") then
+    if unit and unit == myHero and spell and spell.name:lower():find("attack") and GetObjectName(GetMyHero()) ~= "Kalista" then
         orbTable.lastAA = GetTickCount()
         orbTable.windUp = spell.windUpTime * 1000
         orbTable.animation = spell.animationTime * 1000
