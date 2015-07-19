@@ -2,8 +2,8 @@ function AfterObjectLoopEvent(myHero)
 	if not KeyIsDown(0x20) then return end
 	local unit = GetTarget(1000)
 	if ValidTarget(unit, 1000) then
-		local QPred = GetPredictionForPlayer(_G.myHeroPos,unit,GetMoveSpeed(unit),math.huge,250,850,100,true,true)
-		local WPred = GetPredictionForPlayer(_G.myHeroPos,unit,GetMoveSpeed(unit),2500,250,925,90,true,true)
+		local QPred = GetPredictionForPlayer(GetMyHeroPos(),unit,GetMoveSpeed(unit),math.huge,250,850,100,true,true)
+		local WPred = GetPredictionForPlayer(GetMyHeroPos(),unit,GetMoveSpeed(unit),2500,250,925,90,true,true)
 		if CanUseSpell(myHero, _E) == READY and IsInDistance(unit, 700) and (GotBuff(unit,"cassiopeiamiasmapoison") > 0 or GotBuff(unit,"cassiopeianoxiousblastpoison") > 0) then
 			CastTargetSpell(unit, _E)
 		elseif CanUseSpell(myHero, _W) == READY and IsInDistance(unit, 925) and WPred.HitChance == 1 then
