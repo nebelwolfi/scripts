@@ -2,6 +2,10 @@ enemyHeroes = {}
 ball = nil
 
 function ObjectLoopEvent(object, myHero)
+    IObjectLoopEvent(object, myHero)
+end
+
+function IObjectLoopEvent(object, myHero)
     if not enemyHeroes[GetNetworkID(object)] and GetObjectType(object) == GetObjectType(myHero) and GetTeam(object) ~= GetTeam(myHero) then
         enemyHeroes[GetNetworkID(object)] = object
     end
