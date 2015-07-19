@@ -9,7 +9,7 @@ function AfterObjectLoopEvent(myHero)
   -- iterate through all enemy heroes
   for _,unit in pairs(GetEnemyHeroes()) do
     -- is the current unit is a valid target
-    if ValidTarget(unit, 1200) then
+    if ValidTarget(unit, 1000) then
       -- our total ad
       local TotalDmg = GetBonusDmg(myHero)+GetBaseDamage(myHero)
       -- out e damage, taken stack count into calc
