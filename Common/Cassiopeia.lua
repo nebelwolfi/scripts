@@ -1,4 +1,4 @@
--- this gets executed every x milliseconds
+-- this gets executed every frame
 function AfterObjectLoopEvent(myHero)
 	-- if we dont press spacebar we do nothing
 	if not KeyIsDown(0x20) then return end 
