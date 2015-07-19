@@ -1,3 +1,4 @@
+ball = nil
 ballPos = nil
 ballDel = 0
 AddButton("Q", "Use Q", true)
@@ -12,6 +13,11 @@ function ObjectLoopEvent(object, myHero)
         ball = object
     end
 end
+
+function GetBall()
+	return ball
+end
+
 function AfterObjectLoopEvent(myHero)
 	DrawMenu()
 	if GetBall() then
