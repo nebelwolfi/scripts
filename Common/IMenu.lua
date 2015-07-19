@@ -29,8 +29,8 @@ function DrawMenu()
   end
 end
 
-function AddButton(id, name, val)
-  table.insert(menuTable, {id = id, text = name, lastSwitch = 0, value = val})
+function AddButton(id, name, defaultValue)
+  table.insert(menuTable, {id = id, text = name, lastSwitch = 0, value = defaultValue})
 end
 
 function GetButtonValue(id)
@@ -40,3 +40,12 @@ function GetButtonValue(id)
     end
   end
 end
+
+function AddSubMenu(id, name)
+end
+
+function AddSlider(id, name, startVal, minVal, maxVal, step)
+end
+
+function AddKey(id, name, defaultKey)
+end  
