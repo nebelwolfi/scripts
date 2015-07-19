@@ -40,12 +40,7 @@ function IWalk()
   myRange = GetRange(GetMyHero())+GetHitBox(GetMyHero())
   IWalkTarget = GetTarget(myRange)
   local unit = IWalkTarget
-  if GetObjectName(GetMyHero()) == "Kalista" and move then
-    move = false
-    Move()
-  end
-  if ValidTarget(unit, myRange) and GetTickCount() > orbTable.lastAA + orbTable.animation and not move then
-    move = GetObjectName(GetMyHero()) == "Kalista"
+  if ValidTarget(unit, myRange) and GetTickCount() > orbTable.lastAA + orbTable.animation then
     AttackUnit(unit)
   elseif GetTickCount() > orbTable.lastAA + orbTable.windUp then
     if ValidTarget(unit, myRange) and GetTickCount() < orbTable.lastAA + orbTable.animation and orbTable.lastAA > 0 then WindUp(unit) end
@@ -70,8 +65,8 @@ end
 
 function IProcessSpell(unit, spell)
   if unit and unit == myHero and spell and spell.name:lower():find("attack") then
-    orbTable.lastAA = GetObjectName(GetMyHero()) == "Kalista" and 1 or GetTickCount() + 20
-    orbTable.windUp = spell.windUpTime * 1000
+    orbTable.lastAA = GetTickCount() + 20
+    orbTable.windUp = GetObjectName(GetMyHero()) == "Kalista" and 0 or spell.windUpTime * 1000
     orbTable.animation = spell.animationTime * 1000
   end
 end
