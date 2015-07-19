@@ -4,6 +4,7 @@ AddButton("E", "Use E", true)
 
 -- this gets executed every frame
 function AfterObjectLoopEvent(myHero)
+	DrawMenu()
 	-- if we dont press spacebar we do nothing
 	if not KeyIsDown(0x20) then return end 
 	-- grab best target in 1000 range

@@ -7,6 +7,7 @@ AddButton("R", "Use R", true)
 AddButton("Ra", "Use R if 3 hit", true)
 
 function AfterObjectLoopEvent(myHero)
+	DrawMenu()
 	if GetBall() then
 		ballPos = GetOrigin(GetBall())
 	end

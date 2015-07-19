@@ -5,6 +5,7 @@ AddButton("E", "Use E", true)
 AddButton("R", "Use R", true)
 
 function AfterObjectLoopEvent(myHero)
+  DrawMenu()
   waitTickCount = waitTickCount - 1
   if waitTickCount > GetTickCount() then return end
   IWalk()
