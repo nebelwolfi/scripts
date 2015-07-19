@@ -42,21 +42,19 @@ function IWalk()
   local unit = IWalkTarget
   if ValidTarget(unit, myRange) and GetTickCount() > orbTable.lastAA + orbTable.animation then
     AttackUnit(unit)
-    if GetObjectName(GetMyHero()) == "Kalista" then
-      Move()
-    end
   elseif GetTickCount() > orbTable.lastAA + orbTable.windUp then
     if ValidTarget(unit, myRange) and GetTickCount() < orbTable.lastAA + orbTable.animation and orbTable.lastAA > 0 then WindUp(unit) end
+    Move()
+  end
+  if GetObjectName(GetMyHero()) == "Kalista" then
     Move()
   end
 end
 
 function Move()
-  if GetDistanceSqr(GetMousePos()) > 75*75 then
-    local movePos = GenerateMovePos()
-    if GetDistance(GetMousePos()) > GetHitBox(GetMyHero()) then
-      MoveToXYZ(movePos.x, 0, movePos.z)
-    end
+  local movePos = GenerateMovePos()
+  if GetDistance(GetMousePos()) > GetHitBox(GetMyHero()) then
+    MoveToXYZ(movePos.x, 0, movePos.z)
   end
 end
 
