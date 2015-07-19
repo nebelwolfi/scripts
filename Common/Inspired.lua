@@ -1,15 +1,11 @@
 enemyHeroes = {}
-enemyMinions = {}
 ball = nil
 
 function ObjectLoopEvent(object, myHero)
     if not enemyHeroes[GetNetworkID(object)] and GetObjectType(object) == GetObjectType(myHero) and GetTeam(object) ~= GetTeam(myHero) then
         enemyHeroes[GetNetworkID(object)] = object
     end
-    if not enemyMinions[GetNetworkID(object)] and GetObjectType(object) == Obj_AI_Minion and GetTeam(object) ~= GetTeam(myHero) then
-        enemyMinions[GetNetworkID(object)] = object
-    end
-    if GetObjectType(object) ~= GetObjectType(myHero) and GetTeam(object) == GetTeam(myHero) and GetObjectName(object):lower():find("oriannaball") then
+    if GetObjectType(object) ~= GetObjectType(myHero) and GetTeam(object) == GetTeam(myHero) and GetObjectName(object) == "OriannaBall" then
         ball = object
     end
 end
@@ -59,27 +55,33 @@ function ClosestEnemy(pos)
     return enemy
 end
 
-function ClosestMinion(pos)
-    local minion = nil
-    for k,v in pairs(GetEnemyMinions()) do 
-        if not minion and v then minion = v end
-        if minion and v and GetDistanceSqr(GetOrigin(minion),pos) > GetDistanceSqr(GetOrigin(v),pos) then
-            minion = v
+--[[ Removed to reduce lag
+    function ClosestMinion(pos)
+        local minion = nil
+        for k,v in pairs(GetEnemyMinions()) do 
+            if not minion and v then minion = v end
+            if minion and v and GetDistanceSqr(GetOrigin(minion),pos) > GetDistanceSqr(GetOrigin(v),pos) then
+                minion = v
+            end
         end
+        return minion
     end
-    return minion
-end
 
-function GetLowestMinion(pos)
-    local minion = nil
-    for k,v in pairs(GetEnemyMinions()) do 
-        if not minion and v then minion = v end
-        if minion and v and GetCurrentHP(v) < GetCurrentHP(minion) then
-            minion = v
+    function GetLowestMinion(pos)
+        local minion = nil
+        for k,v in pairs(GetEnemyMinions()) do 
+            if not minion and v then minion = v end
+            if minion and v and GetCurrentHP(v) < GetCurrentHP(minion) then
+                minion = v
+            end
         end
+        return minion
     end
-    return minion
-end
+
+    function GetEnemyMinions()
+        return enemyMinions
+    end
+]]--
 
 function GetMyHeroPos()
     return GetOrigin(GetMyHero()) 
@@ -87,10 +89,6 @@ end
 
 function GetEnemyHeroes()
     return enemyHeroes
-end
-
-function GetEnemyMinions()
-    return enemyMinions
 end
 
 function GetBall()
