@@ -7,7 +7,30 @@ IWalkTarget = nil
 myHero = GetMyHero()
 myRange = GetRange(myHero)
 
+str = {[_Q] = "Q", [_W] = "W", [_E] = "E", [_R] = "R"}
+if aaResetTable[GetObjectName(myHero)] then
+  for _,k in pairs(aaResetTable[GetObjectName(myHero)]) do
+    AddButton(str[k], "AA Reset with "..str[k], true)
+  end
+end
+if aaResetTable2[GetObjectName(myHero)] then
+  for _,k in pairs(aaResetTable2[GetObjectName(myHero)]) do
+    AddButton(str[k], "AA Reset with "..str[k], true)
+  end
+end
+if aaResetTable3[GetObjectName(myHero)] then
+  for _,k in pairs(aaResetTable3[GetObjectName(myHero)]) do
+    AddButton(str[k], "AA Reset with "..str[k], true)
+  end
+end
+if aaResetTable4[GetObjectName(myHero)] then
+  for _,k in pairs(aaResetTable4[GetObjectName(myHero)]) do
+    AddButton(str[k], "AA Reset with "..str[k], true)
+  end
+end
+
 function AfterObjectLoopEvent(x)
+  DrawMenu()
   if KeyIsDown(string.byte(" ")) then
     IWalk()
   end
@@ -50,7 +73,7 @@ function WindUp(unit)
   local str = {[_Q] = "Q", [_W] = "W", [_E] = "E", [_R] = "R"}
   if aaResetTable[GetObjectName(myHero)] then
     for _,k in pairs(aaResetTable[GetObjectName(myHero)]) do
-      if CanUseSpell(myHero, k) == READY and GetDistanceSqr(GetOrigin(unit)) < myRange * myRange then
+      if CanUseSpell(myHero, k) == READY and GetButtonValue(str[k]) and GetDistanceSqr(GetOrigin(unit)) < myRange * myRange then
         orbTable.lastAA = 0
         CastTargetSpell(myHero, k)
         return true
@@ -59,7 +82,7 @@ function WindUp(unit)
   end
   if aaResetTable2[GetObjectName(myHero)] then
     for _,k in pairs(aaResetTable2[GetObjectName(myHero)]) do
-      if CanUseSpell(myHero, k) == READY and GetDistanceSqr(GetOrigin(unit)) < myRange * myRange then
+      if CanUseSpell(myHero, k) == READY and GetButtonValue(str[k]) and GetDistanceSqr(GetOrigin(unit)) < myRange * myRange then
         orbTable.lastAA = 0
         CastSkillShot(k, GetOrigin(unit).x, GetOrigin(unit).y, GetOrigin(unit).z)
         return true
@@ -68,7 +91,7 @@ function WindUp(unit)
   end
   if aaResetTable3[GetObjectName(myHero)] then
     for _,k in pairs(aaResetTable3[GetObjectName(myHero)]) do
-      if CanUseSpell(myHero, k) == READY and GetDistanceSqr(GetOrigin(unit)) < myRange * myRange then
+      if CanUseSpell(myHero, k) == READY and GetButtonValue(str[k]) and GetDistanceSqr(GetOrigin(unit)) < myRange * myRange then
         orbTable.lastAA = 0
         CastTargetSpell(unit, k)
         return true
@@ -77,7 +100,7 @@ function WindUp(unit)
   end
   if aaResetTable4[GetObjectName(myHero)] then
     for _,k in pairs(aaResetTable4[GetObjectName(myHero)]) do
-      if CanUseSpell(myHero, k) == READY then
+      if CanUseSpell(myHero, k) == READY and GetButtonValue(str[k]) then
         orbTable.lastAA = 0
         local movePos = GenerateMovePos()
         CastSkillShot(k, movePos.x, movePos.y, movePos.z)
