@@ -5,7 +5,7 @@ aaResetTable3 = { ["Jax"] = {_Q}, ["Lucian"] = {_Q}, ["Teemo"] = {_Q}, ["Tristan
 aaResetTable4 = { ["Graves"] = {_E},  ["Lucian"] = {_E},  ["Vayne"] = {_Q} }
 IWalkTarget = nil
 myHero = GetMyHero()
-myRange = GetRange(myHero)+GetHitBox(GetMyHero())
+myRange = GetRange(myHero)+GetHitBox(GetMyHero())*2
 
 str = {[_Q] = "Q", [_W] = "W", [_E] = "E", [_R] = "R"}
 if aaResetTable3[GetObjectName(myHero)] then
@@ -37,7 +37,7 @@ function AfterObjectLoopEvent(x)
 end
 
 function IWalk()
-  myRange = GetRange(GetMyHero())+GetHitBox(GetMyHero())
+  myRange = GetRange(GetMyHero())+GetHitBox(GetMyHero())*2
   IWalkTarget = GetTarget(myRange)
   local unit = IWalkTarget
   if ValidTarget(unit, myRange) and GetTickCount() > orbTable.lastAA + orbTable.animation then
