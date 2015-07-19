@@ -1,7 +1,6 @@
 local waitTickCount = 0
 
 function AfterObjectLoopEvent(myHero)
-  waitTickCount = waitTickCount - 1
   if waitTickCount > GetTickCount() then return end
   IWalk()
   local unit = GetTarget(1000)
