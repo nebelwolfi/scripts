@@ -20,7 +20,7 @@ function IWalk()
         if ValidTarget(unit, myRange) and GetTickCount() < orbTable.lastAA + orbTable.animation and WindUp(unit) then orbTable.lastAA = 0 end
         if GetDistanceSqr(GetMousePos()) > 75*75 then
             local movePos = GenerateMovePos()
-            if GetDistance(GetMousePos()) > GetHitBox(myHero) then
+            if GetDistance(GetMousePos()) > GetHitBox(GetMyHero()) then
                 MoveToXYZ(movePos.x, 0, movePos.z)
             end
         end
