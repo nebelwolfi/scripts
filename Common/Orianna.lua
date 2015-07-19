@@ -30,12 +30,12 @@ function AfterObjectLoopEvent(myHero)
 		if CanUseSpell(myHero, _R) == READY and ballPos and EnemiesAround(ballPos, 375) then
     		CastTargetSpell(myHero, _R)
 		end
-        local movePos = GenerateMovePos()
-        MoveToXYZ(movePos.x, movePos.y, movePos.z)
 	end
+	IWalk()
 end
 
 function OnProcessSpell(unit, spell)
+	IProcessSpell(unit, spell)
 	if unit and unit == GetMyHero() and spell and spell.name == "OrianaIzunaCommand" then
 		ballPos = nil
 	end

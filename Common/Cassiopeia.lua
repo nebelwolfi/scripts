@@ -12,8 +12,5 @@ function AfterObjectLoopEvent(myHero)
 			CastSkillShot(_Q,QPred.PredPos.x,QPred.PredPos.y,QPred.PredPos.z)
 		end
 	end
-	local movePos = GenerateMovePos()
-	if GetDistance(GetMousePos()) > GetHitBox(myHero) then
-		MoveToXYZ(movePos.x, 0, movePos.z)
-	end
+	IWalk()
 end

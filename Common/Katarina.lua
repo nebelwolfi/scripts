@@ -3,10 +3,7 @@ local waitTickCount = 0
 function AfterObjectLoopEvent(myHero)
   waitTickCount = waitTickCount - 1
   if waitTickCount > GetTickCount() then return end
-  local movePos = GenerateMovePos()
-  if KeyIsDown(0x41) and GetDistanceSqr(GetMousePos()) > GetHitBox(myHero)*GetHitBox(myHero) then
-    MoveToXYZ(movePos.x, 0, movePos.z)
-  end
+  IWalk()
   local unit = GetTarget(1000)
   if ValidTarget(unit) then
     local dmg = 0

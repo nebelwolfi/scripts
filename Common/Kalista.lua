@@ -16,25 +16,11 @@ function AfterObjectLoopEvent(myHero)
     end
     if ValidTarget(unit, 1175) then
       local QPred = GetPredictionForPlayer(myHeroPos,unit,GetMoveSpeed(unit),1750,250,1150,70,true,true)
-      if walk then
-        walk = false
-        if GetDistance(GetMousePos()) > GetHitBox(myHero) then
-          MoveToXYZ(movePos.x, 0, movePos.z)
-        end
-      elseif CanUseSpell(myHero, _Q) == READY and QPred.HitChance == 1 then
-        walk = true
+      if CanUseSpell(myHero, _Q) == READY and QPred.HitChance == 1 then
         CastSkillShot(_Q,QPred.PredPos.x,QPred.PredPos.y,QPred.PredPos.z)
-      else
-        walk = true
-        if ValidTarget(unit, GetRange(myHero)) then
-          AttackUnit(unit)
-        end
-      end
-    else
-      if GetDistance(GetMousePos()) > GetHitBox(myHero) then
-        MoveToXYZ(movePos.x, 0, movePos.z)
       end
     end
+    IWalk()
 end
 
 function kalE(x) if x <= 1 then return 10 else return kalE(x-1) + 2 + x end end
