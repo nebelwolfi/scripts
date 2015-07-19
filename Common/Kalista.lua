@@ -4,8 +4,6 @@ AddButton("E", "Use E", true)
 -- this gets executed every frame
 function AfterObjectLoopEvent(myHero)
   DrawMenu()
-  -- if we dont press spacebar we do nothing
-  if not KeyIsDown(0x20) then return end
   -- iterate through all enemy heroes
   for _,unit in pairs(GetEnemyHeroes()) do
     -- is the current unit is a valid target
@@ -35,6 +33,8 @@ function AfterObjectLoopEvent(myHero)
       end
     end
   end
+  -- if we dont press spacebar we do nothing
+  if not KeyIsDown(0x20) then return end
   -- grab best target in 1175 range
   local unit = GetTarget(1175)
   -- if the target is valid and (still) in 1175 range
