@@ -1,6 +1,11 @@
 local waitTickCount = 0
+AddButton("Q", "Use Q", true)
+AddButton("W", "Use W", true)
+AddButton("E", "Use E", true)
+AddButton("R", "Use R", true)
 
 function AfterObjectLoopEvent(myHero)
+  waitTickCount = waitTickCount - 1
   if waitTickCount > GetTickCount() then return end
   IWalk()
   local unit = GetTarget(1000)
@@ -30,14 +35,14 @@ function AfterObjectLoopEvent(myHero)
       DrawText(math.floor(100 * dmg / hp).."%",20,drawPos.x,drawPos.y,0xffffffff)
       DrawDmgOverHpBar(unit,hp,0,dmg,0xffffffff)
     end
-    if not KeyIsDown(0x20) then return end
-    if IsInDistance(unit, 675) and CanUseSpell(myHero, _Q) == READY then
+    if not KeyIsDown(0x41) then return end
+    if IsInDistance(unit, 675) and CanUseSpell(myHero, _Q) == READY and GetButtonValue("Q") then
       CastTargetSpell(unit, _Q)
-    elseif IsInDistance(unit, 375) and CanUseSpell(myHero, _W) == READY then
+    elseif IsInDistance(unit, 375) and CanUseSpell(myHero, _W) == READY and GetButtonValue("W") then
       CastTargetSpell(myHero, _W)
-    elseif IsInDistance(unit, 700) and CanUseSpell(myHero, _E) == READY then
+    elseif IsInDistance(unit, 700) and CanUseSpell(myHero, _E) == READY and GetButtonValue("E") then
       CastTargetSpell(unit, _E)
-    elseif IsInDistance(unit, 550) and CanUseSpell(myHero, _Q) ~= READY and CanUseSpell(myHero, _W) ~= READY and CanUseSpell(myHero, _E) ~= READY and CanUseSpell(myHero, _R) ~= ONCOOLDOWN and GetCastLevel(myHero,_R) > 0 then
+    elseif IsInDistance(unit, 550) and CanUseSpell(myHero, _Q) ~= READY and GetButtonValue("R") and CanUseSpell(myHero, _W) ~= READY and CanUseSpell(myHero, _E) ~= READY and CanUseSpell(myHero, _R) ~= ONCOOLDOWN and GetCastLevel(myHero,_R) > 0 then
       HoldPosition()
       waitTickCount = GetTickCount() + 50
       CastTargetSpell(myHero, _R)
@@ -47,7 +52,6 @@ function AfterObjectLoopEvent(myHero)
 end
 
 function OnProcessSpell(unit, spell)
-  IProcessSpell(unit, spell)
   if unit and unit == myHero and spell then
     if spell.name:lower():find("katarinar") then
       waitTickCount = GetTickCount() + 2500

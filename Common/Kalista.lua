@@ -1,3 +1,6 @@
+AddButton("Q", "Use Q", true)
+AddButton("E", "Use E", true)
+
 -- this gets executed every frame
 function AfterObjectLoopEvent(myHero)
   -- if we dont press spacebar we do nothing
@@ -24,7 +27,7 @@ function AfterObjectLoopEvent(myHero)
         -- draw percentage of dmg
         DrawText(math.floor(dmg/hp*100).."%",20,drawPos.x,drawPos.y,0xffffffff)
         -- if our dmg is greater than target hp
-        if hp > 0 and dmg >= hp then 
+        if hp > 0 and dmg >= hp and GetButtonValue("E") then 
           -- cast e
           CastTargetSpell(unit, _E) 
         end
@@ -34,7 +37,7 @@ function AfterObjectLoopEvent(myHero)
   -- grab best target in 1175 range
   local unit = GetTarget(1175)
   -- if the target is valid and (still) in 1175 range
-  if ValidTarget(unit, 1175) then
+  if ValidTarget(unit, 1175) and GetButtonValue("Q") then
     -- following line is used to predict enemy position
     -- GetPredictionForPlayer(startPosition, targetUnit, targetUnitMoveSpeed, spellTravelSpeed, spellDelay, spellRange, spellWidth, collision, addHitBox)
     local QPred = GetPredictionForPlayer(myHeroPos,unit,GetMoveSpeed(unit),1750,250,1150,70,true,true)
