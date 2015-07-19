@@ -5,7 +5,7 @@ aaResetTable3 = { ["Jax"] = {_Q}, ["Lucian"] = {_Q}, ["Teemo"] = {_Q}, ["Tristan
 aaResetTable4 = { ["Graves"] = {_E},  ["Lucian"] = {_E},  ["Vayne"] = {_Q} }
 IWalkTarget = nil
 myHero = GetMyHero()
-myRange = GetRange(myHero)
+myRange = GetRange(myHero)+GetHitBox(GetMyHero())
 
 str = {[_Q] = "Q", [_W] = "W", [_E] = "E", [_R] = "R"}
 if aaResetTable3[GetObjectName(myHero)] then
@@ -37,7 +37,7 @@ function AfterObjectLoopEvent(x)
 end
 
 function IWalk()
-  myRange = GetRange(myHero)
+  myRange = GetRange(GetMyHero())+GetHitBox(GetMyHero())
   IWalkTarget = GetTarget(myRange)
   local unit = IWalkTarget
   if ValidTarget(unit, myRange) and GetTickCount() > orbTable.lastAA + orbTable.animation then
@@ -46,7 +46,7 @@ function IWalk()
     if ValidTarget(unit, myRange) and GetTickCount() < orbTable.lastAA + orbTable.animation and orbTable.lastAA > 0 then WindUp(unit) end
     if GetDistanceSqr(GetMousePos()) > 75*75 then
       local movePos = GenerateMovePos()
-      if GetDistance(GetMousePos()) > GetHitBox(myHero) then
+      if GetDistance(GetMousePos()) > GetHitBox(GetMyHero()) then
         MoveToXYZ(movePos.x, 0, movePos.z)
       end
     end
@@ -62,8 +62,8 @@ function OnProcessSpell(unit, spell)
 end
 
 function IProcessSpell(unit, spell)
-  if unit and unit == myHero and spell and spell.name:lower():find("attack") and GetObjectName(myHero) ~= "Kalista" then
-    orbTable.lastAA = GetTickCount() + 20
+  if unit and unit == myHero and spell and spell.name:lower():find("attack") then
+    orbTable.lastAA = GetObjectName(GetMyHero()) == "Kalista" and 1 or GetTickCount() + 20
     orbTable.windUp = spell.windUpTime * 1000
     orbTable.animation = spell.animationTime * 1000
   end
