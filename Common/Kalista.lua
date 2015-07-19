@@ -9,7 +9,7 @@ function AfterObjectLoopEvent(myHero)
   -- iterate through all enemy heroes
   for _,unit in pairs(GetEnemyHeroes()) do
     -- is the current unit is a valid target
-    if ValidTarget(unit, 1000) then
+    if ValidTarget(unit, 1500) then
       -- our total ad
       local TotalDmg = GetBonusDmg(myHero)+GetBaseDamage(myHero)
       -- out e damage, taken stack count into calc
@@ -28,9 +28,9 @@ function AfterObjectLoopEvent(myHero)
         -- draw percentage of dmg
         DrawText(math.floor(dmg/hp*100).."%",20,drawPos.x,drawPos.y,0xffffffff)
         -- if our dmg is greater than target hp
-        if hp > 0 and dmg >= hp and GetButtonValue("E") then 
+        if hp > 0 and dmg >= hp and ValidTarget(unit, 1000) and GetButtonValue("E") then 
           -- cast e
-          CastTargetSpell(unit, _E) 
+          CastTargetSpell(myHero, _E) 
         end
       end
     end
