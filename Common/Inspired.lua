@@ -1,16 +1,19 @@
 enemyHeroes = {}
 ball = nil
+enemyCount = 0
+finished = false
 
 function ObjectLoopEvent(object, myHero)
     IObjectLoopEvent(object, myHero)
 end
 
 function IObjectLoopEvent(object, myHero)
-    if not enemyHeroes[GetNetworkID(object)] and GetObjectType(object) == GetObjectType(myHero) and GetTeam(object) ~= GetTeam(myHero) then
-        enemyHeroes[GetNetworkID(object)] = object
-    end
-    if GetObjectType(object) ~= GetObjectType(myHero) and GetTeam(object) == GetTeam(myHero) and GetObjectName(object) == "OriannaBall" then
-        ball = object
+    if not finished then
+        local enemyCount = #enemyHeroes
+        if GetObjectType(object) == Obj_AI_Hero and GetTeam(object) ~= GetTeam(myHero) and not enemyHeroes[GetNetworkID(object)] then
+            enemyHeroes[GetNetworkID(object)] = object
+        end
+        if enemyCount == #enemyHeroes then finished = true end
     end
 end
 

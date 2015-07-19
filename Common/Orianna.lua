@@ -6,6 +6,12 @@ AddButton("E", "Use E", true)
 AddButton("R", "Use R", true)
 AddButton("Ra", "Use R if 3 hit", true)
 
+function ObjectLoopEvent(object, myHero)
+    IObjectLoopEvent(object, myHero)
+    if GetObjectType(object) ~= GetObjectType(myHero) and GetTeam(object) == GetTeam(myHero) and GetObjectName(object) == "OriannaBall" then
+        ball = object
+    end
+end
 function AfterObjectLoopEvent(myHero)
 	DrawMenu()
 	if GetBall() then
