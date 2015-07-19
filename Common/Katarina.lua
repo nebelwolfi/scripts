@@ -8,7 +8,7 @@ function AfterObjectLoopEvent(myHero)
   DrawMenu()
   waitTickCount = waitTickCount - 1
   if waitTickCount > GetTickCount() then return end
-  IWalk()
+  if KeyIsDown(0x41) then IWalk() end
   local unit = GetTarget(1000)
   if ValidTarget(unit) then
     local dmg = 0
