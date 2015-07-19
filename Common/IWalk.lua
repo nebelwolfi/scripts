@@ -40,13 +40,15 @@ function IWalk()
   myRange = GetRange(GetMyHero())+GetHitBox(GetMyHero())
   IWalkTarget = GetTarget(myRange)
   local unit = IWalkTarget
-  if ValidTarget(unit, myRange) and GetTickCount() > orbTable.lastAA + orbTable.animation then
+  if GetObjectName(GetMyHero()) == "Kalista" then
+    move = false
+    Move()
+  end
+  if ValidTarget(unit, myRange) and GetTickCount() > orbTable.lastAA + orbTable.animation and not move then
+    move = true
     AttackUnit(unit)
   elseif GetTickCount() > orbTable.lastAA + orbTable.windUp then
     if ValidTarget(unit, myRange) and GetTickCount() < orbTable.lastAA + orbTable.animation and orbTable.lastAA > 0 then WindUp(unit) end
-    Move()
-  end
-  if GetObjectName(GetMyHero()) == "Kalista" then
     Move()
   end
 end
