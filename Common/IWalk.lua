@@ -28,6 +28,7 @@ if aaResetTable4[GetObjectName(myHero)] then
     AddButton(str[k], "AA Reset with "..str[k], true)
   end
 end
+AddButton("I", "Cast Items", true)
 
 function AfterObjectLoopEvent(x)
   DrawMenu()
@@ -108,6 +109,26 @@ function WindUp(unit)
         CastTargetSpell(unit, k)
         return true
       end
+    end
+  end
+  return GetButtonValue("I") and CastItems(unit)
+end
+
+function CastItems(unit)
+  i = {3074, 3077, 3142, 3184}
+  u = {3153, 3146, 3144}
+  for _,k in pairs(i) do
+    slot = GetItemSlot(GetMyHero(),k)
+    if slot and CanUseSpell(GetMyHero(), slot) == READY then
+      CastTargetSpell(GetMyHero(), slot)
+      return true
+    end
+  end
+  for _,k in pairs(u) do
+    slot = GetItemSlot(GetMyHero(),k)
+    if slot and CanUseSpell(GetMyHero(), slot) == READY then
+      CastTargetSpell(unit, slot)
+      return true
     end
   end
   return false
