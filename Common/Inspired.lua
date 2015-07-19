@@ -12,17 +12,21 @@ end
 function IObjectLoopEvent(object, myHero)
     if not finishedEnemies then
         local enemyCount = #enemyHeroes
-        if GetObjectType(object) == Obj_AI_Hero and GetTeam(object) ~= GetTeam(myHero) and not enemyHeroes[GetNetworkID(object)] then
-            enemyHeroes[GetNetworkID(object)] = object
+        if GetObjectType(object) == Obj_AI_Hero and GetTeam(object) ~= GetTeam(myHero) then
+            if not enemyHeroes[GetNetworkID(object)] then
+                enemyHeroes[GetNetworkID(object)] = object
+            end
+            if enemyCount == #enemyHeroes then finishedEnemies = true end
         end
-        if enemyCount == #enemyHeroes then finishedEnemies = true end
     end
     if not finishedAllies then
         local allyCount = #allyHeroes
-        if GetObjectType(object) == Obj_AI_Hero and GetTeam(object) == GetTeam(myHero) and not allyHeroes[GetNetworkID(object)] then
-            allyHeroes[GetNetworkID(object)] = object
+        if GetObjectType(object) == Obj_AI_Hero and GetTeam(object) == GetTeam(myHero) then
+            if not allyHeroes[GetNetworkID(object)] then
+                allyHeroes[GetNetworkID(object)] = object
+            end
+            if allyCount == #allyHeroes then finishedAllies = true end
         end
-        if allyCount == #allyHeroes then finishedAllies = true end
     end
 end
 
