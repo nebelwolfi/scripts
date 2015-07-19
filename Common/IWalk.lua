@@ -63,9 +63,9 @@ end
 
 function IProcessSpell(unit, spell)
   if unit and unit == myHero and spell and spell.name:lower():find("attack") then
-    orbTable.lastAA = GetObjectName(GetMyHero()) == "Kalista" and 1 or GetTickCount() + 20
-    orbTable.windUp = spell.windUpTime * 1000
-    orbTable.animation = spell.animationTime * 1000
+    orbTable.lastAA = GetObjectName(GetMyHero()) == "Kalista" and 1 or (GetTickCount() + 20)
+    orbTable.windUp = GetObjectName(GetMyHero()) == "Kalista" and 1 or (spell.windUpTime * 1000)
+    orbTable.animation = GetObjectName(GetMyHero()) == "Kalista" and 1 or (spell.animationTime * 1000)
   end
 end
 
