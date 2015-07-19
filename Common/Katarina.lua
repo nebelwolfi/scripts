@@ -48,6 +48,7 @@ function AfterObjectLoopEvent(myHero)
 end
 
 function OnProcessSpell(unit, spell)
+  IProcessSpell(unit, spell)
   if unit and unit == myHero and spell then
     if spell.name:lower():find("katarinar") then
       waitTickCount = GetTickCount() + 2500
