@@ -15,8 +15,14 @@ function AfterObjectLoopEvent(myHero)
 		-- GetPredictionForPlayer(startPosition, targetUnit, targetUnitMoveSpeed, spellTravelSpeed, spellDelay, spellRange, spellWidth, collision, addHitBox)
 		local QPred = GetPredictionForPlayer(GetMyHeroPos(),unit,GetMoveSpeed(unit),math.huge,250,850,100,true,true)
 		local WPred = GetPredictionForPlayer(GetMyHeroPos(),unit,GetMoveSpeed(unit),2500,250,925,90,true,true)
+		local poisoned = false
+		for i=0, 63 do
+			if GetBuffCount(myHero,i) > 0 and GetBuffName(myHero,0):lower():find("poison") then
+				poisoned = true
+			end
+		end
 		-- is e ready? is unit in distance? is unit poisoned?
-		if CanUseSpell(myHero, _E) == READY and GetButtonValue("E") and IsInDistance(unit, 700) and (GotBuff(unit,"cassiopeiamiasmapoison") > 0 or GotBuff(unit,"cassiopeianoxiousblastpoison") > 0) then
+		if CanUseSpell(myHero, _E) == READY and GetButtonValue("E") and IsInDistance(unit, 700) and poisoned then
 			-- cast e targeted!
 			CastTargetSpell(unit, _E)
 		-- is w ready? is unit in distance? is hitchance high enough?
