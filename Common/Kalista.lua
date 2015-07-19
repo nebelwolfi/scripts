@@ -3,7 +3,7 @@ function AfterObjectLoopEvent(myHero)
   -- if we dont press spacebar we do nothing
   if not KeyIsDown(0x20) then return end
   -- iterate through all enemy heroes
-  for k,unit in pairs(GetEnemyHeroes()) do
+  for _,unit in pairs(GetEnemyHeroes()) do
     -- is the current unit is a valid target
     if ValidTarget(unit, 1200) then
       -- our total ad
@@ -11,6 +11,7 @@ function AfterObjectLoopEvent(myHero)
       -- out e damage, taken stack count into calc
       local dmgE = (GotBuff(unit,"kalistaexpungemarker") > 0 and (10 + (10 * GetCastLevel(myHero,_E)) + (TotalDmg * 0.6)) + (GotBuff(unit,"kalistaexpungemarker")-1) * (kalE(GetCastLevel(myHero,_E)) + (0.175 + 0.025 * GetCastLevel(myHero,_E))*TotalDmg) or 0)
       -- calculates damage on enemy, with armor taken into calc
+      -- CalcDamage(source, target, addmg, apdmg)
       local dmg = CalcDamage(myHero, unit, dmgE)
       -- hp of target
       local hp = GetCurrentHP(unit)
