@@ -5,6 +5,9 @@ finishedEnemies = false
 finishedAllies = false
 lastMinionTick = 0
 MINION_ALLY, MINION_ENEMY, MINION_JUNGLE = GetTeam(GetMyHero()), GetTeam(GetMyHero()) == 100 and 200 or 100, 300
+Ignite = (GetCastName(myHero,SUMMONER_1):lower():find("summonerdot") and SUMMONER_1 or (GetCastName(myHero,SUMMONER_2):lower():find("summonerdot") and SUMMONER_2 or nil))
+Smite = (GetCastName(myHero,SUMMONER_1):lower():find("summonersmite") and SUMMONER_1 or (GetCastName(myHero,SUMMONER_2):lower():find("summonersmite") and SUMMONER_2 or nil))
+Exhaust = (GetCastName(myHero,SUMMONER_1):lower():find("summonerexhaust") and SUMMONER_1 or (GetCastName(myHero,SUMMONER_2):lower():find("summonerexhaust") and SUMMONER_2 or nil))
 
 function ObjectLoopEvent(object, myHero)
     IObjectLoopEvent(object, myHero)
@@ -43,6 +46,16 @@ function IAfterObjectLoopEvent()
         lastMinionTick = GetTickCount() + 1000
     else
         doMinions = false
+    end
+end
+
+function AutoIgnite()
+    if Ignite then
+        for _, k in pairs(GetEnemyHeroes()) do
+            if CanUseSpell(GetMyHero(), Ignite) == READY and (50*GetLevel(GetMyHero())+20) > GetCurrentHP(k)+GetHPRegen(k)*2.5 then
+                CastTargetSpell(k, Ignite)
+            end
+        end
     end
 end
 
