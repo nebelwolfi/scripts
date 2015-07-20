@@ -1,4 +1,5 @@
 RemoveButton("Q")
+AddInfo("Kalista", "Kalista:")
 AddButton("Q", "Use Q", true)
 AddButton("E", "Use E", true)
 

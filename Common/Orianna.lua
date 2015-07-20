@@ -1,6 +1,7 @@
 ball = nil
 ballPos = nil
 ballDel = 0
+AddInfo("Orianna", "Orianna:")
 AddButton("Q", "Use Q", true)
 AddButton("W", "Use W", true)
 AddButton("E", "Use E", true)

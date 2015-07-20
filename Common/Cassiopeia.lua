@@ -1,3 +1,4 @@
+AddInfo("Cassiopeia", "Cassiopeia:")
 AddButton("Q", "Use Q", true)
 AddButton("W", "Use W", true)
 AddButton("E", "Use E", true)
