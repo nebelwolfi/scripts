@@ -4,16 +4,83 @@ minionTable = {}
 finishedEnemies = false
 finishedAllies = false
 lastMinionTick = 0
+menuTable = {}
+currentPos = {x = 150, y = 250}
 MINION_ALLY, MINION_ENEMY, MINION_JUNGLE = GetTeam(GetMyHero()), GetTeam(GetMyHero()) == 100 and 200 or 100, 300
 Ignite = (GetCastName(GetMyHero(),SUMMONER_1):lower():find("summonerdot") and SUMMONER_1 or (GetCastName(GetMyHero(),SUMMONER_2):lower():find("summonerdot") and SUMMONER_2 or nil))
 Smite = (GetCastName(GetMyHero(),SUMMONER_1):lower():find("summonersmite") and SUMMONER_1 or (GetCastName(GetMyHero(),SUMMONER_2):lower():find("summonersmite") and SUMMONER_2 or nil))
 Exhaust = (GetCastName(GetMyHero(),SUMMONER_1):lower():find("summonerexhaust") and SUMMONER_1 or (GetCastName(GetMyHero(),SUMMONER_2):lower():find("summonerexhaust") and SUMMONER_2 or nil))
+objectLoopEvents = {}
+afterObjectLoopEvents = {}
+onProcessSpells = {}
+delayedActions = {}
+delayedActionsExecuter = nil
+DAMAGE_MAGIC, DAMAGE_MAGICAL, DAMAGE_PHYSICAL = 1, 1, 2
 
 function ObjectLoopEvent(object, myHero)
-    IObjectLoopEvent(object, myHero)
+    if objectLoopEvents then
+        for _, func in pairs(objectLoopEvents) do
+            func(object, myHero)
+        end
+    end
 end
 
-function IObjectLoopEvent(object, myHero)
+function AfterObjectLoopEvent(myHero)
+    DrawMenu()
+    if GetButtonValue("Ignite") then AutoIgnite() end
+    if afterObjectLoopEvents then
+        for _, func in pairs(afterObjectLoopEvents) do
+            func(myHero)
+        end
+    end
+    if delayActions then
+        for _, dfunc in pairs(delayActions) do
+            if delayActions.time <= GetTickCount() then
+                dfunc.func(table.unpack(dfunc.args or {}))
+            end
+        end
+    end
+end
+
+function OnProcessSpell(unit, spell)
+    if onProcessSpells then
+        for _, func in pairs(onProcessSpells) do
+            func(unit, spell)
+        end
+    end
+end
+
+function AddObjectLoopEvent(func)
+    table.insert(objectLoopEvents, func)
+end
+
+function AddAfterObjectLoopEvent(func)
+    table.insert(afterObjectLoopEvents, func)
+end
+
+function AddProcessSpell(func)
+    table.insert(afterObjectLoopEvents, func)
+end
+
+function DelayAction(func, delay, args)
+    if not delayedActionsExecuter then
+        function delayedActionsExecuter()
+            for t, funcs in pairs(delayedActions) do
+                if t <= GetTickCount() then
+                    for _, f in ipairs(funcs) do f.func(unpack(f.args or {})) end
+                    delayedActions[t] = nil
+                end
+            end
+        end
+        AddAfterObjectLoopEvent(delayedActionsExecuter)
+    end
+    local t = GetTickCount() + (delay or 0)
+    if delayedActions[t] then table.insert(delayedActions[t], { func = func, args = args })
+    else delayedActions[t] = { { func = func, args = args } }
+    end
+end
+
+AddObjectLoopEvent(function(object, myHero)
     if doMinions then
         if GetObjectType(object) == Obj_AI_Minion and not IsDead(k) then
             minionTable[GetNetworkID(object)] = object
@@ -38,16 +105,16 @@ function IObjectLoopEvent(object, myHero)
             if startTick + 1000 < GetTickCount() then finishedAllies = true end
         end
     end
-end
+end)
 
-function IAfterObjectLoopEvent()
+AddAfterObjectLoopEvent(function(myHero)
     if lastMinionTick < GetTickCount() then
         doMinions = true
         lastMinionTick = GetTickCount() + 1000
     else
         doMinions = false
     end
-end
+end)
 
 function AutoIgnite()
     if Ignite then
@@ -125,7 +192,7 @@ function GenerateMovePos()
 end
 
 function ValidTarget(unit, range)
-    range = range or 5000
+    range = range or 25000
     if unit == nil or GetOrigin(unit) == nil or IsImmune(unit,GetMyHero()) or IsDead(unit) or not IsVisible(unit) or GetTeam(unit) == GetTeam(GetMyHero()) or not IsInDistance(unit, range) then return false end
     return true
 end
@@ -199,15 +266,164 @@ function CalcDamage(source, target, addmg, apdmg)
     return (GotBuff(source,"exhausted")  > 0 and 0.4 or 1) * math.floor(ADDmg*(1-ArmorPercent))+math.floor(APDmg*(1-MagicArmorPercent))
 end
 
-function GetTarget(range)
-    local threshold, target = math.huge
-    for nID, enemy in pairs(GetEnemyHeroes()) do
-        if ValidTarget(enemy, range) then
-            local result = (GetCurrentHP(enemy) + GetMagicShield(enemy) + GetDmgShield(enemy)) / (GetBonusAP(enemy) + (GetBaseDamage(enemy) + GetBonusDmg(enemy)) * GetAttackSpeed(enemy))
-            if result < threshold then
-                target = enemy; threshold = result
-            end
+function GetTarget(range, damageType)
+    damageType = damageType or 2
+    local target, steps = nil, 10000
+    for _, k in pairs(GetEnemyHeroes()) do
+        local step = GetCurrentHP(k) / CalcDamage(GetMyHero(), k, DAMAGE_PHYSICAL == damageType and 100 or 0, DAMAGE_MAGIC == damageType and 100 or 0)
+        if k and ValidTarget(k, range) and step < steps then
+            target = k
+            steps = step
         end
     end
-    return target
 end
+
+function CastOffensiveItems(unit)
+  i = {3074, 3077, 3142, 3184}
+  u = {3153, 3146, 3144}
+  for _,k in pairs(i) do
+    slot = GetItemSlot(GetMyHero(),k)
+    if slot and CanUseSpell(GetMyHero(), slot) == READY then
+      CastTargetSpell(GetMyHero(), slot)
+      return true
+    end
+  end
+  for _,k in pairs(u) do
+    slot = GetItemSlot(GetMyHero(),k)
+    if slot and CanUseSpell(GetMyHero(), slot) == READY then
+      CastTargetSpell(unit, slot)
+      return true
+    end
+  end
+  return false
+end
+
+function DrawMenu()
+  if KeyIsDown(0x10) then
+    local mPos  = GetMousePos()
+    local mmPos = WorldToScreen(1,mPos.x,mPos.y,mPos.z)
+    FillRect(currentPos.x-5,currentPos.y+30,210,#menuTable*35+40,0x50ffffff)
+    local c = 0
+    for _,k in pairs(menuTable) do
+      if k.isInfo then
+        c = c + 1
+        FillRect(currentPos.x,c*35+currentPos.y,200,30,0x90ffffff)
+        DrawText(k.text,20,currentPos.x+10,c*35+currentPos.y+5,0xffffffff)
+      elseif k.lastSwitch then
+        c = c + 1
+        if k.value then
+          FillRect(currentPos.x+150,c*35+currentPos.y,50,30,0x9000ff00)
+        else
+          FillRect(currentPos.x+150,c*35+currentPos.y,50,30,0x90ff0000)
+        end
+        FillRect(currentPos.x,c*35+currentPos.y,150,30,0x90ffffff)
+        DrawText(k.text,20,currentPos.x+10,c*35+currentPos.y+5,0xffffffff)
+        DrawText(({[true] = "On", [false] = "Off"})[k.value],20,currentPos.x+160,c*35+currentPos.y+5,0xffffffff)
+      end
+    end
+    c = c + 1
+    FillRect(currentPos.x,c*35+currentPos.y,200,30,0x90ffffff)
+    DrawText("KeySettings:",20,currentPos.x+10,c*35+currentPos.y+5,0xffffffff)
+    for _,k in pairs(menuTable) do
+      if k.key then
+        c = c + 1
+        if KeyIsDown(k.key) then
+          FillRect(currentPos.x+150,c*35+currentPos.y,50,30,0x9000ff00)
+        else
+          FillRect(currentPos.x+150,c*35+currentPos.y,50,30,0x90ff0000)
+        end
+        FillRect(currentPos.x,c*35+currentPos.y,150,30,0x90ffffff)
+        DrawText(k.text,20,currentPos.x+10,c*35+currentPos.y+5,0xffffffff)
+        local t = string.char(k.key)
+        if k.switchNow then
+          DrawText("...",20,currentPos.x+(t == " " and 155 or 160),c*35+currentPos.y+5,0xffffffff)
+        else
+          DrawText(t == " " and "Space" or t,20,currentPos.x+(t == " " and 155 or 170),c*35+currentPos.y+5,0xffffffff)
+        end
+      end
+    end
+    if KeyIsDown(1) then
+      if moveNow then currentPos = {x = mmPos.x-25, y = mmPos.y-45} end
+      local c = 0
+      for _,k in pairs(menuTable) do
+        if k.isInfo then
+          c = c + 1
+          if mmPos.x >= currentPos.x and mmPos.x <= currentPos.x+200 and mmPos.y >= (1*35+currentPos.y) and mmPos.y <= (1*35+currentPos.y+30) then
+            moveNow = true
+          end
+        elseif k.lastSwitch then
+          c = c + 1
+          if mmPos.x >= currentPos.x+150 and mmPos.x <= currentPos.x+200 and mmPos.y >= (c*35+currentPos.y) and mmPos.y <= (c*35+currentPos.y+30) and k.lastSwitch + 250 < GetTickCount() then
+            k.lastSwitch = GetTickCount()
+            k.value = not k.value
+          end
+        end
+      end
+      c = c + 1
+      for _,k in pairs(menuTable) do
+        if k.key then
+          c = c + 1
+          if mmPos.x >= currentPos.x+150 and mmPos.x <= currentPos.x+200 and mmPos.y >= (c*35+currentPos.y) and mmPos.y <= (c*35+currentPos.y+30) then
+            k.switchNow = true
+          end
+        end
+      end
+    else 
+      moveNow = false
+    end
+    for _,k in pairs(menuTable) do
+      if k.key and k.switchNow then
+        for i=17, 128 do
+          if KeyIsDown(i) then
+            k.key = i
+            k.switchNow = false
+          end
+        end
+      end
+    end
+  end
+end
+
+function AddButton(id, name, defaultValue)
+  table.insert(menuTable, {id = id, text = name, lastSwitch = 0, value = defaultValue})
+end
+
+function RemoveButton(id)
+  for _,k in pairs(menuTable) do
+    if k.id == id and k.lastSwitch then
+      table.remove(menuTable, _)
+    end
+  end
+end
+
+function GetButtonValue(id)
+  for _,k in pairs(menuTable) do
+    if k.id == id and k.lastSwitch then
+      return k.value
+    end
+  end
+  return false
+end
+
+function AddInfo(id, name)
+  table.insert(menuTable, {id = id, text = name, isInfo = true})
+end
+
+function AddSlider(id, name, startVal, minVal, maxVal, step)
+end
+
+function AddKey(id, name, defaultKey)
+  table.insert(menuTable, {id = id, text = name, switchNow = false, key = defaultKey})
+end  
+
+function GetKeyValue(id)
+  for _,k in pairs(menuTable) do
+    if k.id == id and k.key then
+      return KeyIsDown(k.key)
+    end
+  end
+  return false
+end
+
+AddInfo("Inspired", "General:")
+AddButton("Ignite", "Auto Ignite", true)

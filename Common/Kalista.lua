@@ -1,11 +1,10 @@
+RemoveButton("Q")
 AddInfo("Kalista", "Kalista:")
 AddButton("Q", "Use Q", true)
 AddButton("E", "Use E", true)
 
 -- this gets executed every frame
-function AfterObjectLoopEvent(myHero)
-  -- draw menu
-  DrawMenu()
+AddAfterObjectLoopEvent(function(myHero)
   -- walk and autoattack
   IWalk()
   -- iterate through all enemy heroes
@@ -42,7 +41,7 @@ function AfterObjectLoopEvent(myHero)
   -- grab best target in 1175 range
   local unit = GetTarget(1175)
   -- if the target is valid and (still) in 1175 range
-  if ValidTarget(unit, 1175) and GetButtonValue("Q") then
+  if unit and GetButtonValue("Q") then
     -- following line is used to predict enemy position
     -- GetPredictionForPlayer(startPosition, targetUnit, targetUnitMoveSpeed, spellTravelSpeed, spellDelay, spellRange, spellWidth, collision, addHitBox)
     local QPred = GetPredictionForPlayer(myHeroPos,unit,GetMoveSpeed(unit),1750,250,1150,70,true,true)
@@ -52,7 +51,7 @@ function AfterObjectLoopEvent(myHero)
       CastSkillShot(_Q,QPred.PredPos.x,QPred.PredPos.y,QPred.PredPos.z)
     end
   end
-end
+end)
 
 -- recursively calculates stackdmg
 function kalE(x) if x <= 1 then return 10 else return kalE(x-1) + 2 + x end end

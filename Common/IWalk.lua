@@ -30,21 +30,19 @@ if aaResetTable4[GetObjectName(myHero)] then
   end
 end
 AddButton("I", "Cast Items", true)
-AddButton("Ignite", "Auto Ignite", true)
+
 AddButton("S", "Skillfarm", true)
 AddKey("Combo", "Combo", 32)
 AddKey("LastHit", "LastHit", string.byte("X"))
 AddKey("LaneClear", "LaneClear", string.byte("V"))
 
-function AfterObjectLoopEvent()
-  DrawMenu()
+AddAfterObjectLoopEvent(function()
   IWalk()
-end
+end)
 
 function IWalk()
   if GetButtonValue("Ignite") then AutoIgnite() end
   if GetKeyValue("LastHit") or GetKeyValue("LaneClear") then
-    IAfterObjectLoopEvent()
     for _,k in pairs(GetAllMinions(MINION_ENEMY)) do
       local targetPos = GetOrigin(k)
       local drawPos = WorldToScreen(1,targetPos.x,targetPos.y,targetPos.z)
@@ -88,17 +86,13 @@ function GetIWalkTarget()
   return IWalkTarget
 end
 
-function OnProcessSpell(unit, spell)
-  IProcessSpell(unit, spell)
-end
-
-function IProcessSpell(unit, spell)
+AddProcessSpell(function(unit, spell)
   if unit and unit == myHero and spell and spell.name:lower():find("attack") then
     orbTable.lastAA = GetTickCount() + 20 -- 20 as latency.....
     orbTable.windUp = spell.windUpTime * 1000
-    orbTable.animation = 1000 / GetAttackSpeed(GetMyHero())
+    orbTable.animation = 1000 / GetAttackSpeed(GetMyHero()) -- GetObjectName(GetMyHero()) == "Kalista" and 1 or spell.animationTime * 1000
   end
-end
+end)
 
 function WindUp(unit)
   local str = {[_Q] = "Q", [_W] = "W", [_E] = "E", [_R] = "R"}
@@ -139,25 +133,5 @@ function WindUp(unit)
       end
     end
   end
-  return GetButtonValue("I") and CastItems(unit)
-end
-
-function CastItems(unit)
-  i = {3074, 3077, 3142, 3184}
-  u = {3153, 3146, 3144}
-  for _,k in pairs(i) do
-    slot = GetItemSlot(GetMyHero(),k)
-    if slot and CanUseSpell(GetMyHero(), slot) == READY then
-      CastTargetSpell(GetMyHero(), slot)
-      return true
-    end
-  end
-  for _,k in pairs(u) do
-    slot = GetItemSlot(GetMyHero(),k)
-    if slot and CanUseSpell(GetMyHero(), slot) == READY then
-      CastTargetSpell(unit, slot)
-      return true
-    end
-  end
-  return false
+  return GetButtonValue("I") and CastOffensiveItems(unit)
 end

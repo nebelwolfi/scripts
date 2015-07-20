@@ -8,19 +8,17 @@ AddButton("E", "Use E", true)
 AddButton("R", "Use R", true)
 AddButton("Ra", "Use R if 3 hit", true)
 
-function ObjectLoopEvent(object, myHero)
-    IObjectLoopEvent(object, myHero)
+AddObjectLoopEvent(function(object, myHero)
     if GetObjectType(object) ~= GetObjectType(myHero) and GetTeam(object) == GetTeam(myHero) and GetObjectName(object) == "OriannaBall" then
         ball = object
     end
-end
+end)
 
 function GetBall()
 	return ball
 end
 
-function AfterObjectLoopEvent(myHero)
-	DrawMenu()
+AddAfterObjectLoopEvent(function(myHero)
 	IWalk()
 	if GetBall() then
 		ballPos = GetOrigin(GetBall())
@@ -29,8 +27,8 @@ function AfterObjectLoopEvent(myHero)
 		DrawCircle(ballPos.x,ballPos.y,ballPos.z,150,5,150,0xff00ff00)
 	end
 	if not GetKeyValue("Combo") then return end
-	local unit = GetTarget(1000)
-	if ValidTarget(unit, 1000) then
+	local unit = GetTarget(1000, DAMAGE_MAGIC)
+	if unit then
 		local uPos = GetOrigin(unit)
 		local QPred = GetPredictionForPlayer(GetMyHeroPos(),unit,GetMoveSpeed(unit),1200,250,825,175,true,true)
 		if CanUseSpell(myHero, _Q) == READY and QPred.HitChance == 1 and GetButtonValue("Q") then
@@ -51,9 +49,9 @@ function AfterObjectLoopEvent(myHero)
     		CastTargetSpell(myHero, _R)
 		end
 	end
-end
+end)
 
-function OnProcessSpell(unit, spell)
+AddProcessSpell(function(unit, spell)
 	IProcessSpell(unit, spell)
 	if unit and unit == GetMyHero() and spell and spell.name == "OrianaIzunaCommand" then
 		ballPos = nil
@@ -62,7 +60,7 @@ function OnProcessSpell(unit, spell)
 		ballPos = spell.target
 		ballDel = GetTickCount()
 	end
-end
+end)
 
 function GenerateThrowPos(pos)
     local tV = {x = (pos.x-GetMyHeroPos().x), z = (pos.z-GetMyHeroPos().z)}

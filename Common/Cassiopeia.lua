@@ -4,17 +4,15 @@ AddButton("W", "Use W", true)
 AddButton("E", "Use E", true)
 
 -- this gets executed every frame
-function AfterObjectLoopEvent(myHero)
-  	-- draw menu
-	DrawMenu()
+AddAfterObjectLoopEvent(function(myHero)
 	-- walk and autoattack
 	IWalk()
 	-- if we dont press spacebar we do nothing
 	if not GetKeyValue("Combo") then return end 
 	-- grab best target in 1000 range
-	local unit = GetTarget(1000) 
+	local unit = GetTarget(1000, DAMAGE_MAGIC) 
 	-- if the target is valid and (still) in 1000 range
-	if ValidTarget(unit, 1000) then 
+	if unit then 
 		-- following 2 lines are used to predict enemy position
 		-- GetPredictionForPlayer(startPosition, targetUnit, targetUnitMoveSpeed, spellTravelSpeed, spellDelay, spellRange, spellWidth, collision, addHitBox)
 		local QPred = GetPredictionForPlayer(GetMyHeroPos(),unit,GetMoveSpeed(unit),math.huge,250,850,100,false,true)
@@ -39,4 +37,4 @@ function AfterObjectLoopEvent(myHero)
 			CastSkillShot(_Q,QPred.PredPos.x,QPred.PredPos.y,QPred.PredPos.z)
 		end
 	end
-end
+end)

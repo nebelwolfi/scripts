@@ -5,13 +5,12 @@ AddButton("W", "Use W", true)
 AddButton("E", "Use E", true)
 AddButton("R", "Use R", true)
 
-function AfterObjectLoopEvent(myHero)
-  DrawMenu()
+AddAfterObjectLoopEvent(function(myHero)
   waitTickCount = waitTickCount - 1
   if waitTickCount > GetTickCount() then return end
   IWalk()
-  local unit = GetTarget(1000)
-  if ValidTarget(unit) then
+  local unit = GetTarget(1000, DAMAGE_MAGIC)
+  if unit then
     local dmg = 0
     local hp  = GetCurrentHP(unit)
     local AP = GetBonusAP(myHero)
@@ -51,12 +50,12 @@ function AfterObjectLoopEvent(myHero)
     end
     lastTargetName = GetObjectName(unit)
   end
-end
+end)
 
-function OnProcessSpell(unit, spell)
+AddProcessSpell(function(unit, spell)
   if unit and unit == myHero and spell then
     if spell.name:lower():find("katarinar") then
       waitTickCount = GetTickCount() + 2500
     end
   end
-end
+end)
