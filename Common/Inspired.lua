@@ -59,7 +59,7 @@ function AddAfterObjectLoopEvent(func)
 end
 
 function AddProcessSpell(func)
-    table.insert(afterObjectLoopEvents, func)
+    table.insert(onProcessSpells, func)
 end
 
 function DelayAction(func, delay, args)
@@ -241,10 +241,6 @@ function GetAllyHeroes()
     return allyHeroes
 end
 
-function GetBall()
-    return ball
-end
-
 function GetDistanceSqr(p1,p2)
     p2 = p2 or GetMyHeroPos()
     local dx = p1.x - p2.x
@@ -276,6 +272,7 @@ function GetTarget(range, damageType)
             steps = step
         end
     end
+    return target
 end
 
 function CastOffensiveItems(unit)

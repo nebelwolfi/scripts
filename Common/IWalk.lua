@@ -61,8 +61,8 @@ function IWalk()
 end
 
 function DoWalk()
-  myRange = GetRange(GetMyHero())+GetHitBox(GetMyHero())*2
-  IWalkTarget = GetTarget(myRange)
+  myRange = GetRange(GetMyHero())+GetHitBox(GetMyHero())
+  IWalkTarget = GetTarget(myRange, DAMAGE_PHYSICAL)
   if GetKeyValue("LaneClear") then
     IWalkTarget = GetHighestMinion(GetOrigin(myHero), myRange, MINION_ENEMY)
   end
@@ -90,7 +90,7 @@ AddProcessSpell(function(unit, spell)
   if unit and unit == myHero and spell and spell.name:lower():find("attack") then
     orbTable.lastAA = GetTickCount() + 20 -- 20 as latency.....
     orbTable.windUp = spell.windUpTime * 1000
-    orbTable.animation = 1000 / GetAttackSpeed(GetMyHero()) -- GetObjectName(GetMyHero()) == "Kalista" and 1 or spell.animationTime * 1000
+    orbTable.animation = GetAttackSpeed(GetMyHero()) < 1 and spell.animationTime * 1000 or 1000 / GetAttackSpeed(GetMyHero()) -- GetObjectName(GetMyHero()) == "Kalista" and 1 or spell.animationTime * 1000
   end
 end)
 
