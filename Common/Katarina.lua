@@ -8,7 +8,7 @@ function AfterObjectLoopEvent(myHero)
   DrawMenu()
   waitTickCount = waitTickCount - 1
   if waitTickCount > GetTickCount() then return end
-  if KeyIsDown(0x41) then IWalk() end
+  IWalk()
   local unit = GetTarget(1000)
   if ValidTarget(unit) then
     local dmg = 0
@@ -36,7 +36,7 @@ function AfterObjectLoopEvent(myHero)
       DrawText(math.floor(100 * dmg / hp).."%",20,drawPos.x,drawPos.y,0xffffffff)
       DrawDmgOverHpBar(unit,hp,0,dmg,0xffffffff)
     end
-    if not KeyIsDown(0x41) then return end
+    if not GetKeyValue("Combo") then return end
     if IsInDistance(unit, 675) and CanUseSpell(myHero, _Q) == READY and GetButtonValue("Q") then
       CastTargetSpell(unit, _Q)
     elseif IsInDistance(unit, 375) and CanUseSpell(myHero, _W) == READY and GetButtonValue("W") then

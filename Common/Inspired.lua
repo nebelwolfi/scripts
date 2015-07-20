@@ -1,13 +1,21 @@
 enemyHeroes = {}
 allyHeroes = {}
+minionTable = {}
 finishedEnemies = false
 finishedAllies = false
+lastMinionTick = 0
+MINION_ALLY, MINION_ENEMY, MINION_JUNGLE = GetTeam(GetMyHero()), GetTeam(GetMyHero()) == 100 and 200 or 100, 300
 
 function ObjectLoopEvent(object, myHero)
     IObjectLoopEvent(object, myHero)
 end
 
 function IObjectLoopEvent(object, myHero)
+    if doMinions then
+        if GetObjectType(object) == Obj_AI_Minion and not IsDead(k) then
+            minionTable[GetNetworkID(object)] = object
+        end
+    end
     if not finishedEnemies then
         if not startTick then startTick = GetTickCount() end
         local enemyCount = #enemyHeroes
@@ -27,6 +35,73 @@ function IObjectLoopEvent(object, myHero)
             if startTick + 1000 < GetTickCount() then finishedAllies = true end
         end
     end
+end
+
+function IAfterObjectLoopEvent()
+    if lastMinionTick < GetTickCount() then
+        doMinions = true
+        lastMinionTick = GetTickCount() + 1000
+    else
+        doMinions = false
+    end
+end
+
+function CountMinions()
+    local m = 0
+    for _,k in pairs(GetAllMinions()) do 
+        m = m + 1 
+    end
+    return m
+end
+
+function GetAllMinions(team)
+    local result = {}
+    for _,k in pairs(minionTable) do
+        if k and not IsDead(k) then
+            if not team or GetTeam(k) == team then
+                result[_] = k
+            end
+        else
+            minionTable[_] = nil
+        end
+    end
+    return result
+end
+
+function ClosestMinion(pos, team)
+    local minion = nil
+    for k,v in pairs(GetAllMinions()) do 
+        local objTeam = GetTeam(v)
+        if not minion and v then minion = v and objTeam == team end
+        if minion and v and objTeam == team and GetDistanceSqr(GetOrigin(minion),pos) > GetDistanceSqr(GetOrigin(v),pos) then
+            minion = v
+        end
+    end
+    return minion
+end
+
+function GetLowestMinion(pos, range, team)
+    local minion = nil
+    for k,v in pairs(GetAllMinions()) do 
+        local objTeam = GetTeam(v)
+        if not minion and v and objTeam == team and GetDistanceSqr(GetOrigin(v),pos) < range*range then minion = v end
+        if minion and v and objTeam == team and GetDistanceSqr(GetOrigin(v),pos) < range*range and GetCurrentHP(v) < GetCurrentHP(minion) then
+            minion = v
+        end
+    end
+    return minion
+end
+
+function GetHighestMinion(pos, range, team)
+    local minion = nil
+    for k,v in pairs(minionTable) do 
+        local objTeam = GetTeam(v)
+        if not minion and v and objTeam == team and GetDistanceSqr(GetOrigin(v),pos) < range*range then minion = v end
+        if minion and v and objTeam == team and GetDistanceSqr(GetOrigin(v),pos) < range*range and GetCurrentHP(v) > GetCurrentHP(minion) then
+            minion = v
+        end
+    end
+    return minion
 end
 
 function GenerateMovePos()
@@ -73,34 +148,6 @@ function ClosestEnemy(pos)
     end
     return enemy
 end
-
---[[ Removed to reduce lag
-    function ClosestMinion(pos)
-        local minion = nil
-        for k,v in pairs(GetEnemyMinions()) do 
-            if not minion and v then minion = v end
-            if minion and v and GetDistanceSqr(GetOrigin(minion),pos) > GetDistanceSqr(GetOrigin(v),pos) then
-                minion = v
-            end
-        end
-        return minion
-    end
-
-    function GetLowestMinion(pos)
-        local minion = nil
-        for k,v in pairs(GetEnemyMinions()) do 
-            if not minion and v then minion = v end
-            if minion and v and GetCurrentHP(v) < GetCurrentHP(minion) then
-                minion = v
-            end
-        end
-        return minion
-    end
-
-    function GetEnemyMinions()
-        return enemyMinions
-    end
-]]--
 
 function GetMyHeroPos()
     return GetOrigin(GetMyHero()) 

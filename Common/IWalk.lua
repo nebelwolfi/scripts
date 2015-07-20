@@ -7,6 +7,7 @@ IWalkTarget = nil
 myHero = GetMyHero()
 myRange = GetRange(myHero)+GetHitBox(GetMyHero())*2
 
+AddInfo("info", "IWalk:")
 str = {[_Q] = "Q", [_W] = "W", [_E] = "E", [_R] = "R"}
 if aaResetTable3[GetObjectName(myHero)] then
   for _,k in pairs(aaResetTable3[GetObjectName(myHero)]) do
@@ -29,22 +30,47 @@ if aaResetTable4[GetObjectName(myHero)] then
   end
 end
 AddButton("I", "Cast Items", true)
+AddButton("S", "Skillfarm", true)
+AddKey("Combo", "Combo", 32)
+AddKey("LastHit", "LastHit", string.byte("X"))
+AddKey("LaneClear", "LaneClear", string.byte("V"))
 
-function AfterObjectLoopEvent(x)
+function AfterObjectLoopEvent()
   DrawMenu()
-  if KeyIsDown(string.byte(" ")) then
-    IWalk()
-  end
+  IWalk()
 end
 
 function IWalk()
+  if GetKeyValue("LastHit") or GetKeyValue("LaneClear") then
+    IAfterObjectLoopEvent()
+    for _,k in pairs(GetAllMinions(MINION_ENEMY)) do
+      local targetPos = GetOrigin(k)
+      local drawPos = WorldToScreen(1,targetPos.x,targetPos.y,targetPos.z)
+      local hp = GetCurrentHP(k)
+      local dmg = CalcDamage(GetMyHero(), k, GetBonusDmg(myHero)+GetBaseDamage(myHero))
+      if dmg > hp then
+        if (KeyIsDown(string.byte("X")) or KeyIsDown(string.byte("V"))) and IsInDistance(k, myRange) then
+          AttackUnit(k)
+        end
+      end
+    end
+  end
+  if GetKeyValue("Combo") or GetKeyValue("LastHit") or GetKeyValue("LaneClear") then
+    DoWalk()
+  end
+end
+
+function DoWalk()
   myRange = GetRange(GetMyHero())+GetHitBox(GetMyHero())*2
   IWalkTarget = GetTarget(myRange)
+  if GetKeyValue("LaneClear") then
+    IWalkTarget = GetHighestMinion(GetOrigin(myHero), myRange, MINION_ENEMY)
+  end
   local unit = IWalkTarget
   if ValidTarget(unit, myRange) and GetTickCount() > orbTable.lastAA + orbTable.animation then
     AttackUnit(unit)
   elseif GetTickCount() > orbTable.lastAA + orbTable.windUp then
-    if ValidTarget(unit, myRange) and GetTickCount() < orbTable.lastAA + orbTable.animation and orbTable.lastAA > 0 then WindUp(unit) end
+    if (GetButtonValue("S") or GetKeyValue("Combo")) and ValidTarget(unit, myRange) and GetTickCount() < orbTable.lastAA + orbTable.animation and orbTable.lastAA > 0 then WindUp(unit) end
     Move()
   end
 end

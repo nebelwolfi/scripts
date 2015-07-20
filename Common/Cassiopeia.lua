@@ -4,17 +4,20 @@ AddButton("E", "Use E", true)
 
 -- this gets executed every frame
 function AfterObjectLoopEvent(myHero)
+  	-- draw menu
 	DrawMenu()
+	-- walk and autoattack
+	IWalk()
 	-- if we dont press spacebar we do nothing
-	if not KeyIsDown(0x20) then return end 
+	if not GetKeyValue("Combo") then return end 
 	-- grab best target in 1000 range
 	local unit = GetTarget(1000) 
 	-- if the target is valid and (still) in 1000 range
 	if ValidTarget(unit, 1000) then 
 		-- following 2 lines are used to predict enemy position
 		-- GetPredictionForPlayer(startPosition, targetUnit, targetUnitMoveSpeed, spellTravelSpeed, spellDelay, spellRange, spellWidth, collision, addHitBox)
-		local QPred = GetPredictionForPlayer(GetMyHeroPos(),unit,GetMoveSpeed(unit),math.huge,250,850,100,true,true)
-		local WPred = GetPredictionForPlayer(GetMyHeroPos(),unit,GetMoveSpeed(unit),2500,250,925,90,true,true)
+		local QPred = GetPredictionForPlayer(GetMyHeroPos(),unit,GetMoveSpeed(unit),math.huge,250,850,100,false,true)
+		local WPred = GetPredictionForPlayer(GetMyHeroPos(),unit,GetMoveSpeed(unit),2500,250,925,90,false,true)
 		local poisoned = false
 		for i=0, 63 do
 			if GetBuffCount(unit,i) > 0 and GetBuffName(unit,0):lower():find("poison") then
@@ -35,6 +38,4 @@ function AfterObjectLoopEvent(myHero)
 			CastSkillShot(_Q,QPred.PredPos.x,QPred.PredPos.y,QPred.PredPos.z)
 		end
 	end
-	-- walk and autoattack
-	IWalk()
 end

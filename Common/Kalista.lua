@@ -1,9 +1,13 @@
+RemoveButton("Q")
 AddButton("Q", "Use Q", true)
 AddButton("E", "Use E", true)
 
 -- this gets executed every frame
 function AfterObjectLoopEvent(myHero)
+  -- draw menu
   DrawMenu()
+  -- walk and autoattack
+  IWalk()
   -- iterate through all enemy heroes
   for _,unit in pairs(GetEnemyHeroes()) do
     -- is the current unit is a valid target
@@ -34,7 +38,7 @@ function AfterObjectLoopEvent(myHero)
     end
   end
   -- if we dont press spacebar we do nothing
-  if not KeyIsDown(0x20) then return end
+  if not GetKeyValue("Combo") then return end
   -- grab best target in 1175 range
   local unit = GetTarget(1175)
   -- if the target is valid and (still) in 1175 range
@@ -48,8 +52,6 @@ function AfterObjectLoopEvent(myHero)
       CastSkillShot(_Q,QPred.PredPos.x,QPred.PredPos.y,QPred.PredPos.z)
     end
   end
-  -- walk and autoattack
-  IWalk()
 end
 
 -- recursively calculates stackdmg
