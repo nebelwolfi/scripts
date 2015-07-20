@@ -30,6 +30,7 @@ if aaResetTable4[GetObjectName(myHero)] then
   end
 end
 AddButton("I", "Cast Items", true)
+AddButton("Ignite", "Auto Ignite", true)
 AddButton("S", "Skillfarm", true)
 AddKey("Combo", "Combo", 32)
 AddKey("LastHit", "LastHit", string.byte("X"))
@@ -41,6 +42,7 @@ function AfterObjectLoopEvent()
 end
 
 function IWalk()
+  if GetKeyValue("Ignite") then AutoIgnite() end
   if GetKeyValue("LastHit") or GetKeyValue("LaneClear") then
     IAfterObjectLoopEvent()
     for _,k in pairs(GetAllMinions(MINION_ENEMY)) do
