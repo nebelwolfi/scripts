@@ -52,7 +52,7 @@ end
 function AutoIgnite()
     if Ignite then
         for _, k in pairs(GetEnemyHeroes()) do
-            if CanUseSpell(GetMyHero(), Ignite) == READY and (50*GetLevel(GetMyHero())+20) > GetCurrentHP(k)+GetHPRegen(k)*2.5 then
+            if CanUseSpell(GetMyHero(), Ignite) == READY and (50*GetLevel(GetMyHero())+20) > GetCurrentHP(k)+GetHPRegen(k)*2.5 and GetDistanceSqr(GetOrigin(k)) < 600*600 then
                 CastTargetSpell(k, Ignite)
             end
         end
