@@ -42,7 +42,7 @@ function AfterObjectLoopEvent()
 end
 
 function IWalk()
-  if GetKeyValue("Ignite") then AutoIgnite() end
+  if GetButtonValue("Ignite") then AutoIgnite() end
   if GetKeyValue("LastHit") or GetKeyValue("LaneClear") then
     IAfterObjectLoopEvent()
     for _,k in pairs(GetAllMinions(MINION_ENEMY)) do
