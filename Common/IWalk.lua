@@ -94,7 +94,7 @@ function IProcessSpell(unit, spell)
   if unit and unit == myHero and spell and spell.name:lower():find("attack") then
     orbTable.lastAA = GetTickCount() + 20 -- 20 as latency.....
     orbTable.windUp = spell.windUpTime * 1000
-    orbTable.animation = GetObjectName(GetMyHero()) == "Kalista" and 1000 / GetAttackSpeed(GetMyHero()) or spell.animationTime * 1000
+    orbTable.animation = 1000 / GetAttackSpeed(GetMyHero()) + spell.windUpTime * 1000 -- GetObjectName(GetMyHero()) == "Kalista" and 1 or spell.animationTime * 1000
   end
 end
 
