@@ -16,6 +16,20 @@ onProcessSpells = {}
 delayedActions = {}
 delayedActionsExecuter = nil
 DAMAGE_MAGIC, DAMAGE_MAGICAL, DAMAGE_PHYSICAL = 1, 1, 2
+gapcloserTable = {
+  ["Aatrox"] = _E, ["Akali"] = _R, ["Alistar"] = _W, ["Ahri"] = _R, ["Amumu"] = _Q, ["Corki"] = _W,
+  ["Diana"] = _R, ["Elise"] = _Q, ["Elise"] = _E, ["Fiddlesticks"] = _R, ["Fiora"] = _Q,
+  ["Fizz"] = _Q, ["Gnar"] = _E, ["Grags"] = _E, ["Graves"] = _E, ["Hecarim"] = _R,
+  ["Irelia"] = _Q, ["JarvanIV"] = _Q, ["Jax"] = _Q, ["Jayce"] = "JayceToTheSkies", ["Katarina"] = _E, 
+  ["Kassadin"] = _R, ["Kennen"] = _E, ["KhaZix"] = _E, ["Lissandra"] = _E, ["LeBlanc"] = _W, 
+  ["LeeSin"] = "blindmonkqtwo", ["Leona"] = _E, ["Lucian"] = _E, ["Malphite"] = _R, ["MasterYi"] = _Q, 
+  ["MonkeyKing"] = _E, ["Nautilus"] = _Q, ["Nocturne"] = _R, ["Olaf"] = _R, ["Pantheon"] = _W, 
+  ["Poppy"] = _E, ["RekSai"] = _E, ["Renekton"] = _E, ["Riven"] = _Q, ["Sejuani"] = _Q, 
+  ["Sion"] = _R, ["Shen"] = _E, ["Shyvana"] = _R, ["Talon"] = _E, ["Thresh"] = _Q, 
+  ["Tristana"] = _W, ["Tryndamere"] = "Slash", ["Udyr"] = _E, ["Volibear"] = _Q, ["Vi"] = _Q, 
+  ["XinZhao"] = _E, ["Yasuo"] = _E, ["Zac"] = _E, ["Ziggs"] = _W
+}
+GapcloseSpell, GapcloseTime, GapcloseUnit, GapcloseTargeted, GapcloseRange = 2, 0, nil, true, 450
 
 function ObjectLoopEvent(object, myHero)
     if objectLoopEvents then
@@ -115,6 +129,47 @@ AddAfterObjectLoopEvent(function(myHero)
         doMinions = false
     end
 end)
+
+function AddGapcloseEvent(spell, range, targeted)
+    GapcloseSpell = spell
+    GapcloseTime = 0
+    GapcloseUnit = nil
+    GapcloseTargeted = targeted
+    GapcloseRange = range
+    str = {[_Q] = "Q", [_W] = "W", [_E] = "E", [_R] = "R"}
+    DelayAction(function()
+        AddInfo("antigap", "Auto "..str[spell].." on gapclose:", SCRIPT_PARAM_ONOFF, true)
+        for _,k in pairs(GetEnemyHeroes()) do
+          if gapcloserTable[GetObjectName(k)] then
+            AddButton(GetObjectName(k), "On "..GetObjectName(k).." "..(type(gapcloserTable[GetObjectName(k)]) == 'number' and str[gapcloserTable[GetObjectName(k)]] or (GetObjectName(k) == "LeeSin" and "Q" or "E")), true)
+          end
+        end
+    end, 1)
+    AddProcessSpell(function(unit, spell)
+      if not unit or not gapcloserTable[GetObjectName(unit)] or not GetButtonValue(GetObjectName(unit)) then return end
+      if spell.name == (type(gapcloserTable[GetObjectName(unit)]) == 'number' and GetCastName(unit, gapcloserTable[GetObjectName(unit)]) or gapcloserTable[GetObjectName(unit)]) and (spell.target == GetMyHero() or GetDistanceSqr(spell.endPos) < GapcloseRange*GapcloseRange*4) then
+        GapcloseTime = GetTickCount() + 2000
+        GapcloseUnit = unit
+      end
+    end)
+    AddAfterObjectLoopEvent(function(myHero)
+      if CanUseSpell(myHero, GapcloseSpell) == READY and GapcloseTime and GapcloseUnit and GapcloseTime > GetTickCount() then
+        local pos = GetOrigin(GapcloseUnit)
+        if GapcloseTargeted then
+          if GetDistanceSqr(pos,GetMyHeroPos()) < GapcloseRange*GapcloseRange then
+            CastTargetSpell(GapcloseUnit, GapcloseSpell)
+          end
+        else 
+          if GetDistanceSqr(pos,GetMyHeroPos()) < GapcloseRange*GapcloseRange*4 then
+            CastSkillShot(GapcloseSpell, pos.x, pos.y, pos.z)
+          end
+        end
+      else
+        GapcloseTime = 0
+        GapcloseUnit = nil
+      end
+    end)
+end
 
 function AutoIgnite()
     if Ignite then
@@ -381,6 +436,10 @@ function DrawMenu()
   end
 end
 
+function AddInfo(id, name)
+  table.insert(menuTable, {id = id, text = name, isInfo = true})
+end
+
 function AddButton(id, name, defaultValue)
   table.insert(menuTable, {id = id, text = name, lastSwitch = 0, value = defaultValue})
 end
@@ -402,10 +461,6 @@ function GetButtonValue(id)
   return false
 end
 
-function AddInfo(id, name)
-  table.insert(menuTable, {id = id, text = name, isInfo = true})
-end
-
 function AddSlider(id, name, startVal, minVal, maxVal, step)
 end
 
@@ -424,3 +479,5 @@ end
 
 AddInfo("Inspired", "General:")
 AddButton("Ignite", "Auto Ignite", true)
+
+AddGapcloseEvent(_E, 450, true)
