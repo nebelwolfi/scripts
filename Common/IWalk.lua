@@ -38,7 +38,17 @@ AddKey("LaneClear", "LaneClear", string.byte("V"))
 
 AddAfterObjectLoopEvent(function()
   IWalk()
+  Draw()
 end)
+
+function Draw()
+  for _, unit in pairs(GetEnemyHeroes()) do
+    local unitPos=GetOrigin(unit)
+    local drawPos = WorldToScreen(1,unitPos.x,unitPos.y,unitPos.z)
+    local damage=GetCurrentHP(unit)/(GetBaseDamage(myHero)+GetBonusDmg(myHero))
+    DrawText(math.ceil(damage).." AA to kill",20,drawPos.x,drawPos.y,0xffffffff)
+  end
+end
 
 function IWalk()
   if GetButtonValue("Ignite") then AutoIgnite() end
