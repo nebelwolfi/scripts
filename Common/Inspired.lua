@@ -65,15 +65,15 @@ function OnProcessSpell(unit, spell)
 end
 
 function AddObjectLoopEvent(func)
-    table.insert(objectLoopEvents, func)
+    OnObjectLoop(func)
 end
 
 function AddAfterObjectLoopEvent(func)
-    table.insert(afterObjectLoopEvents, func)
+    OnLoop(func)
 end
 
 function AddProcessSpell(func)
-    table.insert(onProcessSpells, func)
+    OnProcessSpell(func)
 end
 
 function DelayAction(func, delay, args)
