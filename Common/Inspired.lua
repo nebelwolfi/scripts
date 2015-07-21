@@ -479,5 +479,3 @@ end
 
 AddInfo("Inspired", "General:")
 AddButton("Ignite", "Auto Ignite", true)
-
-AddGapcloseEvent(_E, 450, true)
