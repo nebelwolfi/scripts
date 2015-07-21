@@ -4,9 +4,7 @@ AddButton("W", "Use W", true)
 AddButton("E", "Use E", true)
 
 -- this gets executed every frame
-AddAfterObjectLoopEvent(function(myHero)
-	-- walk and autoattack
-	IWalk()
+OnLoop(function(myHero)
 	-- if we dont press spacebar we do nothing
 	if not GetKeyValue("Combo") then return end 
 	-- grab best target in 1000 range

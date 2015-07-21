@@ -31,51 +31,6 @@ gapcloserTable = {
 }
 GapcloseSpell, GapcloseTime, GapcloseUnit, GapcloseTargeted, GapcloseRange = 2, 0, nil, true, 450
 
-function ObjectLoopEvent(object, myHero)
-    if objectLoopEvents then
-        for _, func in pairs(objectLoopEvents) do
-            func(object, myHero)
-        end
-    end
-end
-
-function AfterObjectLoopEvent(myHero)
-    DrawMenu()
-    if GetButtonValue("Ignite") then AutoIgnite() end
-    if afterObjectLoopEvents then
-        for _, func in pairs(afterObjectLoopEvents) do
-            func(myHero)
-        end
-    end
-    if delayActions then
-        for _, dfunc in pairs(delayActions) do
-            if delayActions.time <= GetTickCount() then
-                dfunc.func(table.unpack(dfunc.args or {}))
-            end
-        end
-    end
-end
-
-function OnProcessSpell(unit, spell)
-    if onProcessSpells then
-        for _, func in pairs(onProcessSpells) do
-            func(unit, spell)
-        end
-    end
-end
-
-function AddObjectLoopEvent(func)
-    OnObjectLoop(func)
-end
-
-function AddAfterObjectLoopEvent(func)
-    OnLoop(func)
-end
-
-function AddProcessSpell(func)
-    OnProcessSpell(func)
-end
-
 function DelayAction(func, delay, args)
     if not delayedActionsExecuter then
         function delayedActionsExecuter()
@@ -86,7 +41,7 @@ function DelayAction(func, delay, args)
                 end
             end
         end
-        AddAfterObjectLoopEvent(delayedActionsExecuter)
+        OnLoop(delayedActionsExecuter)
     end
     local t = GetTickCount() + (delay or 0)
     if delayedActions[t] then table.insert(delayedActions[t], { func = func, args = args })
@@ -94,7 +49,12 @@ function DelayAction(func, delay, args)
     end
 end
 
-AddObjectLoopEvent(function(object, myHero)
+OnLoop(function(myHero)
+    DrawMenu()
+    if GetButtonValue("Ignite") then AutoIgnite() end
+end)
+
+OnObjectLoop(function(object, myHero)
     if doMinions then
         if GetObjectType(object) == Obj_AI_Minion and not IsDead(k) then
             minionTable[GetNetworkID(object)] = object
@@ -121,7 +81,7 @@ AddObjectLoopEvent(function(object, myHero)
     end
 end)
 
-AddAfterObjectLoopEvent(function(myHero)
+OnLoop(function(myHero)
     if lastMinionTick < GetTickCount() then
         doMinions = true
         lastMinionTick = GetTickCount() + 1000
@@ -145,14 +105,14 @@ function AddGapcloseEvent(spell, range, targeted)
           end
         end
     end, 1)
-    AddProcessSpell(function(unit, spell)
+    OnProcessSpell(function(unit, spell)
       if not unit or not gapcloserTable[GetObjectName(unit)] or not GetButtonValue(GetObjectName(unit)) then return end
       if spell.name == (type(gapcloserTable[GetObjectName(unit)]) == 'number' and GetCastName(unit, gapcloserTable[GetObjectName(unit)]) or gapcloserTable[GetObjectName(unit)]) and (spell.target == GetMyHero() or GetDistanceSqr(spell.endPos) < GapcloseRange*GapcloseRange*4) then
         GapcloseTime = GetTickCount() + 2000
         GapcloseUnit = unit
       end
     end)
-    AddAfterObjectLoopEvent(function(myHero)
+    OnLoop(function(myHero)
       if CanUseSpell(myHero, GapcloseSpell) == READY and GapcloseTime and GapcloseUnit and GapcloseTime > GetTickCount() then
         local pos = GetOrigin(GapcloseUnit)
         if GapcloseTargeted then

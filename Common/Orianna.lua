@@ -7,8 +7,7 @@ AddButton("E", "Use E", true)
 AddButton("R", "Use R", true)
 AddButton("Ra", "Use R if 3 hit", true)
 
-AddAfterObjectLoopEvent(function(myHero)
-	IWalk()
+OnLoop(function(myHero)
 	if ballPos and (GetDistanceSqr(ballPos) <= (GetHitBox(myHero)*2+7)^2 or GetDistanceSqr(ballPos) > 1250*1250) then
       ballPos = nil
     end
@@ -47,7 +46,7 @@ AddAfterObjectLoopEvent(function(myHero)
 	end
 end)
 
-AddProcessSpell(function(unit, spell)
+OnProcessSpell(function(unit, spell)
 	if unit and unit == GetMyHero() and spell and spell.name == "OrianaIzunaCommand" then
 		ballPos = spell.endPos
 	end

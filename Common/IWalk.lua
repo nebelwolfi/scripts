@@ -6,6 +6,7 @@ aaResetTable4 = { ["Graves"] = {_E},  ["Lucian"] = {_E},  ["Vayne"] = {_Q} }
 IWalkTarget = nil
 myHero = GetMyHero()
 myRange = GetRange(myHero)+GetHitBox(GetMyHero())*2
+waitTickCount = 0
 
 AddInfo("info", "IWalk:")
 str = {[_Q] = "Q", [_W] = "W", [_E] = "E", [_R] = "R"}
@@ -36,7 +37,8 @@ AddKey("Combo", "Combo", 32)
 AddKey("LastHit", "LastHit", string.byte("X"))
 AddKey("LaneClear", "LaneClear", string.byte("V"))
 
-AddAfterObjectLoopEvent(function()
+OnLoop(function()
+  if waitTickCount > GetTickCount() then return end
   IWalk()
   Draw()
 end)
@@ -96,11 +98,14 @@ function GetIWalkTarget()
   return IWalkTarget
 end
 
-AddProcessSpell(function(unit, spell)
+OnProcessSpell(function(unit, spell)
   if unit and unit == myHero and spell and spell.name:lower():find("attack") then
     orbTable.lastAA = GetTickCount() + 20 -- 20 as latency.....
     orbTable.windUp = spell.windUpTime * 1000
     orbTable.animation = GetAttackSpeed(GetMyHero()) < 1 and spell.animationTime * 1000 or 1000 / GetAttackSpeed(GetMyHero()) -- GetObjectName(GetMyHero()) == "Kalista" and 1 or spell.animationTime * 1000
+  end
+  if unit and unit == myHero and spell and spell.name:lower():find("katarinar") then
+    waitTickCount = GetTickCount() + 2500
   end
 end)
 

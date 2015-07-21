@@ -4,9 +4,7 @@ AddButton("Q", "Use Q", true)
 AddButton("E", "Use E", true)
 
 -- this gets executed every frame
-AddAfterObjectLoopEvent(function(myHero)
-  -- walk and autoattack
-  IWalk()
+OnLoop(function(myHero)
   -- iterate through all enemy heroes
   for _,unit in pairs(GetEnemyHeroes()) do
     -- is the current unit is a valid target

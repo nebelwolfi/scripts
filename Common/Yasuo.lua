@@ -2,8 +2,7 @@ AddInfo("Yasuo", "Yasuo:")
 AddButton("Q", "Use Q", true)
 AddButton("R", "Use R", true)
 
-AddAfterObjectLoopEvent(function(myHero)
-  IWalk()
+OnLoop(function(myHero)
   local unit = GetTarget(1200, DAMAGE_PHYSICAL)
   if unit and GetKeyValue("Combo") then
     local QPred = GetPredictionForPlayer(GetMyHeroPos(),unit,GetMoveSpeed(unit),1200,125,1200,65,false,true)

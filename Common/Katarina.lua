@@ -1,14 +1,11 @@
-local waitTickCount = 0
 AddInfo("Katarina", "Katarina:")
 AddButton("Q", "Use Q", true)
 AddButton("W", "Use W", true)
 AddButton("E", "Use E", true)
 AddButton("R", "Use R", true)
 
-AddAfterObjectLoopEvent(function(myHero)
-  waitTickCount = waitTickCount - 1
+OnLoop(function(myHero)
   if waitTickCount > GetTickCount() then return end
-  IWalk()
   local unit = GetTarget(1000, DAMAGE_MAGIC)
   if unit then
     local dmg = 0
@@ -52,7 +49,7 @@ AddAfterObjectLoopEvent(function(myHero)
   end
 end)
 
-AddProcessSpell(function(unit, spell)
+OnProcessSpell(function(unit, spell)
   if unit and unit == myHero and spell then
     if spell.name:lower():find("katarinar") then
       waitTickCount = GetTickCount() + 2500
