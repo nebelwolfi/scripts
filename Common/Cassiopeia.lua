@@ -19,7 +19,7 @@ AddAfterObjectLoopEvent(function(myHero)
 		local WPred = GetPredictionForPlayer(GetMyHeroPos(),unit,GetMoveSpeed(unit),2500,250,925,90,false,true)
 		local poisoned = false
 		for i=0, 63 do
-			if GetBuffCount(unit,i) > 0 and GetBuffName(unit,0):lower():find("poison") then
+			if GetBuffCount(unit,i) > 0 and GetBuffName(unit,i):lower():find("poison") then
 				poisoned = true
 			end
 		end
