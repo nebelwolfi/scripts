@@ -30,7 +30,7 @@ end)
 
 OnProcessSpell(function(unit, spell)
   myHero = GetMyHero()
-  if GetButtonValue("W") and unit and GetTeam(unit) ~= GetTeam(myHero) and GetDistance(unit) < 1500 then
+  if GetButtonValue("W") and unit and GetTeam(unit) ~= GetTeam(myHero) and GetObjectType(unit) == GetObjectType(myHero) and GetDistance(unit) < 1500 then
     if myHero == spell.target and spell.name:lower():find("attack") and GetRange(unit) >= 450 and CalcDamage(unit, myHero, GetBonusDmg(unit)+GetBaseDamage(unit))/GetCurrentHP(myHero) > 0.1337 then
       local wPos = GenerateWallPos(GetOrigin(unit))
       CastSkillShot(_W, wPos.x, wPos.y, wPos.z)
