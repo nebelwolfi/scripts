@@ -1,12 +1,14 @@
 enemyHeroes = {}
 allyHeroes = {}
 minionTable = {}
+wardTable = {}
 finishedEnemies = false
 finishedAllies = false
 lastMinionTick = 0
 menuTable = {}
 currentPos = {x = 150, y = 250}
-MINION_ALLY, MINION_ENEMY, MINION_JUNGLE = GetTeam(GetMyHero()), GetTeam(GetMyHero()) == 100 and 200 or 100, 300
+myTeam = GetTeam(GetMyHero())
+MINION_ALLY, MINION_ENEMY, MINION_JUNGLE = myTeam, myTeam == 100 and 200 or 100, 300
 Ignite = (GetCastName(GetMyHero(),SUMMONER_1):lower():find("summonerdot") and SUMMONER_1 or (GetCastName(GetMyHero(),SUMMONER_2):lower():find("summonerdot") and SUMMONER_2 or nil))
 Smite = (GetCastName(GetMyHero(),SUMMONER_1):lower():find("summonersmite") and SUMMONER_1 or (GetCastName(GetMyHero(),SUMMONER_2):lower():find("summonersmite") and SUMMONER_2 or nil))
 Exhaust = (GetCastName(GetMyHero(),SUMMONER_1):lower():find("summonerexhaust") and SUMMONER_1 or (GetCastName(GetMyHero(),SUMMONER_2):lower():find("summonerexhaust") and SUMMONER_2 or nil))
@@ -55,30 +57,38 @@ OnLoop(function(myHero)
 end)
 
 OnObjectLoop(function(object, myHero)
+  local objType = GetObjectType(object)
+  local objTeam = GetTeam(object)
+  local objNID  = GetNetworkID(object)
+  local objName = GetObjectName(object)
+  if objName:lower():find("ward") or objName:lower():find("totem") then
+    wardTable[objNID] = object
+  else
     if doMinions then
-        if GetObjectType(object) == Obj_AI_Minion and not IsDead(k) then
-            minionTable[GetNetworkID(object)] = object
-        end
+      if objType == Obj_AI_Minion and not IsDead(k) then
+        minionTable[objNID] = object
+      end
     end
     if not finishedEnemies then
-        if not startTick then startTick = GetTickCount() end
-        local enemyCount = #enemyHeroes
-        if GetObjectType(object) == Obj_AI_Hero and GetTeam(object) ~= GetTeam(myHero) then
-            if not enemyHeroes[GetNetworkID(object)] then
-                enemyHeroes[GetNetworkID(object)] = object
-            end
-            if startTick + 1000 < GetTickCount() then finishedEnemies = true end
+      if not startTick then startTick = GetTickCount() end
+      local enemyCount = #enemyHeroes
+      if objType == Obj_AI_Hero and objTeam ~= myTeam then
+        if not enemyHeroes[objNID] then
+          enemyHeroes[objNID] = object
         end
+        if startTick + 1000 < GetTickCount() then finishedEnemies = true end
+      end
     end
     if not finishedAllies then
-        local allyCount = #allyHeroes
-        if GetObjectType(object) == Obj_AI_Hero and GetTeam(object) == GetTeam(myHero) then
-            if not allyHeroes[GetNetworkID(object)] then
-                allyHeroes[GetNetworkID(object)] = object
-            end
-            if startTick + 1000 < GetTickCount() then finishedAllies = true end
+      local allyCount = #allyHeroes
+      if objType == Obj_AI_Hero and objTeam == myTeam then
+        if not allyHeroes[objNID] then
+          allyHeroes[objNID] = object
         end
+        if startTick + 1000 < GetTickCount() then finishedAllies = true end
+      end
     end
+  end
 end)
 
 OnLoop(function(myHero)
@@ -150,24 +160,38 @@ function CountMinions()
 end
 
 function GetAllMinions(team)
-    local result = {}
-    for _,k in pairs(minionTable) do
-        if k and not IsDead(k) then
-            if not team or GetTeam(k) == team then
-                result[_] = k
-            end
-        else
-            minionTable[_] = nil
-        end
+  local result = {}
+  for _,k in pairs(minionTable) do
+    if k and not IsDead(k) then
+      if not team or GetTeam(k) == team then
+        result[_] = k
+      end
+    else
+      minionTable[_] = nil
     end
-    return result
+  end
+  return result
+end
+
+function GetWards(team)
+  local result = {}
+  for _,k in pairs(wardTable) do
+    if k then
+      if not team or GetTeam(k) == team then
+        result[_] = k
+      end
+    else
+      wardTable[_] = nil
+    end
+  end
+  return result
 end
 
 function ClosestMinion(pos, team)
     local minion = nil
     for k,v in pairs(GetAllMinions()) do 
         local objTeam = GetTeam(v)
-        if not minion and v then minion = v and objTeam == team end
+        if not minion and v and objTeam == team then minion = v end
         if minion and v and objTeam == team and GetDistanceSqr(GetOrigin(minion),pos) > GetDistanceSqr(GetOrigin(v),pos) then
             minion = v
         end
