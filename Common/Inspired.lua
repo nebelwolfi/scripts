@@ -1,7 +1,6 @@
 enemyHeroes = {}
 allyHeroes = {}
 minionTable = {}
-wardTable = {}
 finishedEnemies = false
 finishedAllies = false
 lastMinionTick = 0
@@ -57,36 +56,30 @@ OnLoop(function(myHero)
 end)
 
 OnObjectLoop(function(object, myHero)
-  local objType = GetObjectType(object)
-  local objTeam = GetTeam(object)
-  local objNID  = GetNetworkID(object)
-  local objName = GetObjectName(object)
-  if objName:lower():find("ward") or objName:lower():find("totem") then
-    wardTable[objNID] = object
-  else
-    if doMinions then
-      if objType == Obj_AI_Minion and not IsDead(k) then
-        minionTable[objNID] = object
-      end
+  if doMinions then
+    if GetObjectType(object) == Obj_AI_Minion and not IsDead(k) then
+      minionTable[GetNetworkID(object)] = object
     end
-    if not finishedEnemies then
-      if not startTick then startTick = GetTickCount() end
-      local enemyCount = #enemyHeroes
-      if objType == Obj_AI_Hero and objTeam ~= myTeam then
-        if not enemyHeroes[objNID] then
-          enemyHeroes[objNID] = object
-        end
-        if startTick + 1000 < GetTickCount() then finishedEnemies = true end
+  end
+  if not finishedEnemies then
+    if not startTick then startTick = GetTickCount() end
+    local enemyCount = #enemyHeroes
+    if GetObjectType(object) == Obj_AI_Hero and GetTeam(object) ~= myTeam then
+      local objNID  = GetNetworkID(object)
+      if not enemyHeroes[objNID] then
+        enemyHeroes[objNID] = object
       end
+      if startTick + 1000 < GetTickCount() then finishedEnemies = true end
     end
-    if not finishedAllies then
-      local allyCount = #allyHeroes
-      if objType == Obj_AI_Hero and objTeam == myTeam then
-        if not allyHeroes[objNID] then
-          allyHeroes[objNID] = object
-        end
-        if startTick + 1000 < GetTickCount() then finishedAllies = true end
+  end
+  if not finishedAllies then
+    local allyCount = #allyHeroes
+    if GetObjectType(object) == Obj_AI_Hero and GetTeam(object) == myTeam then
+      local objNID  = GetNetworkID(object)
+      if not allyHeroes[objNID] then
+        allyHeroes[objNID] = object
       end
+      if startTick + 1000 < GetTickCount() then finishedAllies = true end
     end
   end
 end)
@@ -168,20 +161,6 @@ function GetAllMinions(team)
       end
     else
       minionTable[_] = nil
-    end
-  end
-  return result
-end
-
-function GetWards(team)
-  local result = {}
-  for _,k in pairs(wardTable) do
-    if k then
-      if not team or GetTeam(k) == team then
-        result[_] = k
-      end
-    else
-      wardTable[_] = nil
     end
   end
   return result
