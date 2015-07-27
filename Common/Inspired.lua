@@ -472,13 +472,27 @@ end
 
 local toPrint, toPrintCol = {}, {}
 function print(str, time, col)
-  table.insert(toPrint, str)
-  table.insert(toPrintCol, col or 0xffffffff)
-  DelayAction(function() table.remove(toPrint, #toPrint) table.remove(toPrintCol, #toPrintCol) end, time or 2000)
+  local c = 0
+  for _, k in pairs(toPrint) do
+    c = c + 1
+  end
+  local index = (math.random() * 10000) * c * c
+  toPrint[index] = str
+  toPrintCol[index] = col or 0xffffffff
+  DelayAction(function() toPrint[index] = nil toPrintCol[index] = nil end, time or 2000)
 end
 
 OnLoop(function(myHero)
+  local c = 0
   for _, k in pairs(toPrint) do
-    DrawText(k,50,750,200+50*_,toPrintCol[_])
+    c = c + 1
+    DrawText(k,50,750,200+50*c,toPrintCol[_])
   end
 end)
+
+print("hi1")
+DelayAction(print, 500, {"hi2"})
+DelayAction(print, 750, {"hi3"})
+DelayAction(print, 1000, {"hi4"})
+DelayAction(print, 1250, {"hi5"})
+DelayAction(print, 1500, {"hi6"})
