@@ -97,16 +97,16 @@ function AddGapcloseEvent(spell, range, targeted)
     GapcloseTargeted = targeted
     GapcloseRange = range
     str = {[_Q] = "Q", [_W] = "W", [_E] = "E", [_R] = "R"}
+    GapcloseConfig = scriptConfig("gapclose", "Anti-Gapclose ("..str[spell]..")")
     DelayAction(function()
-        AddInfo("antigap", "Auto "..str[spell].." on gapclose:", SCRIPT_PARAM_ONOFF, true)
         for _,k in pairs(GetEnemyHeroes()) do
           if gapcloserTable[GetObjectName(k)] then
-            AddButton(GetObjectName(k), "On "..GetObjectName(k).." "..(type(gapcloserTable[GetObjectName(k)]) == 'number' and str[gapcloserTable[GetObjectName(k)]] or (GetObjectName(k) == "LeeSin" and "Q" or "E")), true)
+            GapcloseConfig.addParam(GetObjectName(k).."agap", "On "..GetObjectName(k).." "..(type(gapcloserTable[GetObjectName(k)]) == 'number' and str[gapcloserTable[GetObjectName(k)]] or (GetObjectName(k) == "LeeSin" and "Q" or "E")), SCRIPT_PARAM_ONOFF, true)
           end
         end
     end, 1)
     OnProcessSpell(function(unit, spell)
-      if not unit or not gapcloserTable[GetObjectName(unit)] or not GetButtonValue(GetObjectName(unit)) then return end
+      if not unit or not gapcloserTable[GetObjectName(unit)] or not GapcloseConfig[GetObjectName(unit).."agap"] then return end
       if spell.name == (type(gapcloserTable[GetObjectName(unit)]) == 'number' and GetCastName(unit, gapcloserTable[GetObjectName(unit)]) or gapcloserTable[GetObjectName(unit)]) and (spell.target == GetMyHero() or GetDistanceSqr(spell.endPos) < GapcloseRange*GapcloseRange*4) then
         GapcloseTime = GetTickCount() + 2000
         GapcloseUnit = unit
