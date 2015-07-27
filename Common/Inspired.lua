@@ -167,7 +167,7 @@ function ClosestMinion(pos, team)
     local minion = nil
     for k,v in pairs(GetAllMinions()) do 
         local objTeam = GetTeam(v)
-        if not minion and v then minion = v and objTeam == team end
+        if not minion and v and objTeam == team then minion = v end
         if minion and v and objTeam == team and GetDistanceSqr(GetOrigin(minion),pos) > GetDistanceSqr(GetOrigin(v),pos) then
             minion = v
         end
