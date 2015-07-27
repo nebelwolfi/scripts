@@ -489,10 +489,3 @@ OnLoop(function(myHero)
     DrawText(k,50,750,200+50*c,toPrintCol[_])
   end
 end)
-
-print("hi1")
-DelayAction(print, 500, {"hi2"})
-DelayAction(print, 750, {"hi3"})
-DelayAction(print, 1000, {"hi4"})
-DelayAction(print, 1250, {"hi5"})
-DelayAction(print, 1500, {"hi6"})

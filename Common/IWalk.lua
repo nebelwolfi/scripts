@@ -91,7 +91,7 @@ OnProcessSpell(function(unit, spell)
   if unit and unit == myHero and spell and spell.name:lower():find("attack") then
     orbTable.lastAA = GetTickCount() + 20 -- 20 as latency.....
     orbTable.windUp = spell.windUpTime * 1000
-    orbTable.animation = (spell.animationTime-spell.windUpTime) * 1000
+    orbTable.animation = GetObjectName(myHero) == "Kalista" and 0 or (spell.animationTime-spell.windUpTime) * 1000
     DelayAction(function() if (IWalkConfig.S or IWalkConfig.Combo) and ValidTarget(IWalkTarget, myRange) then WindUp(IWalkTarget) end end, spell.windUpTime * 1000)
   end
   if unit and unit == myHero and spell and spell.name:lower():find("katarinar") then
