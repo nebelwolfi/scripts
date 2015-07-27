@@ -51,7 +51,7 @@ end
 
 OnLoop(function(myHero)
     DrawMenu()
-    if InspiredConfig.Ignite then AutoIgnite() end
+    if Ignite and InspiredConfig.Ignite then AutoIgnite() end
 end)
 
 OnObjectLoop(function(object, myHero)
