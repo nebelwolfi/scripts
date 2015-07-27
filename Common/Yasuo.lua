@@ -1,27 +1,27 @@
-AddInfo("Yasuo", "Yasuo:")
-AddButton("Q", "Use Q", true)
-AddButton("W", "Use W", true)
-AddButton("E", "Use E", true)
-AddButton("R", "Use R", true)
-AddKey("F", "Rush", string.byte("T"))
+Config = scriptConfig("IYasuo", "Yasuo.lua")
+Config.addParam("Q", "Use Q", SCRIPT_PARAM_ONOFF, true)
+Config.addParam("W", "Use W", SCRIPT_PARAM_ONOFF, true)
+Config.addParam("E", "Use E", SCRIPT_PARAM_ONOFF, true)
+Config.addParam("R", "Use R", SCRIPT_PARAM_ONOFF, true)
+Config.addParam("F", "Rush", SCRIPT_PARAM_KEYDOWN, string.byte("T"))
 
 OnLoop(function(myHero)
   local unit = GetTarget(1200, DAMAGE_PHYSICAL)
-  if unit and GetKeyValue("Combo") then
+  if unit and IWalkConfig.Combo then
     local QPred = GetPredictionForPlayer(GetMyHeroPos(),unit,GetMoveSpeed(unit),1200,125,1200,65,false,true)
-    if IsInDistance(unit, 500) and GetButtonValue("Q") and not IsInDistance(unit, myRange) and GetCastName(myHero,_Q) ~= "yasuoq3w" then
+    if IsInDistance(unit, 500) and Config.Q and not IsInDistance(unit, myRange) and GetCastName(myHero,_Q) ~= "yasuoq3w" then
       local pos = GetOrigin(unit)
       CastSkillShot(_Q, pos.x, pos.y, pos.z)
     end
-    if GetButtonValue("E") and not IsInDistance(unit, 500) and GetCastName(myHero,_Q) ~= "yasuoq3w" then
+    if Config.E and not IsInDistance(unit, 500) and GetCastName(myHero,_Q) ~= "yasuoq3w" then
       if not MoveTo(GetOrigin(unit)) then
         CastTargetSpell(unit, _E)
       end
     end
-    if GetCastName(myHero,_Q) == "yasuoq3w" and GetButtonValue("Q") and QPred.HitChance == 1 then
+    if GetCastName(myHero,_Q) == "yasuoq3w" and Config.Q and QPred.HitChance == 1 then
       CastSkillShot(_Q, QPred.PredPos.x, QPred.PredPos.y, QPred.PredPos.z)
     end
-    if CanUseSpell(myHero, _R) == READY and GetButtonValue("R") and GetOrigin(unit).y > GetOrigin(myHero).y + 10 then CastTargetSpell(unit, _R) end
+    if CanUseSpell(myHero, _R) == READY and Config.R and GetOrigin(unit).y > GetOrigin(myHero).y + 10 then CastTargetSpell(unit, _R) end
   end
   if GetKeyValue("F") then
     MoveTo(GetMousePos())
@@ -30,7 +30,7 @@ end)
 
 OnProcessSpell(function(unit, spell)
   myHero = GetMyHero()
-  if GetButtonValue("W") and unit and GetTeam(unit) ~= GetTeam(myHero) and GetObjectType(unit) == GetObjectType(myHero) and GetDistance(unit) < 1500 then
+  if Config.W and unit and GetTeam(unit) ~= GetTeam(myHero) and GetObjectType(unit) == GetObjectType(myHero) and GetDistance(unit) < 1500 then
     if myHero == spell.target and spell.name:lower():find("attack") and GetRange(unit) >= 450 and CalcDamage(unit, myHero, GetBonusDmg(unit)+GetBaseDamage(unit))/GetCurrentHP(myHero) > 0.1337 then
       local wPos = GenerateWallPos(GetOrigin(unit))
       CastSkillShot(_W, wPos.x, wPos.y, wPos.z)

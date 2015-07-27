@@ -1,12 +1,12 @@
-AddInfo("Cassiopeia", "Cassiopeia:")
-AddButton("Q", "Use Q", true)
-AddButton("W", "Use W", true)
-AddButton("E", "Use E", true)
+Config = scriptConfig("ICassiopeia", "Cassiopeia.lua")
+Config.addParam("Q", "Use Q", SCRIPT_PARAM_ONOFF, true)
+Config.addParam("W", "Use W", SCRIPT_PARAM_ONOFF, true)
+Config.addParam("E", "Use E", SCRIPT_PARAM_ONOFF, true)
 
 -- this gets executed every frame
 OnLoop(function(myHero)
 	-- if we dont press spacebar we do nothing
-	if not GetKeyValue("Combo") then return end 
+	if not IWalkConfig.Combo then return end 
 	-- grab best target in 1000 range
 	local unit = GetTarget(1000, DAMAGE_MAGIC) 
 	-- if the target is valid and (still) in 1000 range
@@ -22,15 +22,15 @@ OnLoop(function(myHero)
 			end
 		end
 		-- is e ready? is unit in distance? is unit poisoned?
-		if CanUseSpell(myHero, _E) == READY and GetButtonValue("E") and IsInDistance(unit, 700) and poisoned then
+		if CanUseSpell(myHero, _E) == READY and Config.E and IsInDistance(unit, 700) and poisoned then
 			-- cast e targeted!
 			CastTargetSpell(unit, _E)
 		-- is w ready? is unit in distance? is hitchance high enough?
-		elseif CanUseSpell(myHero, _W) == READY and GetButtonValue("W") and IsInDistance(unit, 925) and WPred.HitChance == 1 then
+		elseif CanUseSpell(myHero, _W) == READY and Config.W and IsInDistance(unit, 925) and WPred.HitChance == 1 then
 			-- cast w towards position where enemy will be!
 			CastSkillShot(_W,WPred.PredPos.x,WPred.PredPos.y,WPred.PredPos.z)
 		-- is q ready? is unit in distance? is hitchance high enough?
-		elseif CanUseSpell(myHero, _Q) == READY and GetButtonValue("Q") and IsInDistance(unit, 850) and QPred.HitChance == 1 then
+		elseif CanUseSpell(myHero, _Q) == READY and Config.Q and IsInDistance(unit, 850) and QPred.HitChance == 1 then
 			-- cast q towards position where enemy will be!
 			CastSkillShot(_Q,QPred.PredPos.x,QPred.PredPos.y,QPred.PredPos.z)
 		end

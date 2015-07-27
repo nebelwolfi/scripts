@@ -1,7 +1,6 @@
-RemoveButton("Q")
-AddInfo("Kalista", "Kalista:")
-AddButton("Q", "Use Q", true)
-AddButton("E", "Use E", true)
+Config = scriptConfig("IKalista", "Kalista.lua")
+Config.addParam("Q", "Use Q", SCRIPT_PARAM_ONOFF, true)
+Config.addParam("E", "Use E", SCRIPT_PARAM_ONOFF, true)
 
 -- this gets executed every frame
 OnLoop(function(myHero)
@@ -27,7 +26,7 @@ OnLoop(function(myHero)
         -- draw percentage of dmg
         DrawText(math.floor(dmg/hp*100).."%",20,drawPos.x,drawPos.y,0xffffffff)
         -- if our dmg is greater than target hp
-        if hp > 0 and dmg >= hp and ValidTarget(unit, 1000) and GetButtonValue("E") then 
+        if hp > 0 and dmg >= hp and ValidTarget(unit, 1000) and Config.E then 
           -- cast e
           CastTargetSpell(myHero, _E) 
         end
@@ -35,11 +34,11 @@ OnLoop(function(myHero)
     end
   end
   -- if we dont press spacebar we do nothing
-  if not GetKeyValue("Combo") then return end
+  if not IWalkConfig.Combo then return end
   -- grab best target in 1175 range
   local unit = GetTarget(1175)
   -- if the target is valid and (still) in 1175 range
-  if unit and GetButtonValue("Q") then
+  if unit and Config.Q then
     -- following line is used to predict enemy position
     -- GetPredictionForPlayer(startPosition, targetUnit, targetUnitMoveSpeed, spellTravelSpeed, spellDelay, spellRange, spellWidth, collision, addHitBox)
     local QPred = GetPredictionForPlayer(myHeroPos,unit,GetMoveSpeed(unit),1750,250,1150,70,true,true)

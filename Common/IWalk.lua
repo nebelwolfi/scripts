@@ -8,34 +8,35 @@ myHero = GetMyHero()
 myRange = GetRange(myHero)+GetHitBox(GetMyHero())*2
 waitTickCount = 0
 
-AddInfo("info", "IWalk:")
+IWalkConfig = scriptConfig("IWalk", "IWalk.lua")
 str = {[_Q] = "Q", [_W] = "W", [_E] = "E", [_R] = "R"}
 if aaResetTable3[GetObjectName(myHero)] then
   for _,k in pairs(aaResetTable3[GetObjectName(myHero)]) do
-    AddButton(str[k], "AA Reset with "..str[k], true)
+    IWalkConfig.addParam(str[k], "AA Reset with "..str[k], SCRIPT_PARAM_ONOFF, true)
   end
 end
 if aaResetTable2[GetObjectName(myHero)] then
   for _,k in pairs(aaResetTable2[GetObjectName(myHero)]) do
-    AddButton(str[k], "AA Reset with "..str[k], true)
+    IWalkConfig.addParam(str[k], "AA Reset with "..str[k], SCRIPT_PARAM_ONOFF, true)
   end
 end
 if aaResetTable[GetObjectName(myHero)] then
   for _,k in pairs(aaResetTable[GetObjectName(myHero)]) do
-    AddButton(str[k], "AA Reset with "..str[k], true)
+    IWalkConfig.addParam(str[k], "AA Reset with "..str[k], SCRIPT_PARAM_ONOFF, true)
   end
 end
 if aaResetTable4[GetObjectName(myHero)] then
   for _,k in pairs(aaResetTable4[GetObjectName(myHero)]) do
-    AddButton(str[k], "AA Reset with "..str[k], true)
+    IWalkConfig.addParam(str[k], "AA Reset with "..str[k], SCRIPT_PARAM_ONOFF, true)
   end
 end
-AddButton("I", "Cast Items", true)
+IWalkConfig.addParam("I", "Cast Items", SCRIPT_PARAM_ONOFF, true)
+IWalkConfig.addParam("S", "Skillfarm", SCRIPT_PARAM_ONOFF, true)
 
-AddButton("S", "Skillfarm", true)
-AddKey("Combo", "Combo", 32)
-AddKey("LastHit", "LastHit", string.byte("X"))
-AddKey("LaneClear", "LaneClear", string.byte("V"))
+IWalkConfig.addParam("LastHit", "LastHit", SCRIPT_PARAM_KEYDOWN, string.byte("X"))
+IWalkConfig.addParam("Harass", "Harass", SCRIPT_PARAM_KEYDOWN, string.byte("C"))
+IWalkConfig.addParam("LaneClear", "LaneClear", SCRIPT_PARAM_KEYDOWN, string.byte("V"))
+IWalkConfig.addParam("Combo", "Combo", SCRIPT_PARAM_KEYDOWN, string.byte(" "))
 
 OnLoop(function()
   if waitTickCount > GetTickCount() then return end
@@ -43,8 +44,7 @@ OnLoop(function()
 end)
 
 function IWalk()
-  if GetButtonValue("Ignite") then AutoIgnite() end
-  if GetKeyValue("LastHit") or GetKeyValue("LaneClear") then
+  if IWalkConfig.LastHit or IWalkConfig.LaneClear or IWalkConfig.Harass then
     for _,k in pairs(GetAllMinions(MINION_ENEMY)) do
       local targetPos = GetOrigin(k)
       local drawPos = WorldToScreen(1,targetPos.x,targetPos.y,targetPos.z)
@@ -57,7 +57,7 @@ function IWalk()
       end
     end
   end
-  if GetKeyValue("Combo") or GetKeyValue("LastHit") or GetKeyValue("LaneClear") then
+  if IWalkConfig.Combo or IWalkConfig.Harass or IWalkConfig.LastHit or IWalkConfig.LaneClear then
     DoWalk()
   end
 end
@@ -65,14 +65,13 @@ end
 function DoWalk()
   myRange = GetRange(GetMyHero())+GetHitBox(GetMyHero())
   IWalkTarget = GetTarget(myRange, DAMAGE_PHYSICAL)
-  if GetKeyValue("LaneClear") then
+  if IWalkConfig.LaneClear then
     IWalkTarget = GetHighestMinion(GetOrigin(myHero), myRange, MINION_ENEMY)
   end
   local unit = IWalkTarget
   if ValidTarget(unit, myRange) and GetTickCount() > orbTable.lastAA + orbTable.animation then
     AttackUnit(unit)
   elseif GetTickCount() > orbTable.lastAA + orbTable.windUp then
-    if (GetButtonValue("S") or GetKeyValue("Combo")) and ValidTarget(unit, myRange) and GetTickCount() < orbTable.lastAA + orbTable.animation and orbTable.lastAA > 0 then WindUp(unit) end
     Move()
   end
 end
@@ -93,6 +92,7 @@ OnProcessSpell(function(unit, spell)
     orbTable.lastAA = GetTickCount() + 20 -- 20 as latency.....
     orbTable.windUp = spell.windUpTime * 1000
     orbTable.animation = (spell.animationTime-spell.windUpTime) * 1000
+    DelayAction(function() if (IWalkConfig.S or IWalkConfig.Combo) and ValidTarget(IWalkTarget, myRange) then WindUp(IWalkTarget) end end, spell.windUpTime * 1000)
   end
   if unit and unit == myHero and spell and spell.name:lower():find("katarinar") then
     waitTickCount = GetTickCount() + 2500
@@ -103,7 +103,7 @@ function WindUp(unit)
   local str = {[_Q] = "Q", [_W] = "W", [_E] = "E", [_R] = "R"}
   if aaResetTable4[GetObjectName(myHero)] then
     for _,k in pairs(aaResetTable4[GetObjectName(myHero)]) do
-      if CanUseSpell(myHero, k) == READY and GetButtonValue(str[k]) then
+      if CanUseSpell(myHero, k) == READY and IWalkConfig[str[k]] then
         orbTable.lastAA = 0
         local movePos = GenerateMovePos()
         CastSkillShot(k, movePos.x, movePos.y, movePos.z)
@@ -113,7 +113,7 @@ function WindUp(unit)
   end
   if aaResetTable[GetObjectName(myHero)] then
     for _,k in pairs(aaResetTable[GetObjectName(myHero)]) do
-      if CanUseSpell(myHero, k) == READY and GetButtonValue(str[k]) and GetDistanceSqr(GetOrigin(unit)) < myRange * myRange then
+      if CanUseSpell(myHero, k) == READY and IWalkConfig[str[k]] and GetDistanceSqr(GetOrigin(unit)) < myRange * myRange then
         orbTable.lastAA = 0
         CastTargetSpell(myHero, k)
         return true
@@ -122,7 +122,7 @@ function WindUp(unit)
   end
   if aaResetTable2[GetObjectName(myHero)] then
     for _,k in pairs(aaResetTable2[GetObjectName(myHero)]) do
-      if CanUseSpell(myHero, k) == READY and GetButtonValue(str[k]) and GetDistanceSqr(GetOrigin(unit)) < myRange * myRange then
+      if CanUseSpell(myHero, k) == READY and IWalkConfig[str[k]] and GetDistanceSqr(GetOrigin(unit)) < myRange * myRange then
         orbTable.lastAA = 0
         CastSkillShot(k, GetOrigin(unit).x, GetOrigin(unit).y, GetOrigin(unit).z)
         return true
@@ -131,12 +131,12 @@ function WindUp(unit)
   end
   if aaResetTable3[GetObjectName(myHero)] then
     for _,k in pairs(aaResetTable3[GetObjectName(myHero)]) do
-      if CanUseSpell(myHero, k) == READY and GetButtonValue(str[k]) and GetDistanceSqr(GetOrigin(unit)) < myRange * myRange then
+      if CanUseSpell(myHero, k) == READY and IWalkConfig[str[k]] and GetDistanceSqr(GetOrigin(unit)) < myRange * myRange then
         orbTable.lastAA = 0
         CastTargetSpell(unit, k)
         return true
       end
     end
   end
-  return GetButtonValue("I") and CastOffensiveItems(unit)
+  return IWalkConfig.I and CastOffensiveItems(unit)
 end

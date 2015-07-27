@@ -6,8 +6,7 @@ finishedAllies = false
 lastMinionTick = 0
 menuTable = {}
 currentPos = {x = 150, y = 250}
-myTeam = GetTeam(GetMyHero())
-MINION_ALLY, MINION_ENEMY, MINION_JUNGLE = myTeam, myTeam == 100 and 200 or 100, 300
+MINION_ALLY, MINION_ENEMY, MINION_JUNGLE = GetTeam(GetMyHero()), GetTeam(GetMyHero()) == 100 and 200 or 100, 300
 Ignite = (GetCastName(GetMyHero(),SUMMONER_1):lower():find("summonerdot") and SUMMONER_1 or (GetCastName(GetMyHero(),SUMMONER_2):lower():find("summonerdot") and SUMMONER_2 or nil))
 Smite = (GetCastName(GetMyHero(),SUMMONER_1):lower():find("summonersmite") and SUMMONER_1 or (GetCastName(GetMyHero(),SUMMONER_2):lower():find("summonersmite") and SUMMONER_2 or nil))
 Exhaust = (GetCastName(GetMyHero(),SUMMONER_1):lower():find("summonerexhaust") and SUMMONER_1 or (GetCastName(GetMyHero(),SUMMONER_2):lower():find("summonerexhaust") and SUMMONER_2 or nil))
@@ -52,36 +51,34 @@ end
 
 OnLoop(function(myHero)
     DrawMenu()
-    if GetButtonValue("Ignite") then AutoIgnite() end
+    if InspiredConfig.Ignite then AutoIgnite() end
 end)
 
 OnObjectLoop(function(object, myHero)
-  if doMinions then
-    if GetObjectType(object) == Obj_AI_Minion and not IsDead(k) then
-      minionTable[GetNetworkID(object)] = object
+    if doMinions then
+        if GetObjectType(object) == Obj_AI_Minion and not IsDead(k) then
+            minionTable[GetNetworkID(object)] = object
+        end
     end
-  end
-  if not finishedEnemies then
-    if not startTick then startTick = GetTickCount() end
-    local enemyCount = #enemyHeroes
-    if GetObjectType(object) == Obj_AI_Hero and GetTeam(object) ~= myTeam then
-      local objNID  = GetNetworkID(object)
-      if not enemyHeroes[objNID] then
-        enemyHeroes[objNID] = object
-      end
-      if startTick + 1000 < GetTickCount() then finishedEnemies = true end
+    if not finishedEnemies then
+        if not startTick then startTick = GetTickCount() end
+        local enemyCount = #enemyHeroes
+        if GetObjectType(object) == Obj_AI_Hero and GetTeam(object) ~= GetTeam(myHero) then
+            if not enemyHeroes[GetNetworkID(object)] then
+                enemyHeroes[GetNetworkID(object)] = object
+            end
+            if startTick + 1000 < GetTickCount() then finishedEnemies = true end
+        end
     end
-  end
-  if not finishedAllies then
-    local allyCount = #allyHeroes
-    if GetObjectType(object) == Obj_AI_Hero and GetTeam(object) == myTeam then
-      local objNID  = GetNetworkID(object)
-      if not allyHeroes[objNID] then
-        allyHeroes[objNID] = object
-      end
-      if startTick + 1000 < GetTickCount() then finishedAllies = true end
+    if not finishedAllies then
+        local allyCount = #allyHeroes
+        if GetObjectType(object) == Obj_AI_Hero and GetTeam(object) == GetTeam(myHero) then
+            if not allyHeroes[GetNetworkID(object)] then
+                allyHeroes[GetNetworkID(object)] = object
+            end
+            if startTick + 1000 < GetTickCount() then finishedAllies = true end
+        end
     end
-  end
 end)
 
 OnLoop(function(myHero)
@@ -153,24 +150,24 @@ function CountMinions()
 end
 
 function GetAllMinions(team)
-  local result = {}
-  for _,k in pairs(minionTable) do
-    if k and not IsDead(k) then
-      if not team or GetTeam(k) == team then
-        result[_] = k
-      end
-    else
-      minionTable[_] = nil
+    local result = {}
+    for _,k in pairs(minionTable) do
+        if k and not IsDead(k) then
+            if not team or GetTeam(k) == team then
+                result[_] = k
+            end
+        else
+            minionTable[_] = nil
+        end
     end
-  end
-  return result
+    return result
 end
 
 function ClosestMinion(pos, team)
     local minion = nil
     for k,v in pairs(GetAllMinions()) do 
         local objTeam = GetTeam(v)
-        if not minion and v and objTeam == team then minion = v end
+        if not minion and v then minion = v and objTeam == team end
         if minion and v and objTeam == team and GetDistanceSqr(GetOrigin(minion),pos) > GetDistanceSqr(GetOrigin(v),pos) then
             minion = v
         end
@@ -313,132 +310,162 @@ function CastOffensiveItems(unit)
   return false
 end
 
+SCRIPT_PARAM_ONOFF = 1
+SCRIPT_PARAM_KEYDOWN = 2
+SCRIPT_PARAM_SLICE = 3
+SCRIPT_PARAM_INFO = 4
+SCRIPT_PARAM_LIST = 5
+selectedMenuState = ""
+
 function DrawMenu()
   if KeyIsDown(0x10) then
+    local c = 0
+    local d = 0
+    local e = 0
+    local f = 0
+    for a,b in pairs(menuTable) do
+      d = d + 1
+    end
     local mPos  = GetMousePos()
     local mmPos = WorldToScreen(1,mPos.x,mPos.y,mPos.z)
-    FillRect(currentPos.x-5,currentPos.y+30,210,#menuTable*35+40,0x50ffffff)
-    local c = 0
-    for _,k in pairs(menuTable) do
-      if k.isInfo then
-        c = c + 1
-        FillRect(currentPos.x,c*35+currentPos.y,200,30,0x90ffffff)
-        DrawText(k.text,20,currentPos.x+10,c*35+currentPos.y+5,0xffffffff)
-      elseif k.lastSwitch then
-        c = c + 1
-        if k.value then
-          FillRect(currentPos.x+150,c*35+currentPos.y,50,30,0x9000ff00)
-        else
-          FillRect(currentPos.x+150,c*35+currentPos.y,50,30,0x90ff0000)
-        end
-        FillRect(currentPos.x,c*35+currentPos.y,150,30,0x90ffffff)
-        DrawText(k.text,20,currentPos.x+10,c*35+currentPos.y+5,0xffffffff)
-        DrawText(({[true] = "On", [false] = "Off"})[k.value],20,currentPos.x+160,c*35+currentPos.y+5,0xffffffff)
-      end
-    end
+    FillRect(currentPos.x-5,currentPos.y+30,210,d*35+40,0x50ffffff)
     c = c + 1
     FillRect(currentPos.x,c*35+currentPos.y,200,30,0x90ffffff)
-    DrawText("KeySettings:",20,currentPos.x+10,c*35+currentPos.y+5,0xffffffff)
-    for _,k in pairs(menuTable) do
-      if k.key then
-        c = c + 1
-        if KeyIsDown(k.key) then
-          FillRect(currentPos.x+150,c*35+currentPos.y,50,30,0x9000ff00)
-        else
-          FillRect(currentPos.x+150,c*35+currentPos.y,50,30,0x90ff0000)
+    DrawText("- - - - ScriptConfig - - - -",20,currentPos.x+10,c*35+currentPos.y+5,0xffffffff)
+    for _, menu in pairs(menuTable) do
+      c = c + 1
+      FillRect(currentPos.x,c*35+currentPos.y,200,30,0x90ffffff)
+      DrawText(menu.name,20,currentPos.x+10,c*35+currentPos.y+5,0xffffffff)
+      if selectedMenuState == menu.name then
+        FillRect(currentPos.x,c*35+currentPos.y,200,30,0x90ffffff)
+        for k, thing in pairs(menu) do
+          if type(thing) == "table" then
+            f = f + 1
+          end
         end
-        FillRect(currentPos.x,c*35+currentPos.y,150,30,0x90ffffff)
-        DrawText(k.text,20,currentPos.x+10,c*35+currentPos.y+5,0xffffffff)
-        local t = string.char(k.key)
-        if k.switchNow then
-          DrawText("...",20,currentPos.x+(t == " " and 155 or 160),c*35+currentPos.y+5,0xffffffff)
-        else
-          DrawText(t == " " and "Space" or t,20,currentPos.x+(t == " " and 155 or 170),c*35+currentPos.y+5,0xffffffff)
+        FillRect(currentPos.x+205,currentPos.y+65,210,f*35+5,0x50ffffff)
+        e = e + 1
+        for k, thing in pairs(menu) do
+          if thing.type == SCRIPT_PARAM_INFO then
+            e = e + 1
+            FillRect(currentPos.x+210,e*35+currentPos.y,200,30,0x90ffffff)
+            DrawText(thing.t,20,currentPos.x+10+210,e*35+currentPos.y+5,0xffffffff)
+          elseif thing.type == SCRIPT_PARAM_ONOFF then
+            e = e + 1
+            if thing.value then
+              FillRect(currentPos.x+150+210,e*35+currentPos.y,50,30,0x9000ff00)
+            else
+              FillRect(currentPos.x+150+210,e*35+currentPos.y,50,30,0x90ff0000)
+            end
+            FillRect(currentPos.x+210,e*35+currentPos.y,150,30,0x90ffffff)
+            DrawText(thing.t,20,currentPos.x+10+210,e*35+currentPos.y+5,0xffffffff)
+            DrawText(({[true] = "On", [false] = "Off"})[thing.value],20,currentPos.x+160+210,e*35+currentPos.y+5,0xffffffff)
+          end
         end
+        for k, thing in pairs(menu) do
+          if thing.type == SCRIPT_PARAM_KEYDOWN then
+            e = e + 1
+            if thing.value then
+              FillRect(currentPos.x+150+210,e*35+currentPos.y,50,30,0x9000ff00)
+            else
+              FillRect(currentPos.x+150+210,e*35+currentPos.y,50,30,0x90ff0000)
+            end
+            FillRect(currentPos.x+210,e*35+currentPos.y,150,30,0x90ffffff)
+            DrawText(thing.t,20,currentPos.x+10+210,e*35+currentPos.y+5,0xffffffff)
+            local t = string.char(thing.key)
+            if thing.switchNow then
+              DrawText("...",20,currentPos.x+165+210,e*35+currentPos.y+5,0xffffffff)
+            else
+              DrawText(t == " " and "Space" or t,20,currentPos.x+(t == " " and 155 or 170)+210,e*35+currentPos.y+5,0xffffffff)
+            end
+          end
+        end
+      elseif selectedMenuState == "" then
+        selectedMenuState = menu.name
       end
     end
     if KeyIsDown(1) then
+      local c = 1
+      local f = 1
+      for a,b in pairs(menuTable) do
+        d = d + 1
+      end
       if moveNow then currentPos = {x = mmPos.x-25, y = mmPos.y-45} end
-      local c = 0
-      for _,k in pairs(menuTable) do
-        if k.isInfo then
-          c = c + 1
-          if mmPos.x >= currentPos.x and mmPos.x <= currentPos.x+200 and mmPos.y >= (1*35+currentPos.y) and mmPos.y <= (1*35+currentPos.y+30) then
-            moveNow = true
+      if mmPos.x >= currentPos.x and mmPos.x <= currentPos.x+200 and mmPos.y >= (1*35+currentPos.y) and mmPos.y <= (1*35+currentPos.y+30) then
+        moveNow = true
+      end
+      for _, menu in pairs(menuTable) do
+        c = c + 1
+        if mmPos.x >= currentPos.x and mmPos.x <= currentPos.x+200 and mmPos.y >= (c*35+currentPos.y) and mmPos.y <= (c*35+currentPos.y+30) then
+          selectedMenuState = menu.name
+        end
+        if selectedMenuState == menu.name then
+          for k, thing in pairs(menu) do
+            if thing.type ~= SCRIPT_PARAM_KEYDOWN then
+              if type(thing) == "table" then
+                f = f + 1
+              end
+              if thing.type == SCRIPT_PARAM_ONOFF and thing.lastSwitch + 250 < GetTickCount() and mmPos.x >= currentPos.x+150+210 and mmPos.x <= currentPos.x+200+210 and mmPos.y >= (f*35+currentPos.y) and mmPos.y <= (f*35+currentPos.y+30) then
+                thing.lastSwitch = GetTickCount()
+                thing.value = not thing.value
+              end
+            end
           end
-        elseif k.lastSwitch then
-          c = c + 1
-          if mmPos.x >= currentPos.x+150 and mmPos.x <= currentPos.x+200 and mmPos.y >= (c*35+currentPos.y) and mmPos.y <= (c*35+currentPos.y+30) and k.lastSwitch + 250 < GetTickCount() then
-            k.lastSwitch = GetTickCount()
-            k.value = not k.value
+          for k, thing in pairs(menu) do
+            if thing.type == SCRIPT_PARAM_KEYDOWN then
+              if type(thing) == "table" then
+                f = f + 1
+              end
+              if thing.type == SCRIPT_PARAM_KEYDOWN and mmPos.x >= currentPos.x+150+210 and mmPos.x <= currentPos.x+200+210 and mmPos.y >= (f*35+currentPos.y) and mmPos.y <= (f*35+currentPos.y+30) then
+                thing.switchNow = true
+              end
+            end
           end
         end
       end
-      c = c + 1
-      for _,k in pairs(menuTable) do
-        if k.key then
-          c = c + 1
-          if mmPos.x >= currentPos.x+150 and mmPos.x <= currentPos.x+200 and mmPos.y >= (c*35+currentPos.y) and mmPos.y <= (c*35+currentPos.y+30) then
-            k.switchNow = true
-          end
-        end
-      end
-    else 
+    else
       moveNow = false
     end
-    for _,k in pairs(menuTable) do
-      if k.key and k.switchNow then
-        for i=17, 128 do
-          if KeyIsDown(i) then
-            k.key = i
-            k.switchNow = false
+    for _,menu in pairs(menuTable) do
+      for _,k in pairs(menu) do
+        if k.type and k.type == SCRIPT_PARAM_KEYDOWN and k.switchNow then
+          for i=17, 128 do
+            if KeyIsDown(i) then
+              k.key = i
+              k.switchNow = false
+            end
           end
         end
       end
     end
+  else
+    moveNow = false
   end
 end
 
-function AddInfo(id, name)
-  table.insert(menuTable, {id = id, text = name, isInfo = true})
+function scriptConfig(id, text)
+  local Config = {}
+  menuTable[id] = {name = text}
+  Config.addSubMenu = function(idSub, textSub) Config[idSub] = scriptConfig(idSub, textSub) end
+  Config.addParam   = function(idBut, textBut, type, val1, val2, val3, val4) 
+                        if type == SCRIPT_PARAM_ONOFF then
+                          Config[idBut] = val1
+                          menuTable[id][idBut] = {t = textBut, type = type, value = val1, lastSwitch = 0}
+                        elseif type == SCRIPT_PARAM_KEYDOWN then 
+                          Config[idBut] = false
+                          menuTable[id][idBut] = {t = textBut, type = type, key = val1, value = false, switchNow = false}
+                          OnLoop(function(myHero) Config[idBut] = KeyIsDown(menuTable[id][idBut].key)
+                                                  menuTable[id][idBut].value = KeyIsDown(menuTable[id][idBut].key) end)
+                        elseif type == SCRIPT_PARAM_SLICE then
+                        elseif type == SCRIPT_PARAM_INFO then
+                          menuTable[id][idBut] = {t = textBut, type = type}
+                        elseif type == SCRIPT_PARAM_LIST then
+                        end
+                      end
+  return Config
 end
 
-function AddButton(id, name, defaultValue)
-  table.insert(menuTable, {id = id, text = name, lastSwitch = 0, value = defaultValue})
+if Ignite then
+  InspiredConfig = scriptConfig("Inspired", "Inspired.lua")
+  InspiredConfig.addParam("Ignite", "Auto Ignite", SCRIPT_PARAM_ONOFF, true)
 end
-
-function RemoveButton(id)
-  for _,k in pairs(menuTable) do
-    if k.id == id and k.lastSwitch then
-      table.remove(menuTable, _)
-    end
-  end
-end
-
-function GetButtonValue(id)
-  for _,k in pairs(menuTable) do
-    if k.id == id and k.lastSwitch then
-      return k.value
-    end
-  end
-  return false
-end
-
-function AddSlider(id, name, startVal, minVal, maxVal, step)
-end
-
-function AddKey(id, name, defaultKey)
-  table.insert(menuTable, {id = id, text = name, switchNow = false, key = defaultKey})
-end  
-
-function GetKeyValue(id)
-  for _,k in pairs(menuTable) do
-    if k.id == id and k.key then
-      return KeyIsDown(k.key)
-    end
-  end
-  return false
-end
-
-AddInfo("Inspired", "General:")
-AddButton("Ignite", "Auto Ignite", true)

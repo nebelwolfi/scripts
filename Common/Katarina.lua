@@ -1,8 +1,8 @@
-AddInfo("Katarina", "Katarina:")
-AddButton("Q", "Use Q", true)
-AddButton("W", "Use W", true)
-AddButton("E", "Use E", true)
-AddButton("R", "Use R", true)
+Config = scriptConfig("IKatarina", "Katarina.lua")
+Config.addParam("Q", "Use Q", SCRIPT_PARAM_ONOFF, true)
+Config.addParam("W", "Use W", SCRIPT_PARAM_ONOFF, true)
+Config.addParam("E", "Use E", SCRIPT_PARAM_ONOFF, true)
+Config.addParam("R", "Use R", SCRIPT_PARAM_ONOFF, true)
 
 OnLoop(function(myHero)
   if waitTickCount > GetTickCount() then return end
@@ -33,14 +33,14 @@ OnLoop(function(myHero)
       DrawText(math.floor(100 * dmg / hp).."%",20,drawPos.x,drawPos.y,0xffffffff)
       DrawDmgOverHpBar(unit,hp,0,dmg,0xffffffff)
     end
-    if not GetKeyValue("Combo") then return end
-    if IsInDistance(unit, 675) and CanUseSpell(myHero, _Q) == READY and GetButtonValue("Q") then
+    if not IWalkConfig.Combo then return end
+    if IsInDistance(unit, 675) and CanUseSpell(myHero, _Q) == READY and Config.Q then
       CastTargetSpell(unit, _Q)
-    elseif IsInDistance(unit, 375) and CanUseSpell(myHero, _W) == READY and GetButtonValue("W") then
+    elseif IsInDistance(unit, 375) and CanUseSpell(myHero, _W) == READY and Config.W then
       CastTargetSpell(myHero, _W)
-    elseif IsInDistance(unit, 700) and CanUseSpell(myHero, _E) == READY and GetButtonValue("E") then
+    elseif IsInDistance(unit, 700) and CanUseSpell(myHero, _E) == READY and Config.E then
       CastTargetSpell(unit, _E)
-    elseif IsInDistance(unit, 550) and CanUseSpell(myHero, _Q) ~= READY and GetButtonValue("R") and CanUseSpell(myHero, _W) ~= READY and CanUseSpell(myHero, _E) ~= READY and CanUseSpell(myHero, _R) ~= ONCOOLDOWN and GetCastLevel(myHero,_R) > 0 then
+    elseif IsInDistance(unit, 550) and CanUseSpell(myHero, _Q) ~= READY and Config.R and CanUseSpell(myHero, _W) ~= READY and CanUseSpell(myHero, _E) ~= READY and CanUseSpell(myHero, _R) ~= ONCOOLDOWN and GetCastLevel(myHero,_R) > 0 then
       HoldPosition()
       waitTickCount = GetTickCount() + 50
       CastTargetSpell(myHero, _R)
