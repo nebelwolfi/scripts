@@ -336,7 +336,7 @@ function DrawMenu()
       c = c + 1
       FillRect(currentPos.x,c*35+currentPos.y,200,30,0x90ffffff)
       DrawText(menu.name,20,currentPos.x+10,c*35+currentPos.y+5,0xffffffff)
-      if selectedMenuState == menu.name then
+      if selectedMenuState == _ then
         FillRect(currentPos.x,c*35+currentPos.y,200,30,0x90ffffff)
         for k, thing in pairs(menu) do
           if type(thing) == "table" then
@@ -381,7 +381,7 @@ function DrawMenu()
           end
         end
       elseif selectedMenuState == "" then
-        selectedMenuState = menu.name
+        selectedMenuState = _
       end
     end
     if KeyIsDown(1) then
@@ -397,7 +397,7 @@ function DrawMenu()
       for _, menu in pairs(menuTable) do
         c = c + 1
         if mmPos.x >= currentPos.x and mmPos.x <= currentPos.x+200 and mmPos.y >= (c*35+currentPos.y) and mmPos.y <= (c*35+currentPos.y+30) then
-          selectedMenuState = menu.name
+          selectedMenuState = _
         end
         if selectedMenuState == menu.name then
           for k, thing in pairs(menu) do
@@ -442,11 +442,10 @@ function DrawMenu()
     moveNow = false
   end
 end
-
-function scriptConfig(id, text)
+function scriptConfig(id, text, master)
   local Config = {}
-  menuTable[id] = {name = text}
-  Config.addSubMenu = function(idSub, textSub) Config[idSub] = scriptConfig(idSub, textSub) end
+  menuTable[id] = {name = text, m = master}
+  Config.addSubMenu = function(idSub, textSub) Config[idSub] = scriptConfig(idSub, ">>"..text..": "..textSub, id) end
   Config.addParam   = function(idBut, textBut, type, val1, val2, val3, val4) 
                         if type == SCRIPT_PARAM_ONOFF then
                           Config[idBut] = val1
@@ -470,3 +469,16 @@ if Ignite then
   InspiredConfig = scriptConfig("Inspired", "Inspired.lua")
   InspiredConfig.addParam("Ignite", "Auto Ignite", SCRIPT_PARAM_ONOFF, true)
 end
+
+local toPrint, toPrintCol = {}, {}
+function print(str, time, col)
+  table.insert(toPrint, str)
+  table.insert(toPrintCol, col or 0xffffffff)
+  DelayAction(function() table.remove(toPrint, #toPrint) table.remove(toPrintCol, #toPrintCol) end, time or 2000)
+end
+
+OnLoop(function(myHero)
+  for _, k in pairs(toPrint) do
+    DrawText(k,50,750,200+50*_,toPrintCol[_])
+  end
+end)
