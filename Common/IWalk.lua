@@ -30,6 +30,10 @@ if aaResetTable4[GetObjectName(myHero)] then
     IWalkConfig.addParam(str[k], "AA Reset with "..str[k], SCRIPT_PARAM_ONOFF, true)
   end
 end
+if gapcloserTable[GetObjectName(myHero)] then
+  k = gapcloserTable[GetObjectName(myHero)]
+  IWalkConfig.addParam(str[k].."g", "Gapclose with "..str[k], SCRIPT_PARAM_ONOFF, true)
+end
 IWalkConfig.addParam("I", "Cast Items", SCRIPT_PARAM_ONOFF, true)
 IWalkConfig.addParam("S", "Skillfarm", SCRIPT_PARAM_ONOFF, true)
 
@@ -64,7 +68,7 @@ end
 
 function DoWalk()
   myRange = GetRange(GetMyHero())+GetHitBox(GetMyHero())
-  IWalkTarget = GetTarget(myRange, DAMAGE_PHYSICAL)
+  IWalkTarget = GetTarget(myRange + 250, DAMAGE_PHYSICAL)
   if IWalkConfig.LaneClear then
     IWalkTarget = GetHighestMinion(GetOrigin(myHero), myRange, MINION_ENEMY)
   end
@@ -72,7 +76,23 @@ function DoWalk()
   if ValidTarget(unit, myRange) and GetTickCount() > orbTable.lastAA + orbTable.animation then
     AttackUnit(unit)
   elseif GetTickCount() > orbTable.lastAA + orbTable.windUp then
-    Move()
+    if myRange < 450 and unit and GetObjectType(unit) == GetObjectType(myHero) and ValidTarget(unit, myRange) then
+      local unitPos = GetOrigin(unit)
+      if GetDistance(unit) > GetHitBox(myHero)+GetHitBox(unit) then
+        MoveToXYZ(unitPos.x, 0, unitPos.z)
+      end
+    else
+      if gapcloserTable[GetObjectName(myHero)] and ValidTarget(unit, myRange + 250) and IWalkConfig[str[gapcloserTable[GetObjectName(myHero)]].."g"] and CanUseSpell(myHero, gapcloserTable[GetObjectName(myHero)]) == READY then
+        local unitPos = GetOrigin(unit)
+        CastSkillShot(gapcloserTable[GetObjectName(myHero)], unitPos.x, 0, unitPos.z)
+        if GetObjectName(myHero) == "Riven" and IWalkConfig["W"] and CanUseSpell(myHero, _W) == READY then
+          DelayAction(function() CastTargetSpell(myHero, _W) end, 137)
+          orbTable.lastAA = 0
+        end
+      else
+        Move()
+      end
+    end
   end
 end
 
@@ -114,8 +134,8 @@ function WindUp(unit)
   if aaResetTable[GetObjectName(myHero)] then
     for _,k in pairs(aaResetTable[GetObjectName(myHero)]) do
       if CanUseSpell(myHero, k) == READY and IWalkConfig[str[k]] and GetDistanceSqr(GetOrigin(unit)) < myRange * myRange then
-        orbTable.lastAA = 0
         CastTargetSpell(myHero, k)
+        orbTable.lastAA = 0
         return true
       end
     end
@@ -123,8 +143,13 @@ function WindUp(unit)
   if aaResetTable2[GetObjectName(myHero)] then
     for _,k in pairs(aaResetTable2[GetObjectName(myHero)]) do
       if CanUseSpell(myHero, k) == READY and IWalkConfig[str[k]] and GetDistanceSqr(GetOrigin(unit)) < myRange * myRange then
-        orbTable.lastAA = 0
         CastSkillShot(k, GetOrigin(unit).x, GetOrigin(unit).y, GetOrigin(unit).z)
+        if GetObjectName(myHero) == "Riven" then
+          MoveToXYZ(GetOrigin(unit).x, 0, GetOrigin(unit).z)
+          DelayAction(function() orbTable.lastAA = 0 end, 85)
+        else
+          orbTable.lastAA = 0
+        end
         return true
       end
     end
