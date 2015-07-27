@@ -399,7 +399,7 @@ function DrawMenu()
         if mmPos.x >= currentPos.x and mmPos.x <= currentPos.x+200 and mmPos.y >= (c*35+currentPos.y) and mmPos.y <= (c*35+currentPos.y+30) then
           selectedMenuState = _
         end
-        if selectedMenuState == menu.name then
+        if selectedMenuState == _ then
           for k, thing in pairs(menu) do
             if thing.type ~= SCRIPT_PARAM_KEYDOWN then
               if type(thing) == "table" then
