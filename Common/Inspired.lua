@@ -472,12 +472,11 @@ end
 
 local toPrint, toPrintCol = {}, {}
 function print(str, time, col)
-  local b, c = 0, 0
+  local b = 0
   for _, k in pairs(toPrint) do
     b = _
-    c = c + 1
   end
-  local index = (math.random() * 10000) * c + b
+  local index = b + 1
   toPrint[index] = str
   toPrintCol[index] = col or 0xffffffff
   DelayAction(function() toPrint[index] = nil toPrintCol[index] = nil end, time or 2000)
