@@ -451,6 +451,7 @@ function scriptConfig(id, text)
                         if type == SCRIPT_PARAM_ONOFF then
                           Config[idBut] = val1
                           menuTable[id][idBut] = {t = textBut, type = type, value = val1, lastSwitch = 0}
+                          OnLoop(function(myHero) Config[idBut] = menuTable[id][idBut].value end)
                         elseif type == SCRIPT_PARAM_KEYDOWN then 
                           Config[idBut] = false
                           menuTable[id][idBut] = {t = textBut, type = type, key = val1, value = false, switchNow = false}
