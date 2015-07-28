@@ -1,11 +1,12 @@
 orbTable = { lastAA = 0, windUp = 13.37, animation = 13.37 }
 aaResetTable = { ["Diana"] = {_E}, ["Darius"] = {_W}, ["Garen"] = {_Q}, ["Hecarim"] = {_Q}, ["Jax"] = {_W}, ["Jayce"] = {_W}, ["Rengar"] = {_Q}, ["Riven"] = {_W}, ["Sivir"] = {_W}, ["Talon"] = {_Q} }
-aaResetTable2 = { ["Diana"] = {_Q}, ["Graves"] = {_Q}, ["Kalista"] = {_Q}, ["Lucian"] = {_W}, ["Riven"] = {_Q}, ["Talon"] = {_W}, ["Yasuo"] = {_Q} }
-aaResetTable3 = { ["Jax"] = {_Q}, ["Lucian"] = {_Q}, ["Teemo"] = {_Q}, ["Tristana"] = {_E} }
+aaResetTable2 = { ["Diana"] = {_Q}, ["Graves"] = {_Q}, ["Kalista"] = {_Q}, ["Lucian"] = {_W}, ["Quinn"] = {_Q}, ["Riven"] = {_Q}, ["Talon"] = {_W}, ["Yasuo"] = {_Q} }
+aaResetTable3 = { ["Jax"] = {_Q}, ["Lucian"] = {_Q}, ["Quinn"] = {_E}, ["Teemo"] = {_Q}, ["Tristana"] = {_E} }
 aaResetTable4 = { ["Graves"] = {_E},  ["Lucian"] = {_E},  ["Vayne"] = {_Q} }
+isAAaswellTable = { ["Quinn"] = "QuinnWEnhanced" }
 IWalkTarget = nil
 myHero = GetMyHero()
-myRange = GetRange(myHero)+GetHitBox(GetMyHero())*2
+myRange = GetRange(myHero)+GetHitBox(myHero)*2
 waitTickCount = 0
 
 IWalkConfig = scriptConfig("IWalk", "IWalk.lua")
@@ -53,7 +54,7 @@ function IWalk()
       local targetPos = GetOrigin(k)
       local drawPos = WorldToScreen(1,targetPos.x,targetPos.y,targetPos.z)
       local hp = GetCurrentHP(k)
-      local dmg = CalcDamage(GetMyHero(), k, GetBonusDmg(myHero)+GetBaseDamage(myHero))
+      local dmg = CalcDamage(myHero, k, GetBonusDmg(myHero)+GetBaseDamage(myHero))
       if dmg > hp then
         if (KeyIsDown(string.byte("X")) or KeyIsDown(string.byte("V"))) and IsInDistance(k, myRange) then
           AttackUnit(k)
@@ -67,7 +68,7 @@ function IWalk()
 end
 
 function DoWalk()
-  myRange = GetRange(GetMyHero())+GetHitBox(GetMyHero())+(IWalkTarget and GetHitBox(IWalkTarget) or 0)
+  myRange = GetRange(myHero)+GetHitBox(myHero)+(IWalkTarget and GetHitBox(IWalkTarget) or GetHitBox(myHero))
   IWalkTarget = GetTarget(myRange + 250, DAMAGE_PHYSICAL)
   if IWalkConfig.LaneClear then
     IWalkTarget = GetHighestMinion(GetOrigin(myHero), myRange, MINION_ENEMY)
@@ -98,7 +99,7 @@ end
 
 function Move()
   local movePos = GenerateMovePos()
-  if GetDistance(GetMousePos()) > GetHitBox(GetMyHero()) then
+  if GetDistance(GetMousePos()) > GetHitBox(myHero) then
     MoveToXYZ(movePos.x, 0, movePos.z)
   end
 end
@@ -108,10 +109,11 @@ function GetIWalkTarget()
 end
 
 OnProcessSpell(function(unit, spell)
-  if unit and unit == myHero and spell and spell.name:lower():find("attack") then
+  PrintChat(spell.name)
+  if unit and unit == myHero and spell and (spell.name:lower():find("attack") or (isAAaswellTable[GetObjectName(myHero)] and isAAaswellTable[GetObjectName(myHero)] == spell.name)) then
     orbTable.lastAA = GetTickCount() + GetLatency()
     orbTable.windUp = GetObjectName(myHero) == "Kalista" and 0 or spell.windUpTime * 1000
-    orbTable.animation = (spell.animationTime-spell.windUpTime) * 1000
+    orbTable.animation = GetAttackSpeed(GetMyHero()) < 1 and spell.animationTime * 1000 or 1000 / GetAttackSpeed(GetMyHero())
     DelayAction(function() if (IWalkConfig.S or IWalkConfig.Combo) and ValidTarget(IWalkTarget, myRange) then WindUp(IWalkTarget) end end, spell.windUpTime * 1000 + GetLatency())
   end
   if unit and unit == myHero and spell and spell.name:lower():find("katarinar") then
@@ -134,7 +136,7 @@ function WindUp(unit)
   if aaResetTable[GetObjectName(myHero)] then
     for _,k in pairs(aaResetTable[GetObjectName(myHero)]) do
       if CanUseSpell(myHero, k) == READY and IWalkConfig[str[k]] and GetDistanceSqr(GetOrigin(unit)) < myRange * myRange then
-        CastTargetSpell(myHero, k)
+        CastSpell(k)
         orbTable.lastAA = 0
         return true
       end
@@ -142,7 +144,7 @@ function WindUp(unit)
   end
   if aaResetTable2[GetObjectName(myHero)] then
     for _,k in pairs(aaResetTable2[GetObjectName(myHero)]) do
-      if CanUseSpell(myHero, k) == READY and IWalkConfig[str[k]] and GetDistanceSqr(GetOrigin(unit)) < myRange * myRange then
+      if CanUseSpell(myHero, k) == READY and IWalkConfig[str[k]] and GetDistanceSqr(GetOrigin(unit)) < myRange * myRange and (not GetObjectName(myHero) == "Quinn" or CanUseSpell(myHero, _E) ~= READY) then
         CastSkillShot(k, GetOrigin(unit).x, GetOrigin(unit).y, GetOrigin(unit).z)
         if GetObjectName(myHero) == "Riven" then
           local unitPos = GetOrigin(unit)
@@ -156,8 +158,15 @@ function WindUp(unit)
   if aaResetTable3[GetObjectName(myHero)] then
     for _,k in pairs(aaResetTable3[GetObjectName(myHero)]) do
       if CanUseSpell(myHero, k) == READY and IWalkConfig[str[k]] and GetDistanceSqr(GetOrigin(unit)) < myRange * myRange then
-        orbTable.lastAA = 0
-        CastTargetSpell(unit, k)
+        if GetObjectName(myHero) == "Quinn" then
+          if GotBuff(unit, "QuinnW") < 1 then
+            orbTable.lastAA = 0
+            CastTargetSpell(unit, k)
+          end
+        else
+          orbTable.lastAA = 0
+          CastTargetSpell(unit, k)
+        end
         return true
       end
     end
