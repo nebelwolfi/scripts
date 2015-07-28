@@ -806,6 +806,7 @@ function Vector:perpendicular2()
 end
 
 class "Circle" -- {
+
   function Circle:__init(x, y, z, r)
     local pos = GetOrigin(x) or type(x) ~= "number" and x or nil
     self.x = pos and pos.x or x
@@ -821,6 +822,7 @@ class "Circle" -- {
   function Circle:draw(color)
     DrawCircle(self.x, self.y, self.z, self.r, 1, 10, color or 0xffffffff)
   end
+  
 -- }
 
 wallTable = { -- Summoners Rift only..
