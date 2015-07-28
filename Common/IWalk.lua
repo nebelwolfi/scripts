@@ -53,14 +53,16 @@ end)
 
 function DmgCalc()
   for _,unit in pairs(GetEnemyHeroes()) do
-    local hPos = GetHPBarPos(unit)
-    DrawText(PossibleDmg(unit), 15, hPos.x, hPos.y+20, 0xffffffff)
+    if ValidTarget(unit) then
+      local hPos = GetHPBarPos(unit)
+      DrawText(PossibleDmg(unit), 15, hPos.x, hPos.y+20, 0xffffffff)
+    end
   end
 end
 
 function PossibleDmg(unit)
   local addDamage = GetBonusDmg(myHero)
-  local TotalDmg = (GetBonusDmg(myHero)+GetBaseDamage(myHero))*((GetCastName(myHero, _R) ~= "RivenFengShuiEngine" or CanUseSpell(myHero, _R)) and 1.2 or 1)
+  local TotalDmg = (GetBonusDmg(myHero)+GetBaseDamage(myHero))*(((IWalkConfig.R and (GetCastName(myHero, _R) ~= "RivenFengShuiEngine" or CanUseSpell(myHero, _R)))) and 1.2 or 1)
   local dmg = 0
   local cthp = GetCurrentHP(unit)
   local mthp = GetMaxHP(unit)
@@ -76,10 +78,16 @@ function PossibleDmg(unit)
       local level = GetCastLevel(myHero, _W)
       dmg = dmg + CalcDamage(myHero, unit, 20+30*level+TotalDmg)+CalcDamage(myHero, unit, TotalDmg)+pdmg
     end
-    if CanUseSpell(myHero, _R) == READY then
-      cthp = cthp - dmg
+    if (CanUseSpell(myHero, _R) == READY or GetCastName(myHero, _R) ~= "RivenFengShuiEngine") and IWalkConfig.R then
       local level = GetCastLevel(myHero, _R)
-      dmg = dmg + CalcDamage(myHero, unit, (40+40*level+0.6*addDamage)*(math.min(3,math.max(1,4*(mthp-cthp)/mthp))))+CalcDamage(myHero, unit, TotalDmg)+pdmg
+      local rdmg = CalcDamage(myHero, unit, (40+40*level+0.6*addDamage)*(math.min(3,math.max(1,4*(mthp-cthp)/mthp))))
+      if rdmg > cthp and ValidTarget(unit, 800) and GetCastName(myHero, _R) ~= "RivenFengShuiEngine" and IWalkConfig.Combo then 
+        local unitPos = GetOrigin(unit)
+        CastSkillShot(_R, unitPos.x, unitPos.y, unitPos.z) 
+      end
+      cthp = cthp - dmg
+      rdmg = CalcDamage(myHero, unit, (40+40*level+0.6*addDamage)*(math.min(3,math.max(1,4*(mthp-cthp)/mthp))))
+      dmg = dmg + rdmg
     end
     return dmg > cthp and "Killable" or math.floor(100*dmg/cthp).."% Dmg"
   else
@@ -118,15 +126,15 @@ function DoWalk()
   if ValidTarget(unit, myRange) and GetTickCount() > orbTable.lastAA + orbTable.animation then
     AttackUnit(unit)
   elseif GetTickCount() > orbTable.lastAA + orbTable.windUp then
-    if myRange < 450 and unit and GetObjectType(unit) == GetObjectType(myHero) and ValidTarget(unit, myRange) then
+    if GetRange(myHero) < 450 and unit and GetObjectType(unit) == GetObjectType(myHero) and ValidTarget(unit, myRange) then
       local unitPos = GetOrigin(unit)
-      if GetDistance(unit) > GetHitBox(myHero)+GetHitBox(unit) then
+      if GetDistance(unit) > myRange/2 then
         MoveToXYZ(unitPos.x, unitPos.y, unitPos.z)
       end
     else
       if gapcloserTable[GetObjectName(myHero)] and ValidTarget(unit, myRange + 250) and IWalkConfig[str[gapcloserTable[GetObjectName(myHero)]].."g"] and CanUseSpell(myHero, gapcloserTable[GetObjectName(myHero)]) == READY then
         local unitPos = GetOrigin(unit)
-        CastSkillShot(gapcloserTable[GetObjectName(myHero)], unitPos.x, 0, unitPos.z)
+        CastSkillShot(gapcloserTable[GetObjectName(myHero)], unitPos.x, unitPos.y, unitPos.z)
         if GetObjectName(myHero) == "Riven" and IWalkConfig["W"] and CanUseSpell(myHero, _W) == READY then
           if PossibleDmg(unit):find("Killable") and IWalkConfig.R then
             DelayAction(function() CastTargetSpell(myHero, _R) end, 137)
