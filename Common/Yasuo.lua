@@ -23,7 +23,7 @@ OnLoop(function(myHero)
     end
     if CanUseSpell(myHero, _R) == READY and Config.R and GetOrigin(unit).y > GetOrigin(myHero).y + 10 then CastTargetSpell(unit, _R) end
   end
-  if GetKeyValue("F") then
+  if Config.F then
     MoveTo(GetMousePos())
   end
 end)
