@@ -35,8 +35,10 @@ if gapcloserTable[GetObjectName(myHero)] then
   k = gapcloserTable[GetObjectName(myHero)]
   IWalkConfig.addParam(str[k].."g", "Gapclose with "..str[k], SCRIPT_PARAM_ONOFF, true)
 end
+if GetObjectName(myHero) == "Riven" then IWalkConfig.addParam("R", "Use R if Kill", SCRIPT_PARAM_ONOFF, true) end
 IWalkConfig.addParam("I", "Cast Items", SCRIPT_PARAM_ONOFF, true)
 IWalkConfig.addParam("S", "Skillfarm", SCRIPT_PARAM_ONOFF, true)
+IWalkConfig.addParam("D", "Damage Calc", SCRIPT_PARAM_ONOFF, true)
 
 IWalkConfig.addParam("LastHit", "LastHit", SCRIPT_PARAM_KEYDOWN, string.byte("X"))
 IWalkConfig.addParam("Harass", "Harass", SCRIPT_PARAM_KEYDOWN, string.byte("C"))
@@ -44,9 +46,47 @@ IWalkConfig.addParam("LaneClear", "LaneClear", SCRIPT_PARAM_KEYDOWN, string.byte
 IWalkConfig.addParam("Combo", "Combo", SCRIPT_PARAM_KEYDOWN, string.byte(" "))
 
 OnLoop(function()
+  if IWalkConfig.D then DmgCalc() end
   if waitTickCount > GetTickCount() then return end
   IWalk()
 end)
+
+function DmgCalc()
+  for _,unit in pairs(GetEnemyHeroes()) do
+    local hPos = GetHPBarPos(unit)
+    DrawText(PossibleDmg(unit), 15, hPos.x, hPos.y+20, 0xffffffff)
+  end
+end
+
+function PossibleDmg(unit)
+  local addDamage = GetBonusDmg(myHero)
+  local TotalDmg = (GetBonusDmg(myHero)+GetBaseDamage(myHero))*((GetCastName(myHero, _R) ~= "RivenFengShuiEngine" or CanUseSpell(myHero, _R)) and 1.2 or 1)
+  local dmg = 0
+  local cthp = GetCurrentHP(unit)
+  local mthp = GetMaxHP(unit)
+  if GetObjectName(myHero) == "Riven" then
+    local dmg = 0
+    local mlevel = GetLevel(myHero)
+    local pdmg = CalcDamage(myHero, unit, 5+math.max(5*math.floor((mlevel+2)/3)+10,10*math.floor((mlevel+2)/3)-15)*TotalDmg/100)
+    if CanUseSpell(myHero, _Q) == READY then
+      local level = GetCastLevel(myHero, _Q)
+      dmg = dmg + CalcDamage(myHero, unit, 20*level+(0.35+0.05*level)*TotalDmg-10)*3+CalcDamage(myHero, unit, TotalDmg)*3+pdmg*3
+    end
+    if CanUseSpell(myHero, _W) == READY then
+      local level = GetCastLevel(myHero, _W)
+      dmg = dmg + CalcDamage(myHero, unit, 20+30*level+TotalDmg)+CalcDamage(myHero, unit, TotalDmg)+pdmg
+    end
+    if CanUseSpell(myHero, _R) == READY then
+      cthp = cthp - dmg
+      local level = GetCastLevel(myHero, _R)
+      dmg = dmg + CalcDamage(myHero, unit, (40+40*level+0.6*addDamage)*(math.min(3,math.max(1,4*(mthp-cthp)/mthp))))+CalcDamage(myHero, unit, TotalDmg)+pdmg
+    end
+    return dmg > cthp and "Killable" or math.floor(100*dmg/cthp).."% Dmg"
+  else
+    dmg = CalcDamage(myHero, unit, TotalDmg)
+    return math.floor(100*dmg/cthp).."% Dmg // "..math.ceil(cthp/dmg).." AA"
+  end
+end
 
 function IWalk()
   if IWalkConfig.LastHit or IWalkConfig.LaneClear or IWalkConfig.Harass then
@@ -69,6 +109,7 @@ end
 
 function DoWalk()
   myRange = GetRange(myHero)+GetHitBox(myHero)+(IWalkTarget and GetHitBox(IWalkTarget) or GetHitBox(myHero))
+  Circle(myHero,myRange):draw()
   IWalkTarget = GetTarget(myRange + 250, DAMAGE_PHYSICAL)
   if IWalkConfig.LaneClear then
     IWalkTarget = GetHighestMinion(GetOrigin(myHero), myRange, MINION_ENEMY)
@@ -87,7 +128,11 @@ function DoWalk()
         local unitPos = GetOrigin(unit)
         CastSkillShot(gapcloserTable[GetObjectName(myHero)], unitPos.x, 0, unitPos.z)
         if GetObjectName(myHero) == "Riven" and IWalkConfig["W"] and CanUseSpell(myHero, _W) == READY then
-          DelayAction(function() CastTargetSpell(myHero, _W) end, 137)
+          if PossibleDmg(unit):find("Killable") and IWalkConfig.R then
+            DelayAction(function() CastTargetSpell(myHero, _R) end, 137)
+          else
+            DelayAction(function() CastTargetSpell(myHero, _W) end, 137)
+          end
           orbTable.lastAA = 0
         end
       else
@@ -109,7 +154,6 @@ function GetIWalkTarget()
 end
 
 OnProcessSpell(function(unit, spell)
-  PrintChat(spell.name)
   if unit and unit == myHero and spell and (spell.name:lower():find("attack") or (isAAaswellTable[GetObjectName(myHero)] and isAAaswellTable[GetObjectName(myHero)] == spell.name)) then
     orbTable.lastAA = GetTickCount() + GetLatency()
     orbTable.windUp = GetObjectName(myHero) == "Kalista" and 0 or spell.windUpTime * 1000
