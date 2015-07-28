@@ -67,7 +67,7 @@ function IWalk()
 end
 
 function DoWalk()
-  myRange = GetRange(GetMyHero())+GetHitBox(GetMyHero())
+  myRange = GetRange(GetMyHero())+GetHitBox(GetMyHero())+(IWalkTarget and GetHitBox(IWalkTarget) or 0)
   IWalkTarget = GetTarget(myRange + 250, DAMAGE_PHYSICAL)
   if IWalkConfig.LaneClear then
     IWalkTarget = GetHighestMinion(GetOrigin(myHero), myRange, MINION_ENEMY)
@@ -79,7 +79,7 @@ function DoWalk()
     if myRange < 450 and unit and GetObjectType(unit) == GetObjectType(myHero) and ValidTarget(unit, myRange) then
       local unitPos = GetOrigin(unit)
       if GetDistance(unit) > GetHitBox(myHero)+GetHitBox(unit) then
-        MoveToXYZ(unitPos.x, 0, unitPos.z)
+        MoveToXYZ(unitPos.x, unitPos.y, unitPos.z)
       end
     else
       if gapcloserTable[GetObjectName(myHero)] and ValidTarget(unit, myRange + 250) and IWalkConfig[str[gapcloserTable[GetObjectName(myHero)]].."g"] and CanUseSpell(myHero, gapcloserTable[GetObjectName(myHero)]) == READY then
@@ -145,11 +145,10 @@ function WindUp(unit)
       if CanUseSpell(myHero, k) == READY and IWalkConfig[str[k]] and GetDistanceSqr(GetOrigin(unit)) < myRange * myRange then
         CastSkillShot(k, GetOrigin(unit).x, GetOrigin(unit).y, GetOrigin(unit).z)
         if GetObjectName(myHero) == "Riven" then
-          MoveToXYZ(GetOrigin(unit).x, 0, GetOrigin(unit).z)
-          DelayAction(function() orbTable.lastAA = 0 end, 85)
-        else
-          orbTable.lastAA = 0
+          local unitPos = GetOrigin(unit)
+          MoveToXYZ(unitPos.x, unitPos.y, unitPos.z)
         end
+        orbTable.lastAA = 0
         return true
       end
     end

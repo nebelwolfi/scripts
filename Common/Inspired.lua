@@ -203,7 +203,7 @@ function GenerateMovePos()
     local mPos = GetMousePos()
     local tV = {x = (mPos.x-GetMyHeroPos().x), z = (mPos.z-GetMyHeroPos().z)}
     local len = math.sqrt(tV.x * tV.x + tV.z * tV.z)
-    return {x = GetMyHeroPos().x + 250 * tV.x / len, y = 0, z = GetMyHeroPos().z + 250 * tV.z / len}
+    return {x = GetMyHeroPos().x + 250 * tV.x / len, y = GetMyHeroPos().y, z = GetMyHeroPos().z + 250 * tV.z / len}
 end
 
 function ValidTarget(unit, range)
@@ -442,6 +442,7 @@ function DrawMenu()
     moveNow = false
   end
 end
+
 function scriptConfig(id, text, master)
   local Config = {}
   menuTable[id] = {name = text, m = master}
@@ -489,3 +490,361 @@ OnLoop(function(myHero)
     DrawText(k,50,750,200+50*c,toPrintCol[_])
   end
 end)
+
+function VectorType(v)
+    v = GetOrigin(v) or v
+    return v and v.x and type(v.x) == "number" and ((v.y and type(v.y) == "number") or (v.z and type(v.z) == "number"))
+end
+
+local function IsClockWise(A,B,C)
+    return VectorDirection(A,B,C)<=0
+end
+
+local function IsCounterClockWise(A,B,C)
+    return not IsClockWise(A,B,C)
+end
+
+function IsLineSegmentIntersection(A,B,C,D)
+    return IsClockWise(A, C, D) ~= IsClockWise(B, C, D) and IsClockWise(A, B, C) ~= IsClockWise(A, B, D)
+end
+
+function VectorIntersection(a1, b1, a2, b2) --returns a 2D point where to lines intersect (assuming they have an infinite length)
+    assert(VectorType(a1) and VectorType(b1) and VectorType(a2) and VectorType(b2), "VectorIntersection: wrong argument types (4 <Vector> expected)")
+    --http://thirdpartyninjas.com/blog/2008/10/07/line-segment-intersection/
+    local x1, y1, x2, y2, x3, y3, x4, y4 = a1.x, a1.z or a1.y, b1.x, b1.z or b1.y, a2.x, a2.z or a2.y, b2.x, b2.z or b2.y
+    local r, s, u, v, k, l = x1 * y2 - y1 * x2, x3 * y4 - y3 * x4, x3 - x4, x1 - x2, y3 - y4, y1 - y2
+    local px, py, divisor = r * u - v * s, r * k - l * s, v * k - l * u
+    return divisor ~= 0 and Vector(px / divisor, py / divisor)
+end
+
+function LineSegmentIntersection(A,B,C,D)
+    return IsLineSegmentIntersection(A,B,C,D) and VectorIntersection(A,B,C,D)
+end
+
+function VectorDirection(v1, v2, v)
+    --assert(VectorType(v1) and VectorType(v2) and VectorType(v), "VectorDirection: wrong argument types (3 <Vector> expected)")
+    return ((v.z or v.y) - (v1.z or v1.y)) * (v2.x - v1.x) - ((v2.z or v2.y) - (v1.z or v1.y)) * (v.x - v1.x) 
+end
+
+function VectorPointProjectionOnLine(v1, v2, v)
+    assert(VectorType(v1) and VectorType(v2) and VectorType(v), "VectorPointProjectionOnLine: wrong argument types (3 <Vector> expected)")
+    local line = Vector(v2) - v1
+    local t = ((-(v1.x * line.x - line.x * v.x + (v1.z - v.z) * line.z)) / line:len2())
+    return (line * t) + v1
+end
+
+--[[
+    VectorPointProjectionOnLineSegment: Extended VectorPointProjectionOnLine in 2D Space
+    v1 and v2 are the start and end point of the linesegment
+    v is the point next to the line
+    return:
+        pointSegment = the point closest to the line segment (table with x and y member)
+        pointLine = the point closest to the line (assuming infinite extent in both directions) (table with x and y member), same as VectorPointProjectionOnLine
+        isOnSegment = if the point closest to the line is on the segment
+]]
+function VectorPointProjectionOnLineSegment(v1, v2, v)
+    assert(v1 and v2 and v, "VectorPointProjectionOnLineSegment: wrong argument types (3 <Vector> expected)")
+    local cx, cy, ax, ay, bx, by = v.x, (v.z or v.y), v1.x, (v1.z or v1.y), v2.x, (v2.z or v2.y)
+    local rL = ((cx - ax) * (bx - ax) + (cy - ay) * (by - ay)) / ((bx - ax) ^ 2 + (by - ay) ^ 2)
+    local pointLine = { x = ax + rL * (bx - ax), y = ay + rL * (by - ay) }
+    local rS = rL < 0 and 0 or (rL > 1 and 1 or rL)
+    local isOnSegment = rS == rL
+    local pointSegment = isOnSegment and pointLine or { x = ax + rS * (bx - ax), y = ay + rS * (by - ay) }
+    return pointSegment, pointLine, isOnSegment
+end
+
+class 'Vector'
+
+function Vector:__init(a, b, c)
+    if a == nil then
+        self.x, self.y, self.z = 0.0, 0.0, 0.0
+    elseif b == nil then
+        a = GetOrigin(a) or a
+        assert(VectorType(a), "Vector: wrong argument types (expected nil or <Vector> or 2 <number> or 3 <number>)")
+        self.x, self.y, self.z = a.x, a.y, a.z
+    else
+        assert(type(a) == "number" and (type(b) == "number" or type(c) == "number"), "Vector: wrong argument types (<Vector> or 2 <number> or 3 <number>)")
+        self.x = a
+        if b and type(b) == "number" then self.y = b end
+        if c and type(c) == "number" then self.z = c end
+    end
+end
+
+function Vector:__type()
+    return "Vector"
+end
+
+function Vector:__add(v)
+    assert(VectorType(v) and VectorType(self), "add: wrong argument types (<Vector> expected)")
+    return Vector(self.x + v.x, (v.y and self.y) and self.y + v.y, (v.z and self.z) and self.z + v.z)
+end
+
+function Vector:__sub(v)
+    assert(VectorType(v) and VectorType(self), "Sub: wrong argument types (<Vector> expected)")
+    return Vector(self.x - v.x, (v.y and self.y) and self.y - v.y, (v.z and self.z) and self.z - v.z)
+end
+
+function Vector.__mul(a, b)
+    if type(a) == "number" and VectorType(b) then
+        return Vector({ x = b.x * a, y = b.y and b.y * a, z = b.z and b.z * a })
+    elseif type(b) == "number" and VectorType(a) then
+        return Vector({ x = a.x * b, y = a.y and a.y * b, z = a.z and a.z * b })
+    else
+        assert(VectorType(a) and VectorType(b), "Mul: wrong argument types (<Vector> or <number> expected)")
+        return a:dotP(b)
+    end
+end
+
+function Vector.__div(a, b)
+    if type(a) == "number" and VectorType(b) then
+        return Vector({ x = a / b.x, y = b.y and a / b.y, z = b.z and a / b.z })
+    else
+        assert(VectorType(a) and type(b) == "number", "Div: wrong argument types (<number> expected)")
+        return Vector({ x = a.x / b, y = a.y and a.y / b, z = a.z and a.z / b })
+    end
+end
+
+function Vector.__lt(a, b)
+    assert(VectorType(a) and VectorType(b), "__lt: wrong argument types (<Vector> expected)")
+    return a:len() < b:len()
+end
+
+function Vector.__le(a, b)
+    assert(VectorType(a) and VectorType(b), "__le: wrong argument types (<Vector> expected)")
+    return a:len() <= b:len()
+end
+
+function Vector:__eq(v)
+    assert(VectorType(v), "__eq: wrong argument types (<Vector> expected)")
+    return self.x == v.x and self.y == v.y and self.z == v.z
+end
+
+function Vector:__unm()
+    return Vector(-self.x, self.y and -self.y, self.z and -self.z)
+end
+
+function Vector:__vector(v)
+    assert(VectorType(v), "__vector: wrong argument types (<Vector> expected)")
+    return self:crossP(v)
+end
+
+function Vector:__tostring()
+    if self.y and self.z then
+        return "(" .. tostring(self.x) .. "," .. tostring(self.y) .. "," .. tostring(self.z) .. ")"
+    else
+        return "(" .. tostring(self.x) .. "," .. self.y and tostring(self.y) or tostring(self.z) .. ")"
+    end
+end
+
+function Vector:clone()
+    return Vector(self)
+end
+
+function Vector:unpack()
+    return self.x, self.y, self.z
+end
+
+function Vector:len2(v)
+    assert(v == nil or VectorType(v), "dist: wrong argument types (<Vector> expected)")
+    local v = v and Vector(v) or self
+    return self.x * v.x + (self.y and self.y * v.y or 0) + (self.z and self.z * v.z or 0)
+end
+
+function Vector:len()
+    return math.sqrt(self:len2())
+end
+
+function Vector:dist(v)
+    assert(VectorType(v), "dist: wrong argument types (<Vector> expected)")
+    local a = self - v
+    return a:len()
+end
+
+function Vector:normalize()
+    local a = self:len()
+    self.x = self.x / a
+    if self.y then self.y = self.y / a end
+    if self.z then self.z = self.z / a end
+end
+
+function Vector:normalized()
+    local a = self:clone()
+    a:normalize()
+    return a
+end
+
+function Vector:center(v)
+    assert(VectorType(v), "center: wrong argument types (<Vector> expected)")
+    return Vector((self + v) / 2)
+end
+
+function Vector:crossP(other)
+    assert(self.y and self.z and other.y and other.z, "crossP: wrong argument types (3 Dimensional <Vector> expected)")
+    return Vector({
+        x = other.z * self.y - other.y * self.z,
+        y = other.x * self.z - other.z * self.x,
+        z = other.y * self.x - other.x * self.y
+    })
+end
+
+function Vector:dotP(other)
+    assert(VectorType(other), "dotP: wrong argument types (<Vector> expected)")
+    return self.x * other.x + (self.y and (self.y * other.y) or 0) + (self.z and (self.z * other.z) or 0)
+end
+
+function Vector:projectOn(v)
+    assert(VectorType(v), "projectOn: invalid argument: cannot project Vector on " .. type(v))
+    if type(v) ~= "Vector" then v = Vector(v) end
+    local s = self:len2(v) / v:len2()
+    return Vector(v * s)
+end
+
+function Vector:mirrorOn(v)
+    assert(VectorType(v), "mirrorOn: invalid argument: cannot mirror Vector on " .. type(v))
+    return self:projectOn(v) * 2
+end
+
+function Vector:sin(v)
+    assert(VectorType(v), "sin: wrong argument types (<Vector> expected)")
+    if type(v) ~= "Vector" then v = Vector(v) end
+    local a = self:__vector(v)
+    return math.sqrt(a:len2() / (self:len2() * v:len2()))
+end
+
+function Vector:cos(v)
+    assert(VectorType(v), "cos: wrong argument types (<Vector> expected)")
+    if type(v) ~= "Vector" then v = Vector(v) end
+    return self:len2(v) / math.sqrt(self:len2() * v:len2())
+end
+
+function Vector:angle(v)
+    assert(VectorType(v), "angle: wrong argument types (<Vector> expected)")
+    return math.acos(self:cos(v))
+end
+
+function Vector:affineArea(v)
+    assert(VectorType(v), "affineArea: wrong argument types (<Vector> expected)")
+    if type(v) ~= "Vector" then v = Vector(v) end
+    local a = self:__vector(v)
+    return math.sqrt(a:len2())
+end
+
+function Vector:triangleArea(v)
+    assert(VectorType(v), "triangleArea: wrong argument types (<Vector> expected)")
+    return self:affineArea(v) / 2
+end
+
+function Vector:rotateXaxis(phi)
+    assert(type(phi) == "number", "Rotate: wrong argument types (expected <number> for phi)")
+    local c, s = math.cos(phi), math.sin(phi)
+    self.y, self.z = self.y * c - self.z * s, self.z * c + self.y * s
+end
+
+function Vector:rotateYaxis(phi)
+    assert(type(phi) == "number", "Rotate: wrong argument types (expected <number> for phi)")
+    local c, s = math.cos(phi), math.sin(phi)
+    self.x, self.z = self.x * c + self.z * s, self.z * c - self.x * s
+end
+
+function Vector:rotateZaxis(phi)
+    assert(type(phi) == "number", "Rotate: wrong argument types (expected <number> for phi)")
+    local c, s = math.cos(phi), math.sin(phi)
+    self.x, self.y = self.x * c - self.z * s, self.y * c + self.x * s
+end
+
+function Vector:rotate(phiX, phiY, phiZ)
+    assert(type(phiX) == "number" and type(phiY) == "number" and type(phiZ) == "number", "Rotate: wrong argument types (expected <number> for phi)")
+    if phiX ~= 0 then self:rotateXaxis(phiX) end
+    if phiY ~= 0 then self:rotateYaxis(phiY) end
+    if phiZ ~= 0 then self:rotateZaxis(phiZ) end
+end
+
+function Vector:rotated(phiX, phiY, phiZ)
+    assert(type(phiX) == "number" and type(phiY) == "number" and type(phiZ) == "number", "Rotated: wrong argument types (expected <number> for phi)")
+    local a = self:clone()
+    a:rotate(phiX, phiY, phiZ)
+    return a
+end
+
+-- not yet full 3D functions
+function Vector:polar()
+    if math.close(self.x, 0) then
+        if (self.z or self.y) > 0 then return 90
+        elseif (self.z or self.y) < 0 then return 270
+        else return 0
+        end
+    else
+        local theta = math.deg(math.atan((self.z or self.y) / self.x))
+        if self.x < 0 then theta = theta + 180 end
+        if theta < 0 then theta = theta + 360 end
+        return theta
+    end
+end
+
+function Vector:angleBetween(v1, v2)
+    assert(VectorType(v1) and VectorType(v2), "angleBetween: wrong argument types (2 <Vector> expected)")
+    local p1, p2 = (-self + v1), (-self + v2)
+    local theta = p1:polar() - p2:polar()
+    if theta < 0 then theta = theta + 360 end
+    if theta > 180 then theta = 360 - theta end
+    return theta
+end
+
+function Vector:compare(v)
+    assert(VectorType(v), "compare: wrong argument types (<Vector> expected)")
+    local ret = self.x - v.x
+    if ret == 0 then ret = self.z - v.z end
+    return ret
+end
+
+function Vector:perpendicular()
+    return Vector(-self.z, self.y, self.x)
+end
+
+function Vector:perpendicular2()
+    return Vector(self.z, self.y, -self.x)
+end
+
+class "Circle" -- {
+  function Circle:__init(x, y, z, r)
+    local pos = GetOrigin(x) or type(x) ~= "number" and x or nil
+    self.x = pos and pos.x or x
+    self.y = pos and pos.y or y
+    self.z = pos and pos.z or z
+    self.r = pos and y or r
+  end
+
+  function Circle:contains(pos)
+    return GetDistanceSqr(Vector(self.x, self.y, self.z), pos) < self.r * self.r
+  end
+
+  function Circle:draw(color)
+    DrawCircle(self.x, self.y, self.z, self.r, 1, 10, color or 0xffffffff)
+  end
+-- }
+
+wallTable = { -- Summoners Rift only..
+  Circle(1550,93,1700,400), Circle(1720,95,2320,150), 
+  Circle(2166,95,1830,150), Circle(3460,93,1280,200), 
+  Circle(4270,95,1290,150), Circle(4000,95,2450,150), 
+  Circle(3200,93,3220,200), Circle(1170,93,3590,200),
+  Circle(2440,95,4040,150), Circle(1165,95,4270,150),
+  Circle(3650,95,3690,150), Circle(1820,90,4890,170),
+  Circle(2000,50,4890,170), Circle(2200,50,4890,170),
+  Circle(2350,50,4890,170), Circle(3000,50,4800,170),
+  Circle(3200,50,4700,170), Circle(3400,50,4600,170),
+  Circle(3600,50,4500,170), Circle(3400,50,4600,170),
+  Circle(4450,50,3700,170), Circle(4550,50,3500,170),
+  Circle(4650,50,3300,170), Circle(4750,50,3100,170),
+  Circle(4850,50,2600,170), Circle(4870,50,2400,170),
+  Circle(4880,50,2200,170), Circle(4890,50,2000,170),
+}
+
+function IsWall(spot)
+  for _=1, #wallTable do
+    if wallTable[_]:contains(spot) then
+      return true
+    end
+  end
+  return false
+end
