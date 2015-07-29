@@ -1,5 +1,5 @@
 orbTable = { lastAA = 0, windUp = 13.37, animation = 13.37 }
-aaResetTable = { ["Ashe"] = {_Q}, ["Diana"] = {_E}, ["Darius"] = {_W}, ["Garen"] = {_Q}, ["Hecarim"] = {_Q}, ["Jax"] = {_W}, ["Jayce"] = {_W}, ["Rengar"] = {_Q}, ["Riven"] = {_W}, ["Sivir"] = {_W}, ["Talon"] = {_Q} }
+aaResetTable = { ["Diana"] = {_E}, ["Darius"] = {_W}, ["Garen"] = {_Q}, ["Hecarim"] = {_Q}, ["Jax"] = {_W}, ["Jayce"] = {_W}, ["Rengar"] = {_Q}, ["Riven"] = {_W}, ["Sivir"] = {_W}, ["Talon"] = {_Q} }
 aaResetTable2 = { ["Ashe"] = {_W}, ["Diana"] = {_Q}, ["Graves"] = {_Q}, ["Kalista"] = {_Q}, ["Lucian"] = {_W}, ["Quinn"] = {_Q}, ["Riven"] = {_Q}, ["Talon"] = {_W}, ["Yasuo"] = {_Q} }
 aaResetTable3 = { ["Jax"] = {_Q}, ["Lucian"] = {_Q}, ["Quinn"] = {_E}, ["Teemo"] = {_Q}, ["Tristana"] = {_E} }
 aaResetTable4 = { ["Graves"] = {_E},  ["Lucian"] = {_E},  ["Vayne"] = {_Q} }
@@ -8,43 +8,7 @@ IWalkTarget = nil
 myHero = GetMyHero()
 myRange = GetRange(myHero)+GetHitBox(myHero)*2
 waitTickCount = 0
-
-IWalkConfig = scriptConfig("IWalk", "IWalk.lua")
-str = {[_Q] = "Q", [_W] = "W", [_E] = "E", [_R] = "R"}
-if aaResetTable3[GetObjectName(myHero)] then
-  for _,k in pairs(aaResetTable3[GetObjectName(myHero)]) do
-    IWalkConfig.addParam(str[k], "AA Reset with "..str[k], SCRIPT_PARAM_ONOFF, true)
-  end
-end
-if aaResetTable2[GetObjectName(myHero)] then
-  for _,k in pairs(aaResetTable2[GetObjectName(myHero)]) do
-    IWalkConfig.addParam(str[k], "AA Reset with "..str[k], SCRIPT_PARAM_ONOFF, true)
-  end
-end
-if aaResetTable[GetObjectName(myHero)] then
-  for _,k in pairs(aaResetTable[GetObjectName(myHero)]) do
-    IWalkConfig.addParam(str[k], "AA Reset with "..str[k], SCRIPT_PARAM_ONOFF, true)
-  end
-end
-if aaResetTable4[GetObjectName(myHero)] then
-  for _,k in pairs(aaResetTable4[GetObjectName(myHero)]) do
-    IWalkConfig.addParam(str[k], "AA Reset with "..str[k], SCRIPT_PARAM_ONOFF, true)
-  end
-end
-if gapcloserTable[GetObjectName(myHero)] then
-  k = gapcloserTable[GetObjectName(myHero)]
-  IWalkConfig.addParam(str[k].."g", "Gapclose with "..str[k], SCRIPT_PARAM_ONOFF, true)
-end
-if GetObjectName(myHero) == "Riven" then IWalkConfig.addParam("R", "Use R if Kill", SCRIPT_PARAM_ONOFF, true) end
-IWalkConfig.addParam("I", "Cast Items", SCRIPT_PARAM_ONOFF, true)
-IWalkConfig.addParam("S", "Skillfarm", SCRIPT_PARAM_ONOFF, true)
-IWalkConfig.addParam("D", "Damage Calc", SCRIPT_PARAM_ONOFF, true)
-IWalkConfig.addParam("C", "AA Range Circle", SCRIPT_PARAM_ONOFF, true)
-
-IWalkConfig.addParam("LastHit", "LastHit", SCRIPT_PARAM_KEYDOWN, string.byte("X"))
-IWalkConfig.addParam("Harass", "Harass", SCRIPT_PARAM_KEYDOWN, string.byte("C"))
-IWalkConfig.addParam("LaneClear", "LaneClear", SCRIPT_PARAM_KEYDOWN, string.byte("V"))
-IWalkConfig.addParam("Combo", "Combo", SCRIPT_PARAM_KEYDOWN, string.byte(" "))
+DelayAction(function() MakeMenu() end, 0)
 
 OnLoop(function()
   if IWalkConfig.D then DmgCalc() end
@@ -93,7 +57,7 @@ function PossibleDmg(unit)
     return dmg > cthp and "Killable" or math.floor(100*dmg/cthp).."% Dmg"
   else
     dmg = CalcDamage(myHero, unit, TotalDmg)
-    return math.floor(100*dmg/cthp).."% Dmg // "..math.ceil(cthp/dmg).." AA"
+    return math.ceil(cthp/dmg).." AA"
   end
 end
 
@@ -124,6 +88,7 @@ function DoWalk()
     IWalkTarget = GetHighestMinion(GetOrigin(myHero), myRange, MINION_ENEMY)
   end
   local unit = IWalkTarget
+  if ValidTarget(unit) then DoChampionPlugins(unit) end
   if ValidTarget(unit, myRange) and GetTickCount() > orbTable.lastAA + orbTable.animation then
     AttackUnit(unit)
   elseif GetTickCount() > orbTable.lastAA + orbTable.windUp then
@@ -154,7 +119,7 @@ end
 function Move()
   local movePos = GenerateMovePos()
   if GetDistance(GetMousePos()) > GetHitBox(myHero) then
-    MoveToXYZ(movePos.x, 0, movePos.z)
+    MoveToXYZ(movePos.x, GetMyHeroPos().y, movePos.z)
   end
 end
 
@@ -189,15 +154,8 @@ function WindUp(unit)
   if aaResetTable[GetObjectName(myHero)] then
     for _,k in pairs(aaResetTable[GetObjectName(myHero)]) do
       if CanUseSpell(myHero, k) == READY and IWalkConfig[str[k]] and GetDistanceSqr(GetOrigin(unit)) < myRange * myRange then
-        if GetObjectName(myHero) == "Ashe" then
-          if GotBuff(unit, "asheqcastready") < 1 then
-            orbTable.lastAA = 0
-            CastSpell(k)
-          end
-        else
-          CastSpell(k)
-          orbTable.lastAA = 0
-        end
+        orbTable.lastAA = 0
+        CastSpell(k)
         return true
       end
     end
@@ -205,7 +163,8 @@ function WindUp(unit)
   if aaResetTable2[GetObjectName(myHero)] then
     for _,k in pairs(aaResetTable2[GetObjectName(myHero)]) do
       if CanUseSpell(myHero, k) == READY and IWalkConfig[str[k]] and GetDistanceSqr(GetOrigin(unit)) < myRange * myRange and (not GetObjectName(myHero) == "Quinn" or CanUseSpell(myHero, _E) ~= READY) then
-        CastSkillShot(k, GetOrigin(unit).x, GetOrigin(unit).y, GetOrigin(unit).z)
+        local unitPos = GetOrigin(unit)
+        CastSkillShot(k, unitPos.x, unitPos.y, unitPos.z)
         if GetObjectName(myHero) == "Riven" then
           local unitPos = GetOrigin(unit)
           MoveToXYZ(unitPos.x, unitPos.y, unitPos.z)
@@ -218,12 +177,7 @@ function WindUp(unit)
   if aaResetTable3[GetObjectName(myHero)] then
     for _,k in pairs(aaResetTable3[GetObjectName(myHero)]) do
       if CanUseSpell(myHero, k) == READY and IWalkConfig[str[k]] and GetDistanceSqr(GetOrigin(unit)) < myRange * myRange then
-        if GetObjectName(myHero) == "Quinn" then
-          if GotBuff(unit, "QuinnW") < 1 then
-            orbTable.lastAA = 0
-            CastTargetSpell(unit, k)
-          end
-        else
+        if GetObjectName(myHero) ~= "Quinn" or GotBuff(unit, "QuinnW") < 1 then
           orbTable.lastAA = 0
           CastTargetSpell(unit, k)
         end
@@ -232,4 +186,65 @@ function WindUp(unit)
     end
   end
   return IWalkConfig.I and CastOffensiveItems(unit)
+end
+
+function MakeMenu()
+  IWalkConfig = scriptConfig("IWalk", "IWalk.lua")
+  str = {[_Q] = "Q", [_W] = "W", [_E] = "E", [_R] = "R"}
+  if aaResetTable3[GetObjectName(myHero)] then
+    for _,k in pairs(aaResetTable3[GetObjectName(myHero)]) do
+      IWalkConfig.addParam(str[k], "AA Reset with "..str[k], SCRIPT_PARAM_ONOFF, true)
+    end
+  end
+  if aaResetTable2[GetObjectName(myHero)] then
+    for _,k in pairs(aaResetTable2[GetObjectName(myHero)]) do
+      IWalkConfig.addParam(str[k], "AA Reset with "..str[k], SCRIPT_PARAM_ONOFF, true)
+    end
+  end
+  if aaResetTable[GetObjectName(myHero)] then
+    for _,k in pairs(aaResetTable[GetObjectName(myHero)]) do
+      IWalkConfig.addParam(str[k], "AA Reset with "..str[k], SCRIPT_PARAM_ONOFF, true)
+    end
+  end
+  if aaResetTable4[GetObjectName(myHero)] then
+    for _,k in pairs(aaResetTable4[GetObjectName(myHero)]) do
+      IWalkConfig.addParam(str[k], "AA Reset with "..str[k], SCRIPT_PARAM_ONOFF, true)
+    end
+  end
+  if gapcloserTable[GetObjectName(myHero)] then
+    k = gapcloserTable[GetObjectName(myHero)]
+    IWalkConfig.addParam(str[k].."g", "Gapclose with "..str[k], SCRIPT_PARAM_ONOFF, true)
+  end
+  DoChampionPluginMenu()
+  IWalkConfig.addParam("I", "Cast Items", SCRIPT_PARAM_ONOFF, true)
+  IWalkConfig.addParam("S", "Skillfarm", SCRIPT_PARAM_ONOFF, true)
+  IWalkConfig.addParam("D", "Damage Calc", SCRIPT_PARAM_ONOFF, true)
+  IWalkConfig.addParam("C", "AA Range Circle", SCRIPT_PARAM_ONOFF, true)
+
+  IWalkConfig.addParam("LastHit", "LastHit", SCRIPT_PARAM_KEYDOWN, string.byte("X"))
+  IWalkConfig.addParam("Harass", "Harass", SCRIPT_PARAM_KEYDOWN, string.byte("C"))
+  IWalkConfig.addParam("LaneClear", "LaneClear", SCRIPT_PARAM_KEYDOWN, string.byte("V"))
+  IWalkConfig.addParam("Combo", "Combo", SCRIPT_PARAM_KEYDOWN, string.byte(" "))
+end
+
+function DoChampionPluginMenu()
+  if GetObjectName(myHero) == "Ashe" then 
+    IWalkConfig.addParam("Q", "Use Q at 5 stacks", SCRIPT_PARAM_ONOFF, true) 
+    IWalkConfig.addParam("W", "Use W", SCRIPT_PARAM_ONOFF, true) 
+  end
+  if GetObjectName(myHero) == "Riven" then 
+    IWalkConfig.addParam("R", "Use R if Kill", SCRIPT_PARAM_ONOFF, true) 
+  end
+end
+
+function DoChampionPlugins(unit)
+  if GetObjectName(myHero) == "Ashe" then
+    if GotBuff(myHero, "asheqcastready") > 0 and IWalkConfig.Q then
+      CastSpell(_Q)
+    end
+    if CanUseSpell(myHero, _W) == READY and IWalkConfig.W then
+      local unitPos = GetOrigin(unit)
+      CastSkillShot(_W, unitPos.x, unitPos.y, unitPos.z)
+    end
+  end
 end

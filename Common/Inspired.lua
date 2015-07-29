@@ -295,14 +295,14 @@ function CastOffensiveItems(unit)
   u = {3153, 3146, 3144}
   for _,k in pairs(i) do
     slot = GetItemSlot(GetMyHero(),k)
-    if slot and CanUseSpell(GetMyHero(), slot) == READY then
+    if slot ~= nil and slot ~= 0 and CanUseSpell(GetMyHero(), slot) == READY then
       CastTargetSpell(GetMyHero(), slot)
       return true
     end
   end
   for _,k in pairs(u) do
     slot = GetItemSlot(GetMyHero(),k)
-    if slot and CanUseSpell(GetMyHero(), slot) == READY then
+    if slot ~= nil and slot ~= 0 and CanUseSpell(GetMyHero(), slot) == READY then
       CastTargetSpell(unit, slot)
       return true
     end
@@ -806,7 +806,6 @@ function Vector:perpendicular2()
 end
 
 class "Circle" -- {
-
   function Circle:__init(x, y, z, r)
     local pos = GetOrigin(x) or type(x) ~= "number" and x or nil
     self.x = pos and pos.x or x
@@ -822,7 +821,6 @@ class "Circle" -- {
   function Circle:draw(color)
     DrawCircle(self.x, self.y, self.z, self.r, 1, 10, color or 0xffffffff)
   end
-  
 -- }
 
 wallTable = { -- Summoners Rift only..
@@ -840,6 +838,28 @@ wallTable = { -- Summoners Rift only..
   Circle(4650,50,3300,170), Circle(4750,50,3100,170),
   Circle(4850,50,2600,170), Circle(4870,50,2400,170),
   Circle(4880,50,2200,170), Circle(4890,50,2000,170),
+  Circle(5636,51,2125,250), Circle(5656,51.94,1957,261),
+  Circle(5644,51.63,2400,240), Circle(4190,50,2000,170),
+  Circle(5716,51,2700,260), Circle(6047,52,2860,210),
+  Circle(5765,53,3169,370), Circle(5365.73,50.31,4327,480),
+  Circle(5408,51,3994,300), Circle(5544,47.09,4733,210),
+  Circle(5831.42,48.49,4727.8,300), Circle(6601,48.52,4999,190),
+  Circle(6567.42,56.67,5694,265), Circle(6602,49.38,5315,220),
+  Circle(6280,51.76,5571,185), Circle(6050,50.07,5403,180),
+  Circle(6805,52.80,6038,185), Circle(6949,63.34,5792,180),
+  Circle(7458,51.04,5452,265), Circle(7341,55.34,5692,180),
+  Circle(7085,57.13,5861,235), Circle(6676,52.16,2129,400),
+  Circle(7461,51.14,2009,235), Circle(7066,51.58,2111,400),
+  Circle(6884,52.05,2369,195), Circle(7721,50.96,1929,200),
+  Circle(6745,51.70,2366,195), Circle(6781,51.56,3487,340),
+  Circle(6350,49.90,3983,245), Circle(6462,48.46,3752,220),
+  Circle(6466,48.67,4277,215), Circle(6520,48.52,4471,120),
+  Circle(7300,56.65,4267,265), Circle(7398,49.26,4434,250),
+  Circle(7722,56.25,4552,225), Circle(8045,52.51,4544,250),
+  Circle(8282,53.36,4382,305), Circle(8287,53.96,3936,250),
+  Circle(8027,52.94,3718,190), Circle(7756,52.56,2998,210),
+  Circle(7927,52.11,2691,260), Circle(8076,51.55,3005,185),
+  Circle(8344,51.46,3079,165), Circle(8572,53.12,3065,195),
 }
 
 function IsWall(spot)
