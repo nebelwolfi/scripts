@@ -1,6 +1,6 @@
 orbTable = { lastAA = 0, windUp = 13.37, animation = 13.37 }
-aaResetTable = { ["Diana"] = {_E}, ["Darius"] = {_W}, ["Garen"] = {_Q}, ["Hecarim"] = {_Q}, ["Jax"] = {_W}, ["Jayce"] = {_W}, ["Rengar"] = {_Q}, ["Riven"] = {_W}, ["Sivir"] = {_W}, ["Talon"] = {_Q} }
-aaResetTable2 = { ["Diana"] = {_Q}, ["Graves"] = {_Q}, ["Kalista"] = {_Q}, ["Lucian"] = {_W}, ["Quinn"] = {_Q}, ["Riven"] = {_Q}, ["Talon"] = {_W}, ["Yasuo"] = {_Q} }
+aaResetTable = { ["Ashe"] = {_Q}, ["Diana"] = {_E}, ["Darius"] = {_W}, ["Garen"] = {_Q}, ["Hecarim"] = {_Q}, ["Jax"] = {_W}, ["Jayce"] = {_W}, ["Rengar"] = {_Q}, ["Riven"] = {_W}, ["Sivir"] = {_W}, ["Talon"] = {_Q} }
+aaResetTable2 = { ["Ashe"] = {_W}, ["Diana"] = {_Q}, ["Graves"] = {_Q}, ["Kalista"] = {_Q}, ["Lucian"] = {_W}, ["Quinn"] = {_Q}, ["Riven"] = {_Q}, ["Talon"] = {_W}, ["Yasuo"] = {_Q} }
 aaResetTable3 = { ["Jax"] = {_Q}, ["Lucian"] = {_Q}, ["Quinn"] = {_E}, ["Teemo"] = {_Q}, ["Tristana"] = {_E} }
 aaResetTable4 = { ["Graves"] = {_E},  ["Lucian"] = {_E},  ["Vayne"] = {_Q} }
 isAAaswellTable = { ["Quinn"] = "QuinnWEnhanced" }
@@ -189,8 +189,15 @@ function WindUp(unit)
   if aaResetTable[GetObjectName(myHero)] then
     for _,k in pairs(aaResetTable[GetObjectName(myHero)]) do
       if CanUseSpell(myHero, k) == READY and IWalkConfig[str[k]] and GetDistanceSqr(GetOrigin(unit)) < myRange * myRange then
-        CastSpell(k)
-        orbTable.lastAA = 0
+        if GetObjectName(myHero) == "Ashe" then
+          if GotBuff(unit, "asheqcastready") < 1 then
+            orbTable.lastAA = 0
+            CastSpell(k)
+          end
+        else
+          CastSpell(k)
+          orbTable.lastAA = 0
+        end
         return true
       end
     end
