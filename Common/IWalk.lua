@@ -119,7 +119,7 @@ end
 function DoWalk()
   myRange = GetRange(myHero)+GetHitBox(myHero)+(IWalkTarget and GetHitBox(IWalkTarget) or GetHitBox(myHero))
   if IWalkConfig.C then Circle(myHero,myRange):draw() end
-  IWalkTarget = GetTarget(myRange + 250, DAMAGE_PHYSICAL)
+  IWalkTarget = GetTarget(myRange + ((gapcloserTable[GetObjectName(myHero)] and CanUseSpell(myHero, gapcloserTable[GetObjectName(myHero)]) == READY) and 250 or 0), DAMAGE_PHYSICAL)
   if IWalkConfig.LaneClear then
     IWalkTarget = GetHighestMinion(GetOrigin(myHero), myRange, MINION_ENEMY)
   end

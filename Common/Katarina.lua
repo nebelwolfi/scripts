@@ -6,7 +6,7 @@ Config.addParam("R", "Use R", SCRIPT_PARAM_ONOFF, true)
 
 OnLoop(function(myHero)
   if waitTickCount > GetTickCount() then return end
-  local unit = GetTarget(1000, DAMAGE_MAGIC)
+  local unit = GetTarget((CanUseSpell(myHero, _E) == READY and 700 or CanUseSpell(myHero, _Q) == READY and 675 or 375), DAMAGE_MAGIC)
   if unit then
     local dmg = 0
     local hp  = GetCurrentHP(unit)
