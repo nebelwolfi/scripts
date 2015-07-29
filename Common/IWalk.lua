@@ -39,6 +39,7 @@ if GetObjectName(myHero) == "Riven" then IWalkConfig.addParam("R", "Use R if Kil
 IWalkConfig.addParam("I", "Cast Items", SCRIPT_PARAM_ONOFF, true)
 IWalkConfig.addParam("S", "Skillfarm", SCRIPT_PARAM_ONOFF, true)
 IWalkConfig.addParam("D", "Damage Calc", SCRIPT_PARAM_ONOFF, true)
+IWalkConfig.addParam("C", "AA Range Circle", SCRIPT_PARAM_ONOFF, true)
 
 IWalkConfig.addParam("LastHit", "LastHit", SCRIPT_PARAM_KEYDOWN, string.byte("X"))
 IWalkConfig.addParam("Harass", "Harass", SCRIPT_PARAM_KEYDOWN, string.byte("C"))
@@ -117,7 +118,7 @@ end
 
 function DoWalk()
   myRange = GetRange(myHero)+GetHitBox(myHero)+(IWalkTarget and GetHitBox(IWalkTarget) or GetHitBox(myHero))
-  Circle(myHero,myRange):draw()
+  if IWalkConfig.C then Circle(myHero,myRange):draw() end
   IWalkTarget = GetTarget(myRange + 250, DAMAGE_PHYSICAL)
   if IWalkConfig.LaneClear then
     IWalkTarget = GetHighestMinion(GetOrigin(myHero), myRange, MINION_ENEMY)
