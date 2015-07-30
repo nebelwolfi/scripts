@@ -30,11 +30,12 @@ OnLoop(function(myHero)
     end
   end
   for _, target in pairs(GetEnemyHeroes()) do
-    if CanUseSpell(myHero, _R) == READY and ValidTarget(target, 3200) and IXerathConfig.R and CalcDamage(myHero, target, 0, 135+55*GetCastLevel(myHero, _R)+0.43*GetBonusAP(myHero)) >= GetCurrentHP(target) then
+  	local rRange = 2400 + GetCastLevel(myHero, _R) * 800
+    if CanUseSpell(myHero, _R) == READY and ValidTarget(target, rRange) and IXerathConfig.R and 3*CalcDamage(myHero, target, 0, 135+55*GetCastLevel(myHero, _R)+0.43*GetBonusAP(myHero)) >= GetCurrentHP(target) then
       waitTickCount = GetTickCount() + 1000
-      PredCast(_R, target, math.huge, 750, 3200, 245, true)
-      DelayAction(function() PredCast(_R, target, math.huge, 750, 3200, 245, true) end, 250)
-      DelayAction(function() PredCast(_R, target, math.huge, 750, 3200, 245, true) end, 750)
+      PredCast(_R, target, math.huge, 750, rRange, 245, true)
+      DelayAction(function() PredCast(_R, target, math.huge, 750, rRange, 245, true) end, 250)
+      DelayAction(function() PredCast(_R, target, math.huge, 750, rRange, 245, true) end, 750)
     end
   end
 end)
