@@ -273,6 +273,7 @@ function DoChampionPluginMenu()
   elseif myHeroName == "Twitch" then
   elseif myHeroName == "Varus" then
   elseif myHeroName == "Vayne" then
+    IWalkConfig.addParam("E", "Use E (stun)", SCRIPT_PARAM_ONOFF, true) 
   end
   if myHeroName == "Riven" then 
     IWalkConfig.addParam("R", "Use R if Kill", SCRIPT_PARAM_ONOFF, true) 
@@ -315,11 +316,13 @@ function DoChampionPlugins(unit)
   elseif myHeroName == "Twitch" then
   elseif myHeroName == "Varus" then
   elseif myHeroName == "Vayne" then
-    local Pred = GetPredictionForPlayer(GetMyHeroPos(),unit,GetMoveSpeed(unit), 2000, 0.25, 1000, 1, false, true)
-    for _=0,450,GetHitBox(unit) do
-      local tPos = Vector(Pred)+(Vector(Pred)-Vect(myHero)):normalized()*_
-      if IsWall(tPos) then
-        CastTargetSpell(unit, _E)
+    if IWalkConfig.E and CanUseSpell(myHero, _E) == READY then
+      local Pred = GetPredictionForPlayer(GetMyHeroPos(),unit,GetMoveSpeed(unit), 2000, 0.25, 1000, 1, false, true)
+      for _=0,450,GetHitBox(unit) do
+        local tPos = Vector(Pred)+(Vector(Pred)-Vect(myHero)):normalized()*_
+        if IsWall(tPos) then
+          CastTargetSpell(unit, _E)
+        end
       end
     end
   end

@@ -1,3 +1,3 @@
 require('Inspired')
-require('IWalk')
+require('IAC')
 pcall( require, GetObjectName(GetMyHero()) ) 
