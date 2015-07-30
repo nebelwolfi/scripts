@@ -105,7 +105,7 @@ function DoWalk()
         MoveToXYZ(unitPos.x, unitPos.y, unitPos.z)
       end
     else
-      if gapcloserTable[myHeroName] and ValidTarget(unit, myRange + 250) and IWalkConfig[str[gapcloserTable[myHeroName]].."g"] and CanUseSpell(myHero, gapcloserTable[myHeroName]) == READY then
+      if IWalkConfig.Combo and gapcloserTable[myHeroName] and ValidTarget(unit, myRange + 250) and IWalkConfig[str[gapcloserTable[myHeroName]].."g"] and CanUseSpell(myHero, gapcloserTable[myHeroName]) == READY then
         local unitPos = GetOrigin(unit)
         CastSkillShot(gapcloserTable[myHeroName], unitPos.x, unitPos.y, unitPos.z)
         if myHeroName == "Riven" and IWalkConfig["W"] and CanUseSpell(myHero, _W) == READY then
@@ -267,6 +267,8 @@ function DoChampionPluginMenu()
   elseif myHeroName == "Lucian" then
   elseif myHeroName == "MissFortune" then
   elseif myHeroName == "Quinn" then
+  elseif myHeroName == "Riven" then 
+    IWalkConfig.addParam("R", "Use R if Kill", SCRIPT_PARAM_ONOFF, true) 
   elseif myHeroName == "Sivir" then
   elseif myHeroName == "Teemo" then
   elseif myHeroName == "Tristana" then
@@ -274,9 +276,6 @@ function DoChampionPluginMenu()
   elseif myHeroName == "Varus" then
   elseif myHeroName == "Vayne" then
     IWalkConfig.addParam("E", "Use E (stun)", SCRIPT_PARAM_ONOFF, true) 
-  end
-  if myHeroName == "Riven" then 
-    IWalkConfig.addParam("R", "Use R if Kill", SCRIPT_PARAM_ONOFF, true) 
   end
 end
 
@@ -319,7 +318,7 @@ function DoChampionPlugins(unit)
     if IWalkConfig.E and CanUseSpell(myHero, _E) == READY then
       local Pred = GetPredictionForPlayer(GetMyHeroPos(),unit,GetMoveSpeed(unit), 2000, 0.25, 1000, 1, false, true)
       for _=0,450,GetHitBox(unit) do
-        local tPos = Vector(Pred)+(Vector(Pred)-Vect(myHero)):normalized()*_
+        local tPos = Vector(Pred.PredPos)+Vector(Vector(Pred.PredPos)-Vector(myHero)):normalized()*_
         if IsWall(tPos) then
           CastTargetSpell(unit, _E)
         end
