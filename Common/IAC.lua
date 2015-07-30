@@ -347,7 +347,7 @@ function DoChampionPlugins2()
       end
     end
     local unit = GetTarget(1300, DAMAGE_PHYSICAL)
-    if unit and CanUseSpell(myHero, _Q) == READY and IWalkConfig.Q then
+    if unit and CanUseSpell(myHero, _Q) == READY and IWalkConfig.Q and IWalkConfig.Combo then
       PredCast(_Q, unit, 2200, 625, 1300, 90, false)
     end
   elseif myHeroName == "Ezreal" then
@@ -359,11 +359,11 @@ function DoChampionPlugins2()
       end
     end
     local unit = GetTarget(1200, DAMAGE_PHYSICAL)
-    if unit and CanUseSpell(myHero, _Q) == READY and IWalkConfig.Q then
+    if unit and CanUseSpell(myHero, _Q) == READY and IWalkConfig.Q and IWalkConfig.Combo then
       PredCast(_Q, unit, 2000, 250, 1200, 60, false)
     end
     local unit = GetTarget(1050, DAMAGE_PHYSICAL)
-    if unit and CanUseSpell(myHero, _W) == READY and IWalkConfig.W then
+    if unit and CanUseSpell(myHero, _W) == READY and IWalkConfig.W and IWalkConfig.Combo then
       PredCast(_W, unit, 1600, 250, 1050, 80, false)
     end
   elseif myHeroName == "Graves" then
@@ -383,7 +383,7 @@ function DoChampionPlugins2()
       end
     end
     local unit = GetTarget(1500, DAMAGE_PHYSICAL)
-    if unit and CanUseSpell(myHero, _W) == READY and IWalkConfig.W then
+    if unit and CanUseSpell(myHero, _W) == READY and IWalkConfig.W and IWalkConfig.Combo then
       PredCast(_W, unit, 3300, 600, 1500, 60, true)
     end
   elseif myHeroName == "Kalista" then
@@ -403,7 +403,7 @@ function DoChampionPlugins2()
       end
     end
     local unit = GetTarget(1150, DAMAGE_PHYSICAL)
-    if unit and CanUseSpell(myHero, _Q) == READY and IWalkConfig.Q then
+    if unit and CanUseSpell(myHero, _Q) == READY and IWalkConfig.Q and IWalkConfig.Combo then
       PredCast(_Q, unit, 1750, 250, 1150, 70, true)
     end
   end
