@@ -403,8 +403,8 @@ function DoChampionPlugins2()
       end
     end
     local unit = GetTarget(1150, DAMAGE_PHYSICAL)
-    if unit and CanUseSpell(myHero, _W) == READY and IWalkConfig.W then
-      PredCast(_W, unit, 1750, 250, 1150, 70, true)
+    if unit and CanUseSpell(myHero, _Q) == READY and IWalkConfig.Q then
+      PredCast(_Q, unit, 1750, 250, 1150, 70, true)
     end
   end
 end
