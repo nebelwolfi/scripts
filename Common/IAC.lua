@@ -397,7 +397,7 @@ function DoChampionPlugins2()
       local drawPos = WorldToScreen(1,targetPos.x,targetPos.y,targetPos.z)
       if dmg > 0 then 
         DrawText(math.floor(dmg/hp*100).."%",20,drawPos.x,drawPos.y,0xffffffff)
-        if hp > 0 and dmg >= hp and ValidTarget(unit, 1000) and Config.E then 
+        if hp > 0 and dmg >= hp and ValidTarget(unit, 1000) and IWalkConfig.E then 
           CastTargetSpell(myHero, _E) 
         end
       end
