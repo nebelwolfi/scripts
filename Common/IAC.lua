@@ -10,6 +10,7 @@ myHero = GetMyHero()
 myHeroName = GetObjectName(myHero)
 myRange = GetRange(myHero)+GetHitBox(myHero)*2
 waitTickCount = 0
+IWalkConfig = scriptConfig("IWalk", "IWalk.lua")
 
 DelayAction(function() -- my OnLoad
   MakeMenu()
@@ -95,7 +96,7 @@ function DoWalk()
     IWalkTarget = GetHighestMinion(GetOrigin(myHero), myRange, MINION_ENEMY)
   end
   local unit = IWalkTarget
-  if ValidTarget(unit) and GetObjectType(unit) == GetObjectType(myHero) then DoChampionPlugins(unit) end
+  if (IWalkConfig.S or IWalkConfig.Combo) and ValidTarget(unit) then DoChampionPlugins(unit) end
   if ValidTarget(unit, myRange) and GetTickCount() > orbTable.lastAA + orbTable.animation then
     AttackUnit(unit)
   elseif GetTickCount() > orbTable.lastAA + orbTable.windUp then
@@ -201,7 +202,6 @@ function WindUp(unit)
 end
 
 function MakeMenu()
-  IWalkConfig = scriptConfig("IWalk", "IWalk.lua")
   str = {[_Q] = "Q", [_W] = "W", [_E] = "E", [_R] = "R"}
   if aaResetTable3[myHeroName] then
     for _,k in pairs(aaResetTable3[myHeroName]) do
