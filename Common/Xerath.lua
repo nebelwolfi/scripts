@@ -36,6 +36,9 @@ OnLoop(function(myHero)
       PredCast(_R, target, math.huge, 750, rRange, 245, true)
       DelayAction(function() PredCast(_R, target, math.huge, 750, rRange, 245, true) end, 250)
       DelayAction(function() PredCast(_R, target, math.huge, 750, rRange, 245, true) end, 750)
+      DelayAction(function() PredCast(_R, target, math.huge, 750, rRange, 245, true) end,1000)
+      DelayAction(function() PredCast(_R, target, math.huge, 750, rRange, 245, true) end,1250)
+      DelayAction(function() PredCast(_R, target, math.huge, 750, rRange, 245, true) end,1500)
     end
   end
 end)
