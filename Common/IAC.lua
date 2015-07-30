@@ -364,6 +364,14 @@ function DoChampionPlugins2()
     if unit and CanUseSpell(myHero, _W) == READY and IWalkConfig.W then
       PredCast(_W, unit, 1600, 250, 1050, 80, false)
     end
+  elseif myHeroName == "Graves" then
+    for _, unit in pairs(GetEnemyHeroes()) do
+      if ValidTarget(unit, 1100) and CanUseSpell(myHero, _R) == READY and IWalkConfig.R then
+        if CalcDamage(myHero, unit, 100+150*GetCastLevel(myHero, _R)+GetBonusDmg(myHero)*1.5) >= GetCurrentHP(unit) then
+          PredCast(_R, unit, 2100, 250, 1100, 100, false)
+        end
+      end
+    end
   elseif myHeroName == "Jinx" then
     for _, unit in pairs(GetEnemyHeroes()) do
       if ValidTarget(unit, 3500) and CanUseSpell(myHero, _R) == READY and IWalkConfig.R then
