@@ -225,7 +225,9 @@ function MakeMenu()
   end
   if gapcloserTable[myHeroName] then
     k = gapcloserTable[myHeroName]
-    IWalkConfig.addParam(str[k].."g", "Gapclose with "..str[k], SCRIPT_PARAM_ONOFF, true)
+    if type(k) == "number" then
+      IWalkConfig.addParam(str[k].."g", "Gapclose with "..str[k], SCRIPT_PARAM_ONOFF, true)
+    end
   end
   DoChampionPluginMenu()
   IWalkConfig.addParam("I", "Cast Items", SCRIPT_PARAM_ONOFF, true)
