@@ -149,7 +149,7 @@ class 'IAC' -- {
       else
         if IWalkConfig.Combo and self.gapcloserTable[myHeroName] and ValidTarget(unit, self.myRange + 250) and IWalkConfig[str[self.gapcloserTable[myHeroName]].."g"] and CanUseSpell(myHero, gapcloserTable[myHeroName]) == READY then
           local unitPos = GetOrigin(unit)
-          CastSkillShot(gapcloserTable2[myHeroName], unitPos.x, unitPos.y, unitPos.z)
+          CastSkillShot(self.gapcloserTable[myHeroName], unitPos.x, unitPos.y, unitPos.z)
           if myHeroName == "Riven" and IWalkConfig["W"] and CanUseSpell(myHero, _W) == READY then
             if PossibleDmg(unit):find("Killable") and IWalkConfig.R then
               DelayAction(function() CastTargetSpell(myHero, _R) end, 137)
