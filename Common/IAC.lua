@@ -25,7 +25,7 @@ class 'IAC' -- {
     myHero = GetMyHero()
     myHeroName = GetObjectName(myHero)
     waitTickCount = 0
-    IWalkConfig = scriptConfig("IWalk", "IWalk.lua")
+    IWalkConfig = scriptConfig("IAC", "Inspired's Auto Carry")
     self.move = true
     self.aa = true
     self.orbTable = { lastAA = 0, windUp = 13.37, animation = 13.37 }
