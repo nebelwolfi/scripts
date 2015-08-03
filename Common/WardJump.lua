@@ -28,7 +28,7 @@ if wardJumpChamps[myHeroName] then
       local pos = Vector(myHero) + Vector(Vector(GetMousePos()) - Vector(myHero)):normalized() * wjrange
       Circle(pos,150):draw()
     end
-    if WJConfig.WJ then
+    if WJConfig.WJ or casted then
       WardJump()
     end
   end)
