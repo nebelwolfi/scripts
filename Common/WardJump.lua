@@ -9,14 +9,14 @@ if wardJumpChamps[myHeroName] then
   local wjspell = myHeroName == "LeeSin" and _W or myHeroName == "Katarina" and _E or myHeroName == "Jax" and _Q or nil
   local wjrange = wjspell == _W and 600 or 700
   local wardIDs = {3166, 3361, 3362, 3340, 3350, 2050, 2045, 2049, 2044, 2043}
-  local casted, jumped, doObjects = false, false, 0
+  local casted, jumped = false, false
 
   WJConfig = scriptConfig("IWadJump", "WardJump.lua")
   WJConfig.addParam("D", "Draw Pos", SCRIPT_PARAM_ONOFF, true)
   WJConfig.addParam("WJ", "Jump", SCRIPT_PARAM_KEYDOWN, string.byte("G"))
 
   OnObjectLoop(function(obj, myHero)
-    if doObjects > GetTickCount() and not WJConfig.WJ then return end
+    if not WJConfig.WJ then return end
     local objName = GetObjectBaseName(obj)
     if GetTeam(obj) == myTeam and (objName:lower():find("ward") or objName:lower():find("trinkettotem")) then
       wardTable[GetNetworkID(obj)] = obj
@@ -24,9 +24,6 @@ if wardJumpChamps[myHeroName] then
   end)
 
   OnLoop(function(myHero)
-    if doObjects < GetTickCount() then
-      doObjects = GetTickCount() + 250
-    end
     if WJConfig.D then
       local pos = Vector(myHero) + Vector(Vector(GetMousePos()) - Vector(myHero)):normalized() * wjrange
       Circle(pos,150):draw()
