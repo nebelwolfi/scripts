@@ -16,7 +16,7 @@ if wardJumpChamps[myHeroName] then
   WJConfig.addParam("WJ", "Jump", SCRIPT_PARAM_KEYDOWN, string.byte("G"))
 
   OnObjectLoop(function(obj, myHero)
-    if doObjects > GetTickCount() then return end
+    if doObjects > GetTickCount() and not WJConfig.WJ then return end
     local objName = GetObjectBaseName(obj)
     if GetTeam(obj) == myTeam and (objName:lower():find("ward") or objName:lower():find("trinkettotem")) then
       wardTable[GetNetworkID(obj)] = obj
@@ -25,7 +25,7 @@ if wardJumpChamps[myHeroName] then
 
   OnLoop(function(myHero)
     if doObjects < GetTickCount() then
-      doObjects = GetTickCount() + 500
+      doObjects = GetTickCount() + 250
     end
     if WJConfig.D then
       local pos = Vector(myHero) + Vector(Vector(GetMousePos()) - Vector(myHero)):normalized() * wjrange
@@ -38,17 +38,24 @@ if wardJumpChamps[myHeroName] then
 
   function WardJump()
     if casted and jumped then casted, jumped = false, false
-    elseif CanUseSpell(myHero, wjspell) then
+    elseif CanUseSpell(myHero, wjspell) == READY then
       local pos = Vector(myHero) + Vector(Vector(GetMousePos()) - Vector(myHero)):normalized() * wjrange
       if Jump(pos) then return end
       slot = GetWardSlot()
-      if not slot then return end
+      if not slot or casted then return end
       CastSkillShot(slot, pos.x, pos.y, pos.z)
       casted = true
     end
   end
 
   function Jump(pos)
+    for i, minion in pairs(GetAllMinions(MINION_ALLY)) do
+      if GetDistanceSqr(GetOrigin(minion), pos) <= 250*250 then
+        CastTargetSpell(minion, wjspell)
+        jumped = true
+        return true
+      end
+    end
     for i, ward in pairs(wardTable) do
       if GetDistanceSqr(GetOrigin(ward), pos) <= 250*250 then
         CastTargetSpell(ward, wjspell)
