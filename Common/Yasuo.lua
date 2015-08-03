@@ -9,7 +9,7 @@ OnLoop(function(myHero)
   local unit = GetTarget(1200, DAMAGE_PHYSICAL)
   if unit and IWalkConfig.Combo then
     local QPred = GetPredictionForPlayer(GetMyHeroPos(),unit,GetMoveSpeed(unit),1200,125,1200,65,false,true)
-    if IsInDistance(unit, 500) and Config.Q and not IsInDistance(unit, myRange) and GetCastName(myHero,_Q) ~= "yasuoq3w" then
+    if IsInDistance(unit, 500) and Config.Q and not IsInDistance(unit, GetRange(myHero)+GetHitBox(myHero)) and GetCastName(myHero,_Q) ~= "yasuoq3w" then
       local pos = GetOrigin(unit)
       CastSkillShot(_Q, pos.x, pos.y, pos.z)
     end
