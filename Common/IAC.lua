@@ -151,7 +151,7 @@ class 'IAC' -- {
           local unitPos = GetOrigin(unit)
           CastSkillShot(self.gapcloserTable[myHeroName], unitPos.x, unitPos.y, unitPos.z)
           if myHeroName == "Riven" and IWalkConfig["W"] and CanUseSpell(myHero, _W) == READY then
-            if PossibleDmg(unit):find("Killable") and IWalkConfig.R then
+            if self:PossibleDmg(unit):find("Killable") and IWalkConfig.R then
               DelayAction(function() CastTargetSpell(myHero, _R) end, 137)
             else
               DelayAction(function() CastTargetSpell(myHero, _W) end, 137)
