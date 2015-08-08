@@ -1,9 +1,3 @@
-enemyHeroes = {}
-allyHeroes = {}
-minionTable = {}
-finishedEnemies = false
-finishedAllies = false
-lastMinionTick = 0
 menuTable = {}
 currentPos = {x = 150, y = 250}
 MINION_ALLY, MINION_ENEMY, MINION_JUNGLE = GetTeam(GetMyHero()), GetTeam(GetMyHero()) == 100 and 200 or 100, 300
@@ -19,7 +13,7 @@ DAMAGE_MAGIC, DAMAGE_MAGICAL, DAMAGE_PHYSICAL = 1, 1, 2
 gapcloserTable = {
   ["Aatrox"] = _Q, ["Akali"] = _R, ["Alistar"] = _W, ["Ahri"] = _R, ["Amumu"] = _Q, ["Corki"] = _W,
   ["Diana"] = _R, ["Elise"] = _Q, ["Elise"] = _E, ["Fiddlesticks"] = _R, ["Fiora"] = _Q,
-  ["Fizz"] = _Q, ["Gnar"] = _E, ["Gragas"] = _E, ["Graves"] = _E, ["Hecarim"] = _R,
+  ["Fizz"] = _Q, ["Gnar"] = _E, ["Grags"] = _E, ["Graves"] = _E, ["Hecarim"] = _R,
   ["Irelia"] = _Q, ["JarvanIV"] = _Q, ["Jax"] = _Q, ["Jayce"] = "JayceToTheSkies", ["Katarina"] = _E, 
   ["Kassadin"] = _R, ["Kennen"] = _E, ["KhaZix"] = _E, ["Lissandra"] = _E, ["LeBlanc"] = _W, 
   ["LeeSin"] = "blindmonkqtwo", ["Leona"] = _E, ["Lucian"] = _E, ["Malphite"] = _R, ["MasterYi"] = _Q, 
@@ -54,41 +48,74 @@ OnLoop(function(myHero)
     if Ignite and InspiredConfig.Ignite then AutoIgnite() end
 end)
 
-OnObjectLoop(function(object, myHero)
-    if doMinions then
-        if GetObjectType(object) == Obj_AI_Minion and not IsDead(k) then
-            minionTable[GetNetworkID(object)] = object
+do
+  _G.objectManager = {}
+  objectManager.maxObjects = 0
+  objectManager.objects = {}
+  objectManager.spawnpoints = {}
+  objectManager.camps = {}
+  objectManager.barracks = {}
+  objectManager.heroes = {}
+  objectManager.minions = {}
+  objectManager.turrets = {}
+  objectManager.missiles = {}
+  objectManager.shops = {}
+  objectManager.wards = {}
+  objectManager.unknown = {}
+  OnObjectLoop(function(object, myHero)
+    objectManager.objects[GetNetworkID(object)] = object
+  end)
+  OnLoop(function(myHero)
+    objectManager.maxObjects = 0
+    for _, obj in pairs(objectManager.objects) do
+      objectManager.maxObjects = objectManager.maxObjects + 1
+      local type = GetObjectType(obj)
+      if type == Obj_AI_SpawnPoint then
+        objectManager.spawnpoints[_] = obj
+      elseif type == Obj_AI_Camp then
+        objectManager.camps[_] = obj
+      elseif type == Obj_AI_Barracks then
+        objectManager.barracks[_] = obj
+      elseif type == Obj_AI_Hero then
+        objectManager.heroes[_] = obj
+      elseif type == Obj_AI_Minion then
+        objectManager.minions[_] = obj
+      elseif type == Obj_AI_Turret then
+        objectManager.turrets[_] = obj
+      elseif type == Obj_AI_LineMissle then
+        objectManager.missiles[_] = obj
+      elseif type == Obj_AI_Shop then
+        objectManager.shops[_] = obj
+      else
+        local objName = GetObjectBaseName(obj)
+        if objName:lower():find("ward") or objName:lower():find("totem") then
+          objectManager.wards[_] = obj
+        else
+          objectManager.unknown[_] = obj
         end
+      end
     end
-    if not finishedEnemies then
-        if not startTick then startTick = GetTickCount() end
-        local enemyCount = #enemyHeroes
-        if GetObjectType(object) == Obj_AI_Hero and GetTeam(object) ~= GetTeam(myHero) then
-            if not enemyHeroes[GetNetworkID(object)] then
-                enemyHeroes[GetNetworkID(object)] = object
-            end
-            if startTick + 1000 < GetTickCount() then finishedEnemies = true end
-        end
-    end
-    if not finishedAllies then
-        local allyCount = #allyHeroes
-        if GetObjectType(object) == Obj_AI_Hero and GetTeam(object) == GetTeam(myHero) then
-            if not allyHeroes[GetNetworkID(object)] then
-                allyHeroes[GetNetworkID(object)] = object
-            end
-            if startTick + 1000 < GetTickCount() then finishedAllies = true end
-        end
-    end
-end)
+  end)
+  DelayAction(function() EmptyObjManager() end, 60000)
+end
 
-OnLoop(function(myHero)
-    if lastMinionTick < GetTickCount() then
-        doMinions = true
-        lastMinionTick = GetTickCount() + 1000
-    else
-        doMinions = false
-    end
-end)
+function EmptyObjManager()
+  _G.objectManager = {}
+  objectManager.maxObjects = 0
+  objectManager.objects = {}
+  objectManager.spawnpoints = {}
+  objectManager.camps = {}
+  objectManager.barracks = {}
+  objectManager.heroes = {}
+  objectManager.minions = {}
+  objectManager.turrets = {}
+  objectManager.missiles = {}
+  objectManager.shops = {}
+  objectManager.wards = {}
+  objectManager.unknown = {}
+  collectgarbage()
+  DelayAction(function() EmptyObjManager() end, 60000)
+end
 
 function AddGapcloseEvent(spell, range, targeted)
     GapcloseSpell = spell
@@ -151,13 +178,13 @@ end
 
 function GetAllMinions(team)
     local result = {}
-    for _,k in pairs(minionTable) do
+    for _,k in pairs(objectManager.minions) do
         if k and not IsDead(k) then
             if not team or GetTeam(k) == team then
                 result[_] = k
             end
         else
-            minionTable[_] = nil
+            objectManager.minions[_] = nil
         end
     end
     return result
@@ -189,7 +216,7 @@ end
 
 function GetHighestMinion(pos, range, team)
     local minion = nil
-    for k,v in pairs(minionTable) do 
+    for k,v in pairs(GetAllMinions()) do 
         local objTeam = GetTeam(v)
         if not minion and v and objTeam == team and GetDistanceSqr(GetOrigin(v),pos) < range*range then minion = v end
         if minion and v and objTeam == team and GetDistanceSqr(GetOrigin(v),pos) < range*range and GetCurrentHP(v) > GetCurrentHP(minion) then
@@ -249,11 +276,23 @@ function GetMyHeroPos()
 end
 
 function GetEnemyHeroes()
-    return enemyHeroes
+  local result = {}
+  for _, obj in pairs(objectManager.heroes) do
+    if GetTeam(obj) ~= GetTeam(GetMyHero()) then
+      table.insert(result, obj)
+    end
+  end
+  return result
 end
 
 function GetAllyHeroes()
-    return allyHeroes
+  local result = {}
+  for _, obj in pairs(objectManager.heroes) do
+    if GetTeam(obj) == GetTeam(GetMyHero()) then
+      table.insert(result, obj)
+    end
+  end
+  return result
 end
 
 function GetDistanceSqr(p1,p2)
