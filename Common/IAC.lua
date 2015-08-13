@@ -140,7 +140,7 @@ class 'IAC' -- {
     end
     local unit = IWalkTarget
     if (IWalkConfig.S or IWalkConfig.Combo) and ValidTarget(unit) then self:DoChampionPlugins(unit) end
-    if ValidTarget(unit, self.myRange) and GetTickCount() > self.orbTable.lastAA + self.orbTable.animation and self.aa then
+    if not IWalkConfig.LastHit and ValidTarget(unit, self.myRange) and GetTickCount() > self.orbTable.lastAA + self.orbTable.animation and self.aa then
       AttackUnit(unit)
     elseif GetTickCount() > self.orbTable.lastAA + self.orbTable.windUp and self.move then
       if GetRange(myHero) < 450 and IWalkConfig.wtt and unit and GetObjectType(unit) == GetObjectType(myHero) and ValidTarget(unit, self.myRange) then
