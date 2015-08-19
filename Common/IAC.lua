@@ -473,7 +473,7 @@ class 'IAC' -- {
         local dmg = CalcDamage(myHero, unit, dmgE)
         local hp = GetCurrentHP(unit)
         if dmg > 0 and hp > 0 and dmg >= hp and ValidTarget(unit, 1000) and IWalkConfig.E then 
-          killableCount = killableCount + 1
+          killableCount = killableCount + (GetObjectName(unit):find("Siege") and 2 or 1)
         end
       end
       if killableCount >= 2 then
