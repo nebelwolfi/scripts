@@ -476,6 +476,10 @@ class 'IAC' -- {
           killableCount = killableCount + 1
         end
       end
+      if killableCount >= 2 then
+        CastSpell(_E)
+        return;
+      end
       for _,unit in pairs(GetEnemyHeroes()) do
         local TotalDmg = GetBonusDmg(myHero)+GetBaseDamage(myHero)
         local dmgE = (GotBuff(unit,"kalistaexpungemarker") > 0 and (10 + (10 * GetCastLevel(myHero,_E)) + (TotalDmg * 0.6)) + (GotBuff(unit,"kalistaexpungemarker")-1) * (kalE(GetCastLevel(myHero,_E)) + (0.175 + 0.025 * GetCastLevel(myHero,_E))*TotalDmg) or 0)
