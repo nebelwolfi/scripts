@@ -179,7 +179,7 @@ end
 function GetAllMinions(team)
     local result = {}
     for _,k in pairs(objectManager.minions) do
-        if k and not IsDead(k) and GetCurrentHP(v) < 100000 and objName:find("_") then
+        if k and not IsDead(k) and GetCurrentHP(k) < 100000 and (GetObjectName(k):find("_") or GetObjectBaseName(k):find("_")) then
             if not team or GetTeam(k) == team then
                 result[_] = k
             end
