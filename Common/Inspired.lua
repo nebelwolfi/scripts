@@ -179,7 +179,7 @@ end
 function GetAllMinions(team)
     local result = {}
     for _,k in pairs(objectManager.minions) do
-        if k and not IsDead(k) then
+        if k and not IsDead(k) and GetCurrentHP(v) < 100000 and objName:find("_") then
             if not team or GetTeam(k) == team then
                 result[_] = k
             end
@@ -193,11 +193,13 @@ end
 function ClosestMinion(pos, team)
     local minion = nil
     for k,v in pairs(GetAllMinions()) do 
-        local objTeam = GetTeam(v)
-        if not minion and v and objTeam == team then minion = v end
-        if minion and v and objTeam == team and GetDistanceSqr(GetOrigin(minion),pos) > GetDistanceSqr(GetOrigin(v),pos) then
-            minion = v
+      local objTeam = GetTeam(v)
+      if v and objTeam == team then
+        if not minion then minion = v end
+        if minion and GetDistanceSqr(GetOrigin(minion),pos) > GetDistanceSqr(GetOrigin(v),pos) then
+          minion = v
         end
+      end
     end
     return minion
 end
@@ -205,11 +207,13 @@ end
 function GetLowestMinion(pos, range, team)
     local minion = nil
     for k,v in pairs(GetAllMinions()) do 
-        local objTeam = GetTeam(v)
-        if not minion and v and objTeam == team and GetDistanceSqr(GetOrigin(v),pos) < range*range then minion = v end
-        if minion and v and objTeam == team and GetDistanceSqr(GetOrigin(v),pos) < range*range and GetCurrentHP(v) < GetCurrentHP(minion) then
+      local objTeam = GetTeam(v)
+      if v and objTeam == team then
+        if not minion and GetDistanceSqr(GetOrigin(v),pos) < range*range then minion = v end
+        if minion and GetDistanceSqr(GetOrigin(v),pos) < range*range and GetCurrentHP(v) < GetCurrentHP(minion) then
             minion = v
         end
+      end
     end
     return minion
 end
@@ -217,11 +221,13 @@ end
 function GetHighestMinion(pos, range, team)
     local minion = nil
     for k,v in pairs(GetAllMinions()) do 
-        local objTeam = GetTeam(v)
-        if not minion and v and objTeam == team and GetDistanceSqr(GetOrigin(v),pos) < range*range then minion = v end
-        if minion and v and objTeam == team and GetDistanceSqr(GetOrigin(v),pos) < range*range and GetCurrentHP(v) > GetCurrentHP(minion) then
-            minion = v
+      local objTeam = GetTeam(v)
+      if v and objTeam == team then
+        if not minion and GetDistanceSqr(GetOrigin(v),pos) < range*range then minion = v end
+        if minion and GetDistanceSqr(GetOrigin(v),pos) < range*range and GetCurrentHP(v) > GetCurrentHP(minion) then
+          minion = v
         end
+      end
     end
     return minion
 end
