@@ -476,7 +476,17 @@ class 'IAC' -- {
         if dmg > 0 then 
           DrawText(math.floor(dmg/hp*100).."%",20,drawPos.x,drawPos.y,0xffffffff)
           if hp > 0 and dmg >= hp and ValidTarget(unit, 1000) and IWalkConfig.E then 
-            CastTargetSpell(myHero, _E) 
+            CastSpell(_E) 
+          end
+        end
+      end
+      if IWalkTarget then
+        local TotalDmg = GetBonusDmg(myHero)+GetBaseDamage(myHero)
+        local dmgE = (GotBuff(IWalkTarget,"kalistaexpungemarker") > 0 and (10 + (10 * GetCastLevel(myHero,_E)) + (TotalDmg * 0.6)) + (GotBuff(IWalkTarget,"kalistaexpungemarker")-1) * (kalE(GetCastLevel(myHero,_E)) + (0.175 + 0.025 * GetCastLevel(myHero,_E))*TotalDmg) or 0)
+        local dmg = CalcDamage(myHero, IWalkTarget, dmgE)
+        if dmg > 0 then 
+          if hp > 0 and dmg >= hp and ValidTarget(unit, 1000) and IWalkConfig.E then 
+            CastSpell(_E) 
           end
         end
       end
