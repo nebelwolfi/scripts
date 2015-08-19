@@ -466,6 +466,16 @@ class 'IAC' -- {
       end
     elseif myHeroName == "Kalista" then
       local function kalE(x) if x <= 1 then return 10 else return kalE(x-1) + 2 + x end end
+      local killableCount = 0
+      for _,unit in pairs(GetAllMinions(MINION_ENEMY)) do
+        local TotalDmg = GetBonusDmg(myHero)+GetBaseDamage(myHero)
+        local dmgE = (GotBuff(unit,"kalistaexpungemarker") > 0 and (10 + (10 * GetCastLevel(myHero,_E)) + (TotalDmg * 0.6)) + (GotBuff(unit,"kalistaexpungemarker")-1) * (kalE(GetCastLevel(myHero,_E)) + (0.175 + 0.025 * GetCastLevel(myHero,_E))*TotalDmg) or 0)
+        local dmg = CalcDamage(myHero, unit, dmgE)
+        local hp = GetCurrentHP(unit)
+        if dmg > 0 and hp > 0 and dmg >= hp and ValidTarget(unit, 1000) and IWalkConfig.E then 
+          killableCount = killableCount + 1
+        end
+      end
       for _,unit in pairs(GetEnemyHeroes()) do
         local TotalDmg = GetBonusDmg(myHero)+GetBaseDamage(myHero)
         local dmgE = (GotBuff(unit,"kalistaexpungemarker") > 0 and (10 + (10 * GetCastLevel(myHero,_E)) + (TotalDmg * 0.6)) + (GotBuff(unit,"kalistaexpungemarker")-1) * (kalE(GetCastLevel(myHero,_E)) + (0.175 + 0.025 * GetCastLevel(myHero,_E))*TotalDmg) or 0)
@@ -475,7 +485,7 @@ class 'IAC' -- {
         local drawPos = WorldToScreen(1,targetPos.x,targetPos.y,targetPos.z)
         if dmg > 0 then 
           DrawText(math.floor(dmg/hp*100).."%",20,drawPos.x,drawPos.y,0xffffffff)
-          if hp > 0 and dmg >= hp and ValidTarget(unit, 1000) and IWalkConfig.E then 
+          if hp > 0 and (dmg >= hp or killableCount > 0) and ValidTarget(unit, 1000) and IWalkConfig.E then 
             CastSpell(_E) 
           end
         end
@@ -484,8 +494,9 @@ class 'IAC' -- {
         local TotalDmg = GetBonusDmg(myHero)+GetBaseDamage(myHero)
         local dmgE = (GotBuff(IWalkTarget,"kalistaexpungemarker") > 0 and (10 + (10 * GetCastLevel(myHero,_E)) + (TotalDmg * 0.6)) + (GotBuff(IWalkTarget,"kalistaexpungemarker")-1) * (kalE(GetCastLevel(myHero,_E)) + (0.175 + 0.025 * GetCastLevel(myHero,_E))*TotalDmg) or 0)
         local dmg = CalcDamage(myHero, IWalkTarget, dmgE)
+        local hp = GetCurrentHP(IWalkTarget)
         if dmg > 0 then 
-          if hp > 0 and dmg >= hp and ValidTarget(unit, 1000) and IWalkConfig.E then 
+          if hp > 0 and dmg >= hp and ValidTarget(IWalkTarget, 1000) and IWalkConfig.E then 
             CastSpell(_E) 
           end
         end
