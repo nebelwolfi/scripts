@@ -192,9 +192,8 @@ end
 
 function ClosestMinion(pos, team)
     local minion = nil
-    for k,v in pairs(GetAllMinions()) do 
-      local objTeam = GetTeam(v)
-      if v and objTeam == team then
+    for k,v in pairs(GetAllMinions(team)) do 
+      if v then
         if not minion then minion = v end
         if minion and GetDistanceSqr(GetOrigin(minion),pos) > GetDistanceSqr(GetOrigin(v),pos) then
           minion = v
@@ -206,9 +205,8 @@ end
 
 function GetLowestMinion(pos, range, team)
     local minion = nil
-    for k,v in pairs(GetAllMinions()) do 
-      local objTeam = GetTeam(v)
-      if v and objTeam == team then
+    for k,v in pairs(GetAllMinions(team)) do 
+      if v then
         if not minion and GetDistanceSqr(GetOrigin(v),pos) < range*range then minion = v end
         if minion and GetDistanceSqr(GetOrigin(v),pos) < range*range and GetCurrentHP(v) < GetCurrentHP(minion) then
             minion = v
@@ -220,9 +218,8 @@ end
 
 function GetHighestMinion(pos, range, team)
     local minion = nil
-    for k,v in pairs(GetAllMinions()) do 
-      local objTeam = GetTeam(v)
-      if v and objTeam == team then
+    for k,v in pairs(GetAllMinions(team)) do 
+      if v then
         if not minion and GetDistanceSqr(GetOrigin(v),pos) < range*range then minion = v end
         if minion and GetDistanceSqr(GetOrigin(v),pos) < range*range and GetCurrentHP(v) > GetCurrentHP(minion) then
           minion = v
