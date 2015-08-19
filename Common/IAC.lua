@@ -136,7 +136,7 @@ class 'IAC' -- {
     local addRange = ((self.gapcloserTable[myHeroName] and CanUseSpell(myHero, gapcloserTable[myHeroName]) == READY) and 250 or 0) + (GetObjectName(myHero) == "Jinx" and (GetCastLevel(myHero, _Q)*25+50) or 0)
     IWalkTarget = GetTarget(self.myRange + addRange, DAMAGE_PHYSICAL)
     if IWalkConfig.LaneClear then
-      IWalkTarget = GetHighestMinion(GetOrigin(myHero), self.myRange, MINION_ENEMY)
+      IWalkTarget = GetHighestMinion(GetOrigin(myHero), self.myRange, MINION_JUNGLE) or GetHighestMinion(GetOrigin(myHero), self.myRange, MINION_ENEMY)
     end
     local unit = IWalkTarget
     if (IWalkConfig.S or IWalkConfig.Combo) and ValidTarget(unit) then self:DoChampionPlugins(unit) end
