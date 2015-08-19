@@ -476,7 +476,7 @@ class 'IAC' -- {
           killableCount = killableCount + (GetObjectName(unit):find("Siege") and 2 or 1)
         end
       end
-      if killableCount >= 2 then
+      if killableCount >= 2 and (IWalkConfig.LastHit or IWalkConfig.LaneClear) then
         CastSpell(_E)
         return;
       end
