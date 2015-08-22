@@ -333,7 +333,7 @@ function GetTarget(range, damageType)
 end
 
 function CastOffensiveItems(unit)
-  i = {3074, 3077, 3142, 3184}
+  i = {3748, 3074, 3077, 3142, 3184}
   u = {3153, 3146, 3144}
   for _,k in pairs(i) do
     slot = GetItemSlot(GetMyHero(),k)
