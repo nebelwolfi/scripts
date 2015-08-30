@@ -183,7 +183,7 @@ class 'IAC' -- {
       if unit == myHero then
         if (spell.name:lower():find("attack") or (self.isAAaswellTable[myHeroName] and self.isAAaswellTable[myHeroName] == spell.name)) then
           self.orbTable.lastAA = GetTickCount() + GetLatency()
-          self.orbTable.windUp = (1000 * spell.windUpTime / GetAttackSpeed(GetMyHero()) + GetLatency() + 70)
+          self.orbTable.windUp = 1000 * spell.windUpTime
           self.orbTable.animation = GetAttackSpeed(GetMyHero()) < 2.25 and spell.animationTime * 1000 or 1000 / GetAttackSpeed(GetMyHero())
           DelayAction(function() 
                               if (IWalkConfig.S or IWalkConfig.Combo) and ValidTarget(IWalkTarget, self.myRange) then 
