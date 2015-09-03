@@ -199,7 +199,11 @@ class 'IAC' -- {
         local target = spell.target
         if not self.AATable[GetNetworkID(target)] then self.AATable[GetNetworkID(target)] = {} end
         self.AATable[GetNetworkID(target)][timer] = {source = unit, dmg = CalcDamage(unit, spell.target, GetBonusDmg(unit)+GetBaseDamage(unit)), time = GetTickCount() + timer}
-        DelayAction(function() self.AATable[GetNetworkID(target)][timer] = nil end, timer)
+        DelayAction(function() 
+            if target and self.AATable[GetNetworkID(target)] and self.AATable[GetNetworkID(target)][timer] then
+                self.AATable[GetNetworkID(target)][timer] = nil 
+            end
+        end, timer)
       end
     end
   end
