@@ -68,7 +68,7 @@ function IOW:Loop()
   self.rangeCircle.Draw(self.Config.drawcircle:Value())
   self.myRange = GetRange(myHero)+GetHitBox(myHero)+(self.Target and GetHitBox(self.Target) or GetHitBox(myHero))
   self.Target = self:GetTarget()
-  self:Orb(self.Target)
+  self:Orb(self:GetTarget())
 end
 
 function IOW:GetTarget()
@@ -178,4 +178,4 @@ function IOW:DisableOrbwalking()
   self.movementEnabled = false
 end
 
-IOW()
+_G.IOW = IOW()
