@@ -1,4 +1,4 @@
-local IOWversion = 1.3
+local IOWversion = 1.4
 
 class "InspiredsOrbWalker"
 
@@ -179,7 +179,7 @@ function InspiredsOrbWalker:GetDmg(to) -- thanks to Sir Deftsu for this :3
   apdmg = apdmg + (GotBuff(myHero, "VarusW") > 0 and (4*GetCastLevel(myHero,_W)+6+.25*GetBonusAP(myHero)) or 0) 
   elseif GetObjectName(myHero) == "Vayne" then
   addmg = addmg + (GotBuff(myHero, "vaynetumblebonus") > 0 and (.05*GetCastLevel(myHero,_Q)+.25)*(GetBonusDmg(myHero)+GetBaseDamage(myHero)) or 0) 
-  truedmg = truedmg + (GotBuff(minion, "vaynesilvereddebuff") > 2 and 10*GetCastLevel(myHero,_W)+10+((1*GetCastLevel(myHero,_W)+3)*GetMaxHP(minion)/100) or 0)
+  truedmg = truedmg + (GotBuff(to, "vaynesilvereddebuff") > 2 and 10*GetCastLevel(myHero,_W)+10+((1*GetCastLevel(myHero,_W)+3)*GetMaxHP(to)/100) or 0)
   elseif GetObjectName(myHero) == "Vi" then
   addmg = addmg + (GotBuff(myHero, "ViE") > 0 and 15*GetCastLevel(myHero,_E)-10+.15*(GetBonusDmg(myHero)+GetBaseDamage(myHero))+.7*GetBonusAP(myHero) or 0) 
   elseif GetObjectName(myHero) == "Volibear" then
