@@ -1,4 +1,4 @@
-local InspiredVersion = 1
+local InspiredVersion = 17
 
 function print(msg, title)
   if not msg then return end
