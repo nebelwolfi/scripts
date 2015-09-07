@@ -1,4 +1,4 @@
-local IOWversion = 1
+local IOWversion = 1.1
 
 class "InspiredsOrbWalker"
 
@@ -124,9 +124,9 @@ function InspiredsOrbWalker:GetProjectileSpeed(unit)
 end
 
 function InspiredsOrbWalker:Orb(target)
-  if self:DoAttack() and GoS:ValidTarget(target) and self.lastAttack+self.lastCooldown < GetTickCount() then
+  if self:DoAttack() and GoS:ValidTarget(target) and self.lastAttack + self.lastCooldown < GetTickCount() - GetLatency() then
     AttackUnit(target)
-  elseif self:DoWalk() and self.lastAttack+GetWindUp(myHero)*1000 < GetTickCount() then
+  elseif self:DoWalk() and self.lastAttack + GetWindUp(myHero)*1000 < GetTickCount() - GetLatency() then
     MoveToXYZ(GetMousePos())
   end
 end
