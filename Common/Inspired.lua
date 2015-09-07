@@ -283,7 +283,7 @@ function __Menu__SubMenuWndMsg(instance, _)
   local yoff = #instance.__subMenus
   local pressedSomething = false
   for i=1, yoff do
-    pressedSomething = __Menu__SubMenuWndMsg(instance.__subMenus[i])
+    pressedSomething = __Menu__SubMenuWndMsg(instance.__subMenus[i], i)
   end
   for i=1, #instance.__params do
     local x = _SCP.x+150*(_)
