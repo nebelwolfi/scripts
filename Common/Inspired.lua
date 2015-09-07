@@ -485,7 +485,7 @@ function goslib:ProcessSpell(unit, spell)
   local target = spell.target
   if target and not IsDead(target) and GetOrigin(target) then
     if spell.name:lower():find("attack") then
-      local timer = 1000*self:GetYDistance(target,unit)/self:GetProjectileSpeed(unit)
+      local timer = 1000*self:GetYDistance(target,unit)/self:GetProjectileSpeed(unit)+1000*spell.windUpTime
       if not self.tableForHPPrediction[GetNetworkID(target)] then self.tableForHPPrediction[GetNetworkID(target)] = {} end
       table.insert(self.tableForHPPrediction[GetNetworkID(target)], {source = unit, dmg = self:GetDmg(unit, target), time = GetTickCount() + timer})
     end
