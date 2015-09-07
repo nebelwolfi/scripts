@@ -1,4 +1,4 @@
-local InspiredVersion = 18
+local InspiredVersion = 19
 
 function print(msg, title)
   if not msg then return end
@@ -504,7 +504,9 @@ function goslib:PredictHealth(unit, delta)
     local dmg = 0
     for _, attack in pairs(self.tableForHPPrediction[GetNetworkID(unit)]) do
       if IsObjectAlive(attack.source) and GetTickCount() < attack.time then
-        dmg = dmg + attack.dmg
+        if GetTickCount() + delta < attack.time then
+          dmg = dmg + attack.dmg
+        end
       else
         self.tableForHPPrediction[GetNetworkID(unit)][_] = nil
       end
