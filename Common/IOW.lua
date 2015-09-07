@@ -1,4 +1,4 @@
-local IOWversion = 1.5
+local IOWversion = 1.6
 
 class "InspiredsOrbWalker"
 
@@ -209,7 +209,7 @@ function InspiredsOrbWalker:ProcessSpell(unit, spell)
   if unit and unit == myHero and spell and spell.name then
     if spell.name:lower():find("attack") or self.altAttacks[spell.name] then
       self.lastAttack = GetTickCount()
-      self.lastCooldown = spell.animationTime*1000
+      self.lastCooldown = spell.animationTime*1000 - GetWindUp(myHero)/2 - GetLatency()/2
     end
     if self.resetAttacks[spell.name] then
       self.lastAttack = 0
