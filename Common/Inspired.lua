@@ -1,4 +1,4 @@
-local InspiredVersion = 17
+local InspiredVersion = 18
 
 function print(msg, title)
   if not msg then return end
@@ -35,8 +35,8 @@ function __Menu__Draw()
     for _=1, #_SC.instances do
       local instance = _SC.instances[_]
       FillRect(_SCP.x,_SCP.y+20*_,150,20,ARGB(255, 0, 0, 0))
-      FillRect(_SCP.x+5,_SCP.y+20*_+9,70-GoS:GetTextArea(instance.__name,15),1,ARGB(155, 255, 255, 255))
-      FillRect(_SCP.x+70+GoS:GetTextArea(instance.__name,15),_SCP.y+20*_+9,70-GoS:GetTextArea(instance.__name,15),1,ARGB(155, 255, 255, 255))
+      --FillRect(_SCP.x+5,_SCP.y+20*_+9,70-GoS:GetTextArea(instance.__name,15),1,ARGB(155, 255, 255, 255))
+      --FillRect(_SCP.x+70+GoS:GetTextArea(instance.__name,15),_SCP.y+20*_+9,70-GoS:GetTextArea(instance.__name,15),1,ARGB(155, 255, 255, 255))
       DrawText(" "..instance.__name.." ",15,_SCP.x+75-GoS:GetTextArea(instance.__name,15),_SCP.y+1+20*_,0xffffffff)
       DrawText(">",15,_SCP.x+135,_SCP.y+1+20*_,0xffffffff)
     end
@@ -74,10 +74,10 @@ function __Menu__Draw()
 end
 
 function __Menu_DrawSubMenu(instance, _, num)
-  FillRect(_SCP.x-2+150*num,_SCP.y-2+20*_,150+4,4+20,ARGB(55, 255, 255, 255))
-  FillRect(_SCP.x+150*num,_SCP.y+20*_,150,20,ARGB(255, 0, 0, 0))
-  FillRect(_SCP.x+5+150*num,_SCP.y+20*_+9,70-GoS:GetTextArea(instance.__name,15),1,ARGB(155, 255, 255, 255))
-  FillRect(_SCP.x+75+150*num+GoS:GetTextArea(instance.__name,15),_SCP.y+20*_+9,70-GoS:GetTextArea(instance.__name,15),1,ARGB(155, 255, 255, 255))
+  FillRect(_SCP.x-2+155*num,_SCP.y-2+20*_,150+4,4+20,ARGB(55, 255, 255, 255))
+  FillRect(_SCP.x+155*num,_SCP.y+20*_,150,20,ARGB(255, 0, 0, 0))
+  --FillRect(_SCP.x+5+150*num,_SCP.y+20*_+9,70-GoS:GetTextArea(instance.__name,15),1,ARGB(155, 255, 255, 255))
+  --FillRect(_SCP.x+75+150*num+GoS:GetTextArea(instance.__name,15),_SCP.y+20*_+9,70-GoS:GetTextArea(instance.__name,15),1,ARGB(155, 255, 255, 255))
   DrawText(" "..instance.__name.." ",15,_SCP.x+num*150+75-GoS:GetTextArea(instance.__name,15),_SCP.y+1+20*_,0xffffffff)
   DrawText(">",15,_SCP.x+135+150*num,_SCP.y+1+20*_,0xffffffff)
   if #instance.__subMenus > 0 and instance.__active then
@@ -95,33 +95,23 @@ end
 
 function __Menu_DrawParam(param, xoff, yoff)
   if param.__head.__active then
-    FillRect(_SCP.x-2+150*xoff,_SCP.y-2+20*yoff,150+4,4+20,ARGB(55, 255, 255, 255))
-    FillRect(_SCP.x+150*xoff,_SCP.y+20*yoff,150,20,ARGB(255, 0, 0, 0))
+    FillRect(_SCP.x-2+155*xoff,_SCP.y-2+20*yoff,150+4,4+20,ARGB(55, 255, 255, 255))
+    FillRect(_SCP.x+155*xoff,_SCP.y+20*yoff,150,20,ARGB(255, 0, 0, 0))
     if param.__type == "boolean" then
-      FillRect(_SCP.x+5+150*xoff,_SCP.y+20*yoff+9,70-GoS:GetTextArea(param.__name,15),1,ARGB(155, 255, 255, 255))
-      FillRect(_SCP.x+75+150*xoff+GoS:GetTextArea(param.__name,15),_SCP.y+20*yoff+9,50-GoS:GetTextArea(param.__name,15),1,ARGB(155, 255, 255, 255))
-      DrawText(" "..param.__name.." ",15,_SCP.x+150*xoff+75-GoS:GetTextArea(param.__name,15),_SCP.y+1+20*yoff,0xffffffff)
-      FillRect(_SCP.x+130+150*xoff,_SCP.y+20*yoff+2,15,15, param.__val and GoS.Green or GoS.Red)
+      DrawText(" "..param.__name.." ",15,_SCP.x+155*xoff+75-GoS:GetTextArea(param.__name,15),_SCP.y+1+20*yoff,0xffffffff)
+      FillRect(_SCP.x+130+155*xoff,_SCP.y+20*yoff+2,15,15, param.__val and GoS.Green or GoS.Red)
     elseif param.__type == "key" then
-      FillRect(_SCP.x+5+150*xoff,_SCP.y+20*yoff+9,70-GoS:GetTextArea(param.__name,15),1,ARGB(155, 255, 255, 255))
-      FillRect(_SCP.x+75+150*xoff+GoS:GetTextArea(param.__name,15),_SCP.y+20*yoff+9,50-GoS:GetTextArea(param.__name,15),1,ARGB(155, 255, 255, 255))
-      DrawText(" "..param.__name.." ",15,_SCP.x+150*xoff+75-GoS:GetTextArea(param.__name,15),_SCP.y+1+20*yoff,0xffffffff)
-      FillRect(_SCP.x+130+150*xoff,_SCP.y+20*yoff+2,15,15, param.Value() and ARGB(150,0,255,0) or ARGB(150,255,0,0))
-      DrawText("["..param.__key.."]",15,_SCP.x+125+150*xoff,_SCP.y+20*yoff+1,0xffffffff)
+      DrawText(" "..param.__name.." ",15,_SCP.x+155*xoff+75-GoS:GetTextArea(param.__name,15),_SCP.y+1+20*yoff,0xffffffff)
+      FillRect(_SCP.x+130+155*xoff,_SCP.y+20*yoff+2,15,15, param.Value() and ARGB(150,0,255,0) or ARGB(150,255,0,0))
+      DrawText("["..param.__key.."]",15,_SCP.x+125+155*xoff,_SCP.y+20*yoff+1,0xffffffff)
     elseif param.__type == "slider" then
-      FillRect(_SCP.x+5+150*xoff,_SCP.y+20*yoff+9,70-GoS:GetTextArea(param.__name,15),1,ARGB(155, 255, 255, 255))
-      FillRect(_SCP.x+75+150*xoff+GoS:GetTextArea(param.__name,15),_SCP.y+20*yoff+9,70-GoS:GetTextArea(param.__name,15),1,ARGB(155, 255, 255, 255))
-      DrawText(" "..param.__name.." ",15,_SCP.x+150*xoff+75-GoS:GetTextArea(param.__name,15),_SCP.y+1+20*yoff,0xffffffff)
-      DrawText("<|>",15,_SCP.x+125+150*xoff,_SCP.y+1+20*yoff,0xffffffff)
+      DrawText(" "..param.__name.." ",15,_SCP.x+155*xoff+75-GoS:GetTextArea(param.__name,15),_SCP.y+1+20*yoff,0xffffffff)
+      DrawText("<|>",15,_SCP.x+125+155*xoff,_SCP.y+1+20*yoff,0xffffffff)
     elseif param.__type == "list" then
-      FillRect(_SCP.x+5+150*xoff,_SCP.y+20*yoff+9,70-GoS:GetTextArea(param.__name,15),1,ARGB(155, 255, 255, 255))
-      FillRect(_SCP.x+75+150*xoff+GoS:GetTextArea(param.__name,15),_SCP.y+20*yoff+9,70-GoS:GetTextArea(param.__name,15),1,ARGB(155, 255, 255, 255))
-      DrawText(" "..param.__name.." ",15,_SCP.x+150*xoff+75-GoS:GetTextArea(param.__name,15),_SCP.y+1+20*yoff,0xffffffff)
-      DrawText("v",15,_SCP.x+140+150*xoff,_SCP.y+1+20*yoff,0xffffffff)
+      DrawText(" "..param.__name.." ",15,_SCP.x+155*xoff+75-GoS:GetTextArea(param.__name,15),_SCP.y+1+20*yoff,0xffffffff)
+      DrawText("v",15,_SCP.x+140+155*xoff,_SCP.y+1+20*yoff,0xffffffff)
     elseif param.__type == "info" then
-      FillRect(_SCP.x+5+150*xoff,_SCP.y+20*yoff+9,70-GoS:GetTextArea(param.__name,15),1,ARGB(155, 255, 255, 255))
-      FillRect(_SCP.x+75+150*xoff+GoS:GetTextArea(param.__name,15),_SCP.y+20*yoff+9,70-GoS:GetTextArea(param.__name,15),1,ARGB(155, 255, 255, 255))
-      DrawText(" "..param.__name.." ",15,_SCP.x+150*xoff+75-GoS:GetTextArea(param.__name,15),_SCP.y+1+20*yoff,0xffffffff)
+      DrawText(" "..param.__name.." ",15,_SCP.x+155*xoff+75-GoS:GetTextArea(param.__name,15),_SCP.y+1+20*yoff,0xffffffff)
     end
   end
 end
@@ -141,7 +131,7 @@ end
 function __Menu__DrawSliderSwitch(param, x, y)
   FillRect(x-2, y-2, 154, 44, ARGB(55, 255, 255, 255))
   FillRect(x, y, 150, 40,ARGB(255, 0, 0, 0))
-  DrawText("Value: "..math.floor(param.__val),15,x+5,y,0xffffffff)
+  DrawText("Value: "..math.ceil(math.floor(param.__val*param.__inc*1000)/param.__inc)/1000,15,x+5,y,0xffffffff)
   DrawText("[X]",15,x+130,y,0xffffffff)
   DrawText(param.__min,15,x+5,y+20,0xffffffff)
   DrawText(param.__max,15,x+125,y+20,0xffffffff)
@@ -176,7 +166,7 @@ end
 function __Menu__BrowseSubMenu(instance, _, num)
   local mPos  = GetMousePos()
   local mmPos = WorldToScreen(1,mPos.x,mPos.y,mPos.z)
-  local x = _SCP.x+150*num
+  local x = _SCP.x+155*num
   local y = _SCP.y+20*_
   local width = 150
   local heigth = 20
@@ -240,10 +230,10 @@ function __Menu__WndMsg()
         if mmPos.x <= x+15 then
           _SC.sliderSwitch.__val = 0
         elseif mmPos.x >= x+120 then
-          _SC.sliderSwitch.__val = 100
+          _SC.sliderSwitch.__val = _SC.sliderSwitch.__max
         else
-          local v = (mmPos.x - x - 15) / 105
-          _SC.sliderSwitch.__val = math.floor(100*v*_SC.sliderSwitch.__inc)
+          local v = (mmPos.x - x - 15) / 105 / _SC.sliderSwitch.__inc
+          _SC.sliderSwitch.__val = math.floor((_SC.sliderSwitch.__max*v)) * _SC.sliderSwitch.__inc
         end
       end
       if mmPos.x >= x+130 and mmPos.x <= x+150 and mmPos.y >= y-5 and mmPos.y <= y+15 then
@@ -251,15 +241,20 @@ function __Menu__WndMsg()
         _SC.lastSwitch = GetTickCount() + 125
       end
     else
-      local pressedSomething = false
+      if mmPos.x >= 15 and mmPos.x <= 15+150 and mmPos.y >= 15 and mmPos.y <= 15+20*#_SC.instances then
+        return;
+      end
       for _=1, #_SC.instances do
         if _SC.instances[_].__active then
           local yoff = #_SC.instances[_].__subMenus
           for i=1, yoff do
-            pressedSomething = __Menu__SubMenuWndMsg(_SC.instances[_].__subMenus[i], _)
+            local sub = _SC.instances[_].__subMenus[i]
+            if sub.__active and __Menu__SubMenuWndMsg(sub, i+_-1, 1) then
+              return;
+            end
           end
           for i=1, #_SC.instances[_].__params do
-            local x = _SCP.x+150
+            local x = _SCP.x+155
             local y = _SCP.y+20*(yoff+i+_-1)
             local width = 150
             local heigth = 20
@@ -270,32 +265,34 @@ function __Menu__WndMsg()
           end
         end
       end
-      if not pressedSomething then
-        __Menu__ResetActive()
-      end
+      --__Menu__ResetActive()
     end
   end
 end
 
-function __Menu__SubMenuWndMsg(instance, _)
+function __Menu__SubMenuWndMsg(instance, _, num)
   local mPos  = GetMousePos()
   local mmPos = WorldToScreen(0,mPos.x,mPos.y,mPos.z)
   local yoff = #instance.__subMenus
-  local pressedSomething = false
-  for i=1, yoff do
-    pressedSomething = __Menu__SubMenuWndMsg(instance.__subMenus[i], i)
-  end
+  local xpos = _SCP.x+155*num+155
+  local ypos = _SCP.y+_*20
   for i=1, #instance.__params do
-    local x = _SCP.x+150*(_)
-    local y = _SCP.y+20*(yoff+i+_-1)
+    local x = xpos
+    local y = ypos+(i-1)*20
     local width = 150
     local heigth = 20
+    FillRect(x+25, y+25, width, heigth, GoS.White)
     if mmPos.x >= x and mmPos.x <= x+width and mmPos.y >= y and mmPos.y <= y+heigth then
       __Menu__SwitchParam(instance.__params[i], x, y)
       return true
     end
   end
-  return pressedSomething
+  for i=1, #instance.__subMenus do
+    local sub = instance.__subMenus[i] 
+    if sub.__active and __Menu__SubMenuWndMsg(sub, i+_-1, num+1) then 
+      return true
+    end
+  end
 end
 
 function __Menu__SwitchParam(param, x, y)
@@ -308,11 +305,11 @@ function __Menu__SwitchParam(param, x, y)
     _SC.keySwitch = param
   elseif param.__type == "slider" then
     _SC.sliderSwitch = param
-    _SC.sliderSwitch.x = x+150
+    _SC.sliderSwitch.x = x+155
     _SC.sliderSwitch.y = y
   elseif param.__type == "list" then
     _SC.listSwitch = param
-    _SC.listSwitch.x = x+150
+    _SC.listSwitch.x = x+155
     _SC.listSwitch.y = y
   end
 end
