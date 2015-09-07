@@ -281,7 +281,6 @@ function __Menu__SubMenuWndMsg(instance, _, num)
     local y = ypos+(i-1)*20
     local width = 150
     local heigth = 20
-    FillRect(x+25, y+25, width, heigth, GoS.White)
     if mmPos.x >= x and mmPos.x <= x+width and mmPos.y >= y and mmPos.y <= y+heigth then
       __Menu__SwitchParam(instance.__params[i], x, y)
       return true
