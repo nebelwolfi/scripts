@@ -1,8 +1,8 @@
 local IOWversion = 1
 
-class "IOW"
+class "InspiredsOrbWalker"
 
-function IOW:__init()
+function InspiredsOrbWalker:__init()
   self.lastAttack = 0
   self.lastCooldown = 0
   self.attacksEnabled = true
@@ -29,7 +29,7 @@ function msg(x)
   print(x, "InspiredsOrbWalker")
 end
 
-function IOW:MakeMenu()
+function InspiredsOrbWalker:MakeMenu()
   self.Config = Menu("Inspired'sOrbWalker", "IOW")
   self.Config:SubMenu("h", "Hotkeys")
   self.Config.h:Key("Combo", "Combo", 32)
@@ -49,7 +49,7 @@ function IOW:MakeMenu()
   end, 333)
 end
 
-function IOW:Mode()
+function InspiredsOrbWalker:Mode()
   if self.Config.h.Combo:Value() then
     return "Combo"
   elseif self.Config.h.Harass:Value() then
@@ -63,7 +63,7 @@ function IOW:Mode()
   end
 end
 
-function IOW:Loop()
+function InspiredsOrbWalker:Loop()
   if not self.loaded then return end
   self.rangeCircle.Draw(self.Config.drawcircle:Value())
   self.myRange = GetRange(myHero)+GetHitBox(myHero)+(self.Target and GetHitBox(self.Target) or GetHitBox(myHero))
@@ -71,7 +71,7 @@ function IOW:Loop()
   self:Orb(self:GetTarget())
 end
 
-function IOW:GetTarget()
+function InspiredsOrbWalker:GetTarget()
   if self.Config.h.Combo:Value() then
     return GoS:GetTarget(self.myRange, DAMAGE_PHYSICAL)
   elseif self.Config.h.Harass:Value() then
@@ -116,15 +116,15 @@ function IOW:GetTarget()
   end
 end
 
-function IOW:GetDmg(to)
+function InspiredsOrbWalker:GetDmg(to)
   return GoS:CalcDamage(myHero, to, GetBonusDmg(myHero)+GetBaseDamage(myHero))
 end
   
-function IOW:GetProjectileSpeed(unit)
+function InspiredsOrbWalker:GetProjectileSpeed(unit)
   return self.projectilespeeds[GetObjectName(unit)] and self.projectilespeeds[GetObjectName(unit)] or math.huge
 end
 
-function IOW:Orb(target)
+function InspiredsOrbWalker:Orb(target)
   if self:DoAttack() and GoS:ValidTarget(target) and self.lastAttack+self.lastCooldown < GetTickCount() then
     AttackUnit(target)
   elseif self:DoWalk() and self.lastAttack+GetWindUp(myHero)*1000 < GetTickCount() then
@@ -132,15 +132,15 @@ function IOW:Orb(target)
   end
 end
 
-function IOW:DoAttack()
+function InspiredsOrbWalker:DoAttack()
   return (self.Config.h.Combo:Value() or self.Config.h.Harass:Value() or self.Config.h.LaneClear:Value() or self.Config.h.LastHit:Value()) and self.attacksEnabled
 end
 
-function IOW:DoWalk()
+function InspiredsOrbWalker:DoWalk()
   return (self.Config.h.Combo:Value() or self.Config.h.Harass:Value() or self.Config.h.LaneClear:Value() or self.Config.h.LastHit:Value()) and self.movementEnabled
 end
 
-function IOW:ProcessSpell(unit, spell)
+function InspiredsOrbWalker:ProcessSpell(unit, spell)
   if unit and unit == myHero and spell and spell.name then
     if spell.name:lower():find("attack") or self.altAttacks[spell.name] then
       self.lastAttack = GetTickCount()
@@ -152,30 +152,30 @@ function IOW:ProcessSpell(unit, spell)
   end
 end
 
-function IOW:EnableAutoAttacks()
+function InspiredsOrbWalker:EnableAutoAttacks()
   self.attacksEnabled = true
 end
 
-function IOW:DisableAutoAttacks()
+function InspiredsOrbWalker:DisableAutoAttacks()
   self.attacksEnabled = false
 end
 
-function IOW:EnableMovement()
+function InspiredsOrbWalker:EnableMovement()
   self.movementEnabled = true
 end
 
-function IOW:DisableMovement()
+function InspiredsOrbWalker:DisableMovement()
   self.movementEnabled = false
 end
 
-function IOW:EnableOrbwalking()
+function InspiredsOrbWalker:EnableOrbwalking()
   self.attacksEnabled = true
   self.movementEnabled = true
 end
 
-function IOW:DisableOrbwalking()
+function InspiredsOrbWalker:DisableOrbwalking()
   self.attacksEnabled = false
   self.movementEnabled = false
 end
 
-_G.IOW = IOW()
+_G.IOW = InspiredsOrbWalker()
