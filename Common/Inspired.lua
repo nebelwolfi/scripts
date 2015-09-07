@@ -136,7 +136,14 @@ function __Menu__DrawSliderSwitch(param, x, y)
   DrawText(param.__min,15,x+5,y+20,0xffffffff)
   DrawText(param.__max,15,x+125,y+20,0xffffffff)
   FillRect(x+15,y+20, 105, 18, ARGB(55, 255, 255, 255))
-  FillRect(x+15+105*param.__val/param.__max, y+20, 5, 18, GoS.Blue)
+  local off = 105 / math.abs(param.__min-param.__max) / param.__inc
+  local v = x+15+(param.__val-param.__min)*off
+  if param.__max == 0 then
+    v = x+15+param.__val*off+math.abs(param.__min-param.__max)*off
+  elseif param.__min < 0 then
+    v = x+15+param.__val*off+math.abs(param.__min-param.__max)/2*off
+  end
+  FillRect(v, y+20, 5, 18, GoS.Blue)
 end
 
 function __Menu__Browse()
@@ -228,12 +235,13 @@ function __Menu__WndMsg()
       local y = _SC.sliderSwitch.y
       if mmPos.x >= x and mmPos.x <= x+150 and mmPos.y >= y+20 and mmPos.y <= y+40 then
         if mmPos.x <= x+15 then
-          _SC.sliderSwitch.__val = 0
+          _SC.sliderSwitch.__val = _SC.sliderSwitch.__min
         elseif mmPos.x >= x+120 then
           _SC.sliderSwitch.__val = _SC.sliderSwitch.__max
         else
-          local v = (mmPos.x - x - 15) / 105 / _SC.sliderSwitch.__inc
-          _SC.sliderSwitch.__val = math.floor((_SC.sliderSwitch.__max*v)) * _SC.sliderSwitch.__inc
+          local off = 105 / math.abs(_SC.sliderSwitch.__min-_SC.sliderSwitch.__max) / _SC.sliderSwitch.__inc
+          local v = (mmPos.x - x - 15) / off
+          _SC.sliderSwitch.__val = math.floor(v+_SC.sliderSwitch.__min) * _SC.sliderSwitch.__inc
         end
       end
       if mmPos.x >= x+130 and mmPos.x <= x+150 and mmPos.y >= y-5 and mmPos.y <= y+15 then
