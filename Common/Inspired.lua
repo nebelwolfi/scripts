@@ -1,3 +1,5 @@
+local InspiredVersion = 1
+
 function print(msg, title)
   if not msg then return end
   PrintChat("<font color=\"#00FFFF\">["..(title or "GoS-Library").."]:</font> <font color=\"#FFFFFF\">"..tostring(msg).."</font>")
@@ -534,23 +536,6 @@ function goslib:MakeObjectManager()
       self.afterObjectLoopEvents[self.objectACallbackId] = nil
     end
   end
-  local function findDeadPlace()
-    for i = 1, objectManager.maxObjects do
-      local object = objectManager.objects[i]
-      if not object or not IsObjectAlive(object) then
-        return i
-      end
-    end
-  end
-  OnCreateObj(function(object)
-    local spot = findDeadPlace()
-    if spot then
-      objectManager.objects[spot] = object
-    else
-      objectManager.maxObjects = objectManager.maxObjects + 1
-      objectManager.objects[objectManager.maxObjects] = object
-    end
-  end)
 end
 
 function goslib:FindHeroes()
