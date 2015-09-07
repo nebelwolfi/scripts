@@ -1,4 +1,4 @@
-local IOWversion = 1.1
+local IOWversion = 1.2
 
 class "InspiredsOrbWalker"
 
@@ -77,7 +77,7 @@ function InspiredsOrbWalker:GetTarget()
     for i=1, minionManager.maxObjects do
       local minion = minionManager.objects[i]
       if minion and IsObjectAlive(minion) and GetTeam(minion) ~= GetTeam(myHero) and GoS:IsInDistance(minion, self.myRange) then
-        local health = GoS:PredictHealth(minion, 1000*GoS:GetDistance(minion)/self:GetProjectileSpeed(myHero) + GetWindUp(myHero)*1000)
+        local health = GoS:PredictHealth(minion, 1000*GoS:GetDistance(minion)/GoS:GetProjectileSpeed(myHero) + GetWindUp(myHero)*1000)
         if health < self:GetDmg(minion) and health > 0 then
           return minion
         end
@@ -89,7 +89,7 @@ function InspiredsOrbWalker:GetTarget()
     for i=1, minionManager.maxObjects do
       local minion = minionManager.objects[i]
       if minion and IsObjectAlive(minion) and GetTeam(minion) ~= GetTeam(myHero) and GoS:IsInDistance(minion, self.myRange) then
-        local health = GoS:PredictHealth(minion, 1000*GoS:GetDistance(minion)/self:GetProjectileSpeed(myHero) + GetWindUp(myHero)*1000)
+        local health = GoS:PredictHealth(minion, 1000*GoS:GetDistance(minion)/GoS:GetProjectileSpeed(myHero) + GetWindUp(myHero)*1000)
         if not highestMinion then highestMinion = minion highestHealth = health end
         if health > 0 then
           if health < self:GetDmg(minion) then
@@ -106,7 +106,7 @@ function InspiredsOrbWalker:GetTarget()
     for i=1, minionManager.maxObjects do
       local minion = minionManager.objects[i]
       if minion and IsObjectAlive(minion) and GetTeam(minion) ~= GetTeam(myHero) and GoS:IsInDistance(minion, self.myRange) then
-        local health = GoS:PredictHealth(minion, 1000*GoS:GetDistance(minion)/self:GetProjectileSpeed(myHero) + GetWindUp(myHero)*1000)
+        local health = GoS:PredictHealth(minion, 1000*GoS:GetDistance(minion)/GoS:GetProjectileSpeed(myHero) + GetWindUp(myHero)*1000)
         if health < self:GetDmg(minion) and health > 0 then
           return minion
         end
@@ -117,10 +117,6 @@ end
 
 function InspiredsOrbWalker:GetDmg(to)
   return GoS:CalcDamage(myHero, to, GetBonusDmg(myHero)+GetBaseDamage(myHero))
-end
-  
-function InspiredsOrbWalker:GetProjectileSpeed(unit)
-  return self.projectilespeeds[GetObjectName(unit)] and self.projectilespeeds[GetObjectName(unit)] or math.huge
 end
 
 function InspiredsOrbWalker:Orb(target)
