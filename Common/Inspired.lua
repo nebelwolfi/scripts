@@ -472,7 +472,7 @@ function goslib:Loop()
   end
   for i, k in pairs(self.tableForHPPrediction) do
     for j, v in pairs(k) do
-      if v.time < os.clock() then
+      if v.time < GetTickCount() then
         self.tableForHPPrediction[i][j] = nil
       end
     end
