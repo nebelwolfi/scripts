@@ -290,7 +290,6 @@ function __Menu__SubMenuWndMsg(instance, _)
     local y = _SCP.y+20*(yoff+i+_-1)
     local width = 150
     local heigth = 20
-    FillRect(x,y,width,heigth,GoS.White)
     if mmPos.x >= x and mmPos.x <= x+width and mmPos.y >= y and mmPos.y <= y+heigth then
       __Menu__SwitchParam(instance.__params[i], x, y)
       return true
