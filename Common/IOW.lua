@@ -115,8 +115,77 @@ function InspiredsOrbWalker:GetTarget()
   end
 end
 
-function InspiredsOrbWalker:GetDmg(to)
-  return GoS:CalcDamage(myHero, to, GetBonusDmg(myHero)+GetBaseDamage(myHero))
+function InspiredsOrbWalker:GetDmg(to) -- thanks to Sir Deftsu for this :3
+  local addmg = 0
+  local apdmg = 0
+  local truedmg = 0
+  if GetObjectName(myHero) == "Aatrox" then
+  addmg = addmg + (GotBuff(myHero, "aatroxwpower") > 0 and 35*GetCastLevel(myHero,_W)+25 or 0)
+  elseif GetObjectName(myHero) == "Ashe" then
+  addmg = addmg + (GotBuff(myHero, "asheqattack") > 0 and (GetBonusDmg(myHero)+GetBaseDamage(myHero))*(.05*GetCastLevel(myHero,_Q)+.1) or 0)
+  elseif GetObjectName(myHero) == "Blitzcrank" then
+  addmg = addmg + (GotBuff(myHero, "PowerFist") > 0 and GetBonusDmg(myHero)+GetBaseDamage(myHero) or 0)
+  elseif GetObjectName(myHero) == "Caitlyn" then
+  addmg = addmg + (GotBuff(myHero, "caitlynheadshot") > 0 and 1.5*(GetBonusDmg(myHero)+GetBaseDamage(myHero)) or 0)
+  elseif GetObjectName(myHero) == "Chogath" then
+  apdmg = apdmg + (GotBuff(myHero, "VorpalSpikes") > 0 and 15*GetCastLevel(myHero,_E)+5+.3*GetBonusAP(myHero) or 0)
+  elseif GetObjectName(myHero) == "Corki" then
+  truedmg = truedmg + (GotBuff(myHero, "rapidreload") > 0 and .1*(GetBonusDmg(myHero)+GetBaseDamage(myHero)) or 0)
+  elseif GetObjectName(myHero) == "Darius" then
+  addmg = addmg + (GotBuff(myHero, "DariusNoxianTacticsONH") > 0 and .4*(GetBonusDmg(myHero)+GetBaseDamage(myHero)) or 0)
+  elseif GetObjectName(myHero) == "Diana" then
+  apdmg = apdmg + (GotBuff(myHero, "dianaarcready") > 0 and math.max(5*GetLevel(myHero)+15,10*GetLevel(myHero)-10,15*GetLevel(myHero)-60,20*GetLevel(myHero)-125,25*GetLevel(myHero)-200)+.8*GetBonusAP(myHero) or 0)
+  elseif GetObjectName(myHero) == "Draven" then
+  addmg = addmg + (GotBuff(myHero, "dravenspinning") > 0 and (.1*GetCastLevel(myHero,_Q)+.35)*(GetBonusDmg(myHero)+GetBaseDamage(myHero)) or 0)
+  elseif GetObjectName(myHero) == "Ekko" then
+  apdmg = apdmg + (GotBuff(myHero, "ekkoeattackbuff") > 0 and 30*GetCastLevel(myHero,_E)+20+.2*GetBonusAP(myHero) or 0)
+  elseif GetObjectName(myHero) == "Fizz" then
+  apdmg = apdmg + (GotBuff(myHero, "FizzSeastonePassive") > 0 and 5*GetCastLevel(myHero,_W)+5+.3*GetBonusAP(myHero) or 0)
+  elseif GetObjectName(myHero) == "Garen" then
+  addmg = addmg + (GotBuff(myHero, "GarenQ") > 0 and 25*GetCastLevel(myHero,_Q)+5+.4*(GetBonusDmg(myHero)+GetBaseDamage(myHero)) or 0)
+  elseif GetObjectName(myHero) == "Gragas" then
+  apdmg = apdmg + (GotBuff(myHero, "gragaswattackbuff") > 0 and 30*GetCastLevel(myHero,_W)-10+.3*GetBonusAP(myHero)+(.01*GetCastLevel(myHero,_W)+.07)*GetMaxHP(minion) or 0)
+  elseif GetObjectName(myHero) == "Irelia" then
+  truedmg = truedmg + (GotBuff(myHero, "ireliahitenstylecharged") > 0 and 25*GetCastLevel(myHero,_Q)+5+.4*(GetBonusDmg(myHero)+GetBaseDamage(myHero)) or 0)
+  elseif GetObjectName(myHero) == "Jax" then
+  apdmg = apdmg + (GotBuff(myHero, "JaxEmpowerTwo") > 0 and 35*GetCastLevel(myHero,_W)+5+.6*GetBonusAP(myHero) or 0)
+  elseif GetObjectName(myHero) == "Jayce" then
+  apdmg = apdmg + (GotBuff(myHero, "jaycepassivemeleeatack") > 0 and 40*GetCastLevel(myHero,_R)-20+.4*GetBonusAP(myHero) or 0)
+  elseif GetObjectName(myHero) == "Jinx" then
+  addmg = addmg + (GotBuff(myHero, "JinxQ") > 0 and .1*(GetBonusDmg(myHero)+GetBaseDamage(myHero)) or 0)
+  elseif GetObjectName(myHero) == "Kassadin" then
+  apdmg = apdmg + (GotBuff(myHero, "netherbladebuff") > 0 and 20+.1*GetBonusAP(myHero) or 0) + (GotBuff(myHero, "NetherBlade") > 0 and 25*GetCastLevel(myHero,_W)+15+.6*GetBonusAP(myHero) or 0)
+  elseif GetObjectName(myHero) == "Kayle" then
+  apdmg = apdmg + (GotBuff(myHero, "kaylerighteousfurybuff") > 0 and 5*GetCastLevel(myHero,_E)+5+.15*GetBonusAP(myHero) or 0) + (GotBuff(myHero, "JudicatorRighteousFury") > 0 and 5*GetCastLevel(myHero,_E)+5+.15*GetBonusAP(myHero) or 0)
+  elseif GetObjectName(myHero) == "Leona" then
+  apdmg = apdmg + (GotBuff(myHero, "LeonaShieldOfDaybreak") > 0 and 30*GetCastLevel(myHero,_Q)+10+.3*GetBonusAP(myHero) or 0)
+  elseif GetObjectName(myHero) == "MasterYi" then
+  addmg = addmg + (GotBuff(myHero, "doublestrike") > 0 and .5*(GetBonusDmg(myHero)+GetBaseDamage(myHero)) or 0)
+  elseif GetObjectName(myHero) == "Nocturne" then
+  addmg = addmg + (GotBuff(myHero, "nocturneumrablades") > 0 and .2*(GetBonusdmg(myHero)+GetBaseDamage(myHero)) or 0)
+  elseif GetObjectName(myHero) == "Orianna" then
+  apdmg = apdmg + (GotBuff(myHero, "orianaspellsword") > 0 and 8*math.floor((GetLevel(myHero)+2)/3)+2+0.15*GetBonusAP(myHero) or 0)
+  elseif GetObjectName(myHero) == "RekSai" then
+  addmg = addmg + (GotBuff(myHero, "RekSaiQ") > 0 and 10*GetCastLevel(myHero,_Q)+5+.2*(GetBonusDmg(myHero)+GetBaseDamage(myHero)) or 0)
+  elseif GetObjectName(myHero) == "Rengar" then
+  addmg = addmg + (GotBuff(myHero, "rengarqbase") > 0 and math.max(30*GetCastLevel(myHero,_Q)+(.05*GetCastLevel(myHero,_Q)-.05)*(GetBonusDmg(myHero)+GetBaseDamage(myHero))) or 0) + (GotBuff(myHero, "rengarqemp") > 0 and math.min(15*GetLevel(myHero)+15,10*GetLevel(myHero)+60)+.5*(GetBonusDmg(myHero)+GetBaseDamage(myHero)) or 0)
+  elseif GetObjectName(myHero) == "Shyvana" then
+  addmg = addmg + (GotBuff(myHero, "ShyvanaDoubleAttack") > 0 and (.05*GetCastLevel(myHero,_Q)+.75)*(GetBonusDmg(myHero)+GetBaseDamage(myHero)) or 0)
+  elseif GetObjectName(myHero) == "Talon" then
+  addmg = addmg + (GotBuff(myHero, "talonnoxiandiplomacybuff") > 0 and 30*GetCastLevel(myHero,_Q)+.3*(GetBonusDmg(myHero)) or 0)
+  elseif GetObjectName(myHero) == "Trundle" then
+  addmg = addmg + (GotBuff(myHero, "TrundleTrollSmash") > 0 and 20*GetCastLevel(myHero,_Q)+((0.05*GetCastLevel(myHero,_Q)+0.095)*(GetBonusDmg(myHero)+GetBaseDamage(myHero))) or 0)
+  elseif GetObjectName(myHero) == "Varus" then
+  apdmg = apdmg + (GotBuff(myHero, "VarusW") > 0 and (4*GetCastLevel(myHero,_W)+6+.25*GetBonusAP(myHero) or 0) 
+  elseif GetObjectName(myHero) == "Vayne" then
+  addmg = addmg + (GotBuff(myHero, "vaynetumblebonus") > 0 and (.05*GetCastLevel(myHero,_Q)+.25)*(GetBonusDmg(myHero)+GetBaseDamage(myHero)) or 0) 
+  truedmg = truedmg + (GotBuff(minion, "vaynesilvereddebuff") > 2 and 10*GetCastLevel(myHero,_W)+10+((1*GetCastLevel(myHero,_W)+3)*GetMaxHP(minion)/100) or 0)
+  elseif GetObjectName(myHero) == "Vi" then
+  addmg = addmg + (GotBuff(myHero, "ViE") > 0 and 15*GetCastLevel(myHero,_E)-10+.15*(GetBonusDmg(myHero)+GetBaseDamage(myHero))+.7*GetBonusAP(myHero) or 0) 
+  elseif GetObjectName(myHero) == "Volibear" then
+  addmg = addmg + (GotBuff(myHero, "VolibearQ") > 0 and 30*GetCastLevel(myHero,_Q) or 0)
+  end
+  return truedmg + GoS:CalcDamage(myHero, to, GetBonusDmg(myHero)+GetBaseDamage(myHero)+addmg, apdmg)
 end
 
 function InspiredsOrbWalker:Orb(target)
