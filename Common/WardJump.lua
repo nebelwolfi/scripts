@@ -12,8 +12,8 @@ if wardJumpChamps[myHeroName] then
   local casted, jumped = false, false
 
   WJConfig = Menu("IWardJump", "WardJump.lua")
-  WJConfig:Boolean("D", "Draw Pos", SCRIPT_PARAM_ONOFF, true)
-  WJConfig:Key("WJ", "Jump", SCRIPT_PARAM_KEYDOWN, string.byte("G"))
+  WJConfig:Boolean("D", "Draw Pos", true)
+  WJConfig:Key("WJ", "Jump", string.byte("G"))
 
   OnObjectLoop(function(obj, myHero)
     if not WJConfig.WJ:Value() then return end
