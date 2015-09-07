@@ -1,4 +1,4 @@
-local IOWversion = 1.4
+local IOWversion = 1.5
 
 class "InspiredsOrbWalker"
 
@@ -35,6 +35,7 @@ function InspiredsOrbWalker:MakeMenu()
   self.Config.h:Key("Harass", "Harass", string.byte("C"))
   self.Config.h:Key("LastHit", "LastHit", string.byte("X"))
   self.Config.h:Key("LaneClear", "LaneClear", string.byte("V"))
+  self.Config:Slider("cad", "Cancel Adjustment", 0, -100, 100, 1)
   self.Config:Boolean("items", "Use Items", true)
   GoS:DelayAction(function()
     if GetRange(myHero) < 450 then
@@ -191,7 +192,7 @@ end
 function InspiredsOrbWalker:Orb(target)
   if self:DoAttack() and GoS:ValidTarget(target) and self.lastAttack + self.lastCooldown < GetTickCount() - GetLatency() then
     AttackUnit(target)
-  elseif self:DoWalk() and self.lastAttack + GetWindUp(myHero)*1000 < GetTickCount() - GetLatency() then
+  elseif self:DoWalk() and self.lastAttack + GetWindUp(myHero)*1000 + self.Config.cad:Value() < GetTickCount() - GetLatency() then
     MoveToXYZ(GetMousePos())
   end
 end
