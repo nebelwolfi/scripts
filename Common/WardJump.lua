@@ -11,12 +11,12 @@ if wardJumpChamps[myHeroName] then
   local wardIDs = {3166, 3361, 3362, 3340, 3350, 2050, 2045, 2049, 2044, 2043}
   local casted, jumped = false, false
 
-  WJConfig = scriptConfig("IWadJump", "WardJump.lua")
-  WJConfig.addParam("D", "Draw Pos", SCRIPT_PARAM_ONOFF, true)
-  WJConfig.addParam("WJ", "Jump", SCRIPT_PARAM_KEYDOWN, string.byte("G"))
+  WJConfig = Menu("IWardJump", "WardJump.lua")
+  WJConfig:Boolean("D", "Draw Pos", SCRIPT_PARAM_ONOFF, true)
+  WJConfig:Key("WJ", "Jump", SCRIPT_PARAM_KEYDOWN, string.byte("G"))
 
   OnObjectLoop(function(obj, myHero)
-    if not WJConfig.WJ then return end
+    if not WJConfig.WJ:Value() then return end
     local objName = GetObjectBaseName(obj)
     if GetTeam(obj) == myTeam and (objName:lower():find("ward") or objName:lower():find("trinkettotem")) then
       wardTable[GetNetworkID(obj)] = obj
@@ -24,11 +24,11 @@ if wardJumpChamps[myHeroName] then
   end)
 
   OnLoop(function(myHero)
-    if WJConfig.D then
+    if WJConfig.D:Value() then
       local pos = Vector(myHero) + Vector(Vector(GetMousePos()) - Vector(myHero)):normalized() * wjrange
       Circle(pos,150):draw()
     end
-    if WJConfig.WJ or casted then
+    if WJConfig.WJ:Value() or casted then
       WardJump()
     end
   end)
