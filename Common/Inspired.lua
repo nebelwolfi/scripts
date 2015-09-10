@@ -1,4 +1,4 @@
-local InspiredVersion = 20
+local InspiredVersion = 21
 
 function print(msg, title)
   if not msg then return end
@@ -387,9 +387,9 @@ function goslib:SetupMenu()
   self.Menu = Menu("GoS-Library", "gos")
   self.Menu:Boolean("s", "Show always", true)
   self.Menu:List("l", "Language", 1, {"English", })
-  self.afterObjectLoopEvents[#self.afterObjectLoopEvents+1] = function()
+  OnLoop(function()
     __Menu__Draw()
-  end
+  end)
 end
 
 function goslib:GetTextArea(str, size)
@@ -467,13 +467,6 @@ function goslib:Loop()
       end
     end
   end
-  for i, k in pairs(self.tableForHPPrediction) do
-    for j, v in pairs(k) do
-      if v.time < GetTickCount() then
-        self.tableForHPPrediction[i][j] = nil
-      end
-    end
-  end
 end
 
 function goslib:ProcessSpell(unit, spell)
@@ -518,20 +511,20 @@ function goslib:MakeObjectManager()
   _G.objectManager = {}
   objectManager.maxObjects = 0
   objectManager.objects = {}
-  self.objectLCallbackId = #self.objectLoopEvents+1
-  self.objectACallbackId = #self.afterObjectLoopEvents+1
-  self.objectLoopEvents[self.objectLCallbackId] = function(object)
+  objectManager.objectLCallbackId = 1
+  objectManager.objectACallbackId = 1
+  self.objectLoopEvents[objectManager.objectLCallbackId] = function(object)
     objectManager.maxObjects = objectManager.maxObjects + 1
     objectManager.objects[objectManager.maxObjects] = object
   end
-  self.afterObjectLoopEvents[self.objectACallbackId] = function()
-    if objectManager.maxObjects > 0 and self.objectLoopEvents[self.objectLCallbackId] then
-      self.objectLoopEvents[self.objectLCallbackId] = nil
+  self.afterObjectLoopEvents[objectManager.objectACallbackId] = function()
+    if objectManager.maxObjects > 0 and self.objectLoopEvents[objectManager.objectLCallbackId] then
+      self.objectLoopEvents[objectManager.objectLCallbackId] = nil
     end
-    if not self.objectLoopEvents[self.objectLCallbackId] then
+    if not self.objectLoopEvents[objectManager.objectLCallbackId] then
       self:FindHeroes()
       self:MakeMinionManager()
-      self.afterObjectLoopEvents[self.objectACallbackId] = nil
+      self.afterObjectLoopEvents[objectManager.objectACallbackId] = nil
     end
   end
   local function findDeadPlace()
@@ -568,7 +561,6 @@ function goslib:MakeMinionManager()
   minionManager.maxObjects = 0
   minionManager.objects = {}
   minionManager.unsorted = {}
-  minionManager.objectACallbackId = #self.afterObjectLoopEvents+1
   for i = 1, objectManager.maxObjects do
     local object = objectManager.objects[i]
     if GetObjectType(object) == Obj_AI_Minion and IsObjectAlive(object) then
@@ -587,7 +579,7 @@ function goslib:MakeMinionManager()
       end
     end
   end
-  self.afterObjectLoopEvents[minionManager.objectACallbackId] = function()
+  OnLoop(function()
     for i, object in pairs(minionManager.unsorted) do
       local object = minionManager.unsorted[i]
       local objName = GetObjectName(object)
@@ -603,7 +595,7 @@ function goslib:MakeMinionManager()
         end
       end
     end
-  end
+  end)
   OnCreateObj(function(object)
     if GetObjectType(object) == Obj_AI_Minion then
       table.insert(minionManager.unsorted, object)
@@ -846,7 +838,7 @@ function goslib:Circle(col)
   local circle = {}
   circle.object = nil
   circle.color = col or 0xffffffff
-  circle.objectACallbackId = #(self.afterObjectLoopEvents)+1
+  circle.objectACallbackId = #self.afterObjectLoopEvents+1
   circle.contains = function(pos)
     return GoS.GetDistanceSqr(Vector(circle.x, circle.y, circle.z), pos) < circle.r * circle.r
   end
@@ -871,7 +863,7 @@ function goslib:Circle(col)
     if boolean then
       self.afterObjectLoopEvents[circle.objectACallbackId] = function()
         if circle.object then local pos = GetOrigin(circle.object) circle.x=pos.x circle.y=pos.y circle.z=pos.z end
-        DrawCircle(circle.x, circle.y, circle.z, circle.r, 1, 10, circle.color)
+        DrawCircle(circle.x, circle.y, circle.z, circle.r, 1, 128, circle.color)
       end
     else
       self.afterObjectLoopEvents[circle.objectACallbackId] = nil
