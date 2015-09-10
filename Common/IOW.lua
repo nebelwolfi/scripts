@@ -1,4 +1,4 @@
-local IOWversion = 1.7
+local IOWversion = 1.8
 
 class "InspiredsOrbWalker"
 
@@ -46,7 +46,7 @@ function InspiredsOrbWalker:MakeMenu()
     self.Config:Info("version", "Version: v"..IOWversion)
     self.loaded = true
     msg("Loaded!")
-  end, 333)
+  end, 1000)
 end
 
 function InspiredsOrbWalker:Mode()
@@ -180,21 +180,30 @@ function InspiredsOrbWalker:GetDmg(to) -- thanks to Sir Deftsu for this :3
   apdmg = apdmg + (GotBuff(myHero, "VarusW") > 0 and (4*GetCastLevel(myHero,_W)+6+.25*GetBonusAP(myHero)) or 0) 
   elseif GetObjectName(myHero) == "Vayne" then
   addmg = addmg + (GotBuff(myHero, "vaynetumblebonus") > 0 and (.05*GetCastLevel(myHero,_Q)+.25)*(GetBonusDmg(myHero)+GetBaseDamage(myHero)) or 0) 
-  truedmg = truedmg + (GotBuff(to, "vaynesilvereddebuff") > 2 and 10*GetCastLevel(myHero,_W)+10+((1*GetCastLevel(myHero,_W)+3)*GetMaxHP(to)/100) or 0)
+  truedmg = truedmg + (GotBuff(to, "vaynesilvereddebuff") > 1 and 10*GetCastLevel(myHero,_W)+10+((1*GetCastLevel(myHero,_W)+3)*GetMaxHP(to)/100) or 0)
   elseif GetObjectName(myHero) == "Vi" then
   addmg = addmg + (GotBuff(myHero, "ViE") > 0 and 15*GetCastLevel(myHero,_E)-10+.15*(GetBonusDmg(myHero)+GetBaseDamage(myHero))+.7*GetBonusAP(myHero) or 0) 
   elseif GetObjectName(myHero) == "Volibear" then
   addmg = addmg + (GotBuff(myHero, "VolibearQ") > 0 and 30*GetCastLevel(myHero,_Q) or 0)
   end
-  return truedmg + GoS:CalcDamage(myHero, to, GetBonusDmg(myHero)+GetBaseDamage(myHero)+addmg, apdmg)
+  return truedmg + GoS:CalcDamage(myHero, to, GetBonusDmg(myHero)+GetBaseDamage(myHero)+addmg, apdmg) * 0.95
 end
 
 function InspiredsOrbWalker:Orb(target)
-  if self:DoAttack() and GoS:ValidTarget(target) and self.lastAttack + self.lastCooldown < GetTickCount() - GetLatency() then
+  if self:DoAttack() and GoS:ValidTarget(target) and self:TimeToAttack() then
+    self.lastAttack = GetTickCount() + GetLatency() + 70
     AttackUnit(target)
-  elseif self:DoWalk() and self.lastAttack + GetWindUp(myHero)*1000 + self.Config.cad:Value() < GetTickCount() - GetLatency() then
+  elseif self:DoWalk() and self:TimeToMove() then
     MoveToXYZ(GetMousePos())
   end
+end
+
+function InspiredsOrbWalker:TimeToMove()
+  return self.lastAttack + GetWindUp(myHero)*1000 + self.Config.cad:Value() < GetTickCount() - GetLatency()
+end
+
+function InspiredsOrbWalker:TimeToAttack()
+  return self.lastAttack + 1000/self:GetAttackSpeed() < GetTickCount() - GetLatency()
 end
 
 function InspiredsOrbWalker:DoAttack()
@@ -205,12 +214,12 @@ function InspiredsOrbWalker:DoWalk()
   return (self.Config.h.Combo:Value() or self.Config.h.Harass:Value() or self.Config.h.LaneClear:Value() or self.Config.h.LastHit:Value()) and self.movementEnabled
 end
 
+function InspiredsOrbWalker:GetAttackSpeed()
+  return GetAttackSpeed(myHero)*GetBaseAttackSpeed(myHero)
+end
+
 function InspiredsOrbWalker:ProcessSpell(unit, spell)
   if unit and unit == myHero and spell and spell.name then
-    if spell.name:lower():find("attack") or self.altAttacks[spell.name] then
-      self.lastAttack = GetTickCount()
-      self.lastCooldown = spell.animationTime*1000 - GetWindUp(myHero) - GetLatency()/2
-    end
     if self.resetAttacks[spell.name] then
       self.lastAttack = 0
     end
