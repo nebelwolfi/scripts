@@ -9,7 +9,7 @@ function InspiredsOrbWalker:__init()
   self.movementEnabled = true
   self.altAttacks = Set { "caitlynheadshotmissile", "frostarrow", "garenslash2", "kennenmegaproc", "lucianpassiveattack", "masteryidoublestrike", "quinnwenhanced", "renektonexecute", "renektonsuperexecute", "rengarnewpassivebuffdash", "trundleq", "xenzhaothrust", "xenzhaothrust2", "xenzhaothrust3" }
   self.resetAttacks = Set { "dariusnoxiantacticsonh", "fioraflurry", "garenq", "hecarimrapidslash", "jaxempowertwo", "jaycehypercharge", "leonashieldofdaybreak", "luciane", "lucianq", "monkeykingdoubleattack", "mordekaisermaceofspades", "nasusq", "nautiluspiercinggaze", "netherblade", "parley", "poppydevastatingblow", "powerfist", "renektonpreexecute", "rengarq", "shyvanadoubleattack", "sivirw", "takedown", "talonnoxiandiplomacy", "trundletrollsmash", "vaynetumble", "vie", "volibearq", "xenzhaocombotarget", "yorickspectral", "reksaiq", "riventricleave", "itemtitanichydracleave", "itemtiamatcleave" }
-  self.rangeCircle = GoS:Circle(GoS.White).Attach(myHero, GetRange(myHero)+GetHitBox(myHero))
+  self.rangeCircle = GoS:Circle(GoS.White)
   self:MakeMenu()
   OnLoop(function() self:Loop() end)
   OnProcessSpell(function(x,y) self:ProcessSpell(x,y) end)
@@ -42,6 +42,7 @@ function InspiredsOrbWalker:MakeMenu()
     if GetRange(myHero) < 450 then
       self.Config:Boolean("sticky", "Stick to Target", true)
     end
+    self.rangeCircle.Attach(myHero, GetRange(myHero)+GetHitBox(myHero))
     self.Config:Boolean("drawcircle", "Autoattack Circle", true)
     self.Config:Info("space", "")
     self.Config:Info("version", "Version: v"..IOWversion)
