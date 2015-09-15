@@ -1,4 +1,4 @@
-local InspiredVersion = 21
+local InspiredVersion = 22
 
 function print(msg, title)
   if not msg then return end
@@ -535,7 +535,7 @@ function goslib:MakeObjectManager()
       end
     end
   end
-  OnCreateObj(function(object)
+  --[[OnCreateObj(function(object)
     local spot = findDeadPlace()
     if spot then
       objectManager.objects[spot] = object
@@ -543,7 +543,7 @@ function goslib:MakeObjectManager()
       objectManager.maxObjects = objectManager.maxObjects + 1
       objectManager.objects[objectManager.maxObjects] = object
     end
-  end)
+  end)]]
 end
 
 function goslib:FindHeroes()
