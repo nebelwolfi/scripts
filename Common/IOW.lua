@@ -1,4 +1,4 @@
-local IOWversion = 1.8
+local IOWversion = 1.9
 
 class "InspiredsOrbWalker"
 
@@ -13,6 +13,7 @@ function InspiredsOrbWalker:__init()
   self:MakeMenu()
   OnLoop(function() self:Loop() end)
   OnProcessSpell(function(x,y) self:ProcessSpell(x,y) end)
+  OnProcessWaypoint(function(x,y) self:ProcessWaypoint(x,y) end)
   return self
 end
 
@@ -203,7 +204,7 @@ function InspiredsOrbWalker:TimeToMove()
 end
 
 function InspiredsOrbWalker:TimeToAttack()
-  return self.lastAttack + 1000/self:GetAttackSpeed() < GetTickCount() - GetLatency()
+  return self.lastAttack + 1000/self:GetFullAttackSpeed() < GetTickCount() - GetLatency()
 end
 
 function InspiredsOrbWalker:DoAttack()
@@ -214,15 +215,21 @@ function InspiredsOrbWalker:DoWalk()
   return (self.Config.h.Combo:Value() or self.Config.h.Harass:Value() or self.Config.h.LaneClear:Value() or self.Config.h.LastHit:Value()) and self.movementEnabled
 end
 
-function InspiredsOrbWalker:GetAttackSpeed()
+function InspiredsOrbWalker:GetFullAttackSpeed()
   return GetAttackSpeed(myHero)*GetBaseAttackSpeed(myHero)
 end
 
 function InspiredsOrbWalker:ProcessSpell(unit, spell)
   if unit and unit == myHero and spell and spell.name then
-    if self.resetAttacks[spell.name] then
-      self.lastAttack = 0
+    if self.resetAttacks[spell.name:lower()] then
+      self.lastAttack = GetTickCount() + spell.windUpTime * 1000 - GetLatency()/2 - 1000/self:GetFullAttackSpeed()
     end
+  end
+end
+
+function InspiredsOrbWalker:ProcessWaypoint(Object,way)
+  if Object == myHero and not self:TimeToMove() and way.index > 2 then
+    self.lastAttack = 0
   end
 end
 
