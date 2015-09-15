@@ -1,4 +1,4 @@
-local InspiredVersion = 22
+local InspiredVersion = 23
 
 function print(msg, title)
   if not msg then return end
@@ -509,16 +509,18 @@ end
 
 function goslib:MakeObjectManager()
   _G.objectManager = {}
-  objectManager.maxObjects = 0
   objectManager.objects = {}
+  objectManager.unsorted = {}
   objectManager.objectLCallbackId = 1
   objectManager.objectACallbackId = 1
+  objectManager.objectSCallbackId = 2
+  local done = false
   self.objectLoopEvents[objectManager.objectLCallbackId] = function(object)
-    objectManager.maxObjects = objectManager.maxObjects + 1
-    objectManager.objects[objectManager.maxObjects] = object
+    done = true
+    objectManager.objects[GetNetworkID(object)] = object
   end
   self.afterObjectLoopEvents[objectManager.objectACallbackId] = function()
-    if objectManager.maxObjects > 0 and self.objectLoopEvents[objectManager.objectLCallbackId] then
+    if done and self.objectLoopEvents[objectManager.objectLCallbackId] then
       self.objectLoopEvents[objectManager.objectLCallbackId] = nil
     end
     if not self.objectLoopEvents[objectManager.objectLCallbackId] then
@@ -527,29 +529,25 @@ function goslib:MakeObjectManager()
       self.afterObjectLoopEvents[objectManager.objectACallbackId] = nil
     end
   end
-  local function findDeadPlace()
-    for i = 1, objectManager.maxObjects do
-      local object = objectManager.objects[i]
-      if not object or not IsObjectAlive(object) then
-        return i
+  self.afterObjectLoopEvents[objectManager.objectSCallbackId] = function()
+    for _, object in pairs(objectManager.unsorted) do
+      local nID = GetNetworkID(object)
+      if nID and nID > 0 then
+        objectManager.objects[nID] = object
       end
     end
   end
-  --[[OnCreateObj(function(object)
-    local spot = findDeadPlace()
-    if spot then
-      objectManager.objects[spot] = object
-    else
-      objectManager.maxObjects = objectManager.maxObjects + 1
-      objectManager.objects[objectManager.maxObjects] = object
-    end
-  end)]]
+  OnCreateObj(function(object)
+    table.insert(objectManager.unsorted, object)
+  end)
+  OnDeleteObj(function(object)
+    objectManager.objects[GetNetworkID(object)] = nil
+  end)
 end
 
 function goslib:FindHeroes()
   self.heroes = {myHero}
-  for i = 1, objectManager.maxObjects do
-    local object = objectManager.objects[i]
+  for i, object in pairs(objectManager.objects) do
     if GetObjectType(object) == Obj_AI_Hero then
       self.heroes[#self.heroes+1] = object
     end
@@ -561,8 +559,7 @@ function goslib:MakeMinionManager()
   minionManager.maxObjects = 0
   minionManager.objects = {}
   minionManager.unsorted = {}
-  for i = 1, objectManager.maxObjects do
-    local object = objectManager.objects[i]
+  for i, object in pairs(objectManager.objects) do
     if GetObjectType(object) == Obj_AI_Minion and IsObjectAlive(object) then
       local objName = GetObjectName(object)
       if objName == "Barrel" or (GetTeam(object) == 300 and GetCurrentHP(object) < 100000 or objName:find('_')) then
