@@ -537,7 +537,7 @@ function goslib:MakeObjectManager()
     end
   end
   self.afterObjectLoopEvents[objectManager.objectSCallbackId] = function()
-    if objectManager.tick < GetTickCount() then return end
+    if objectManager.tick > GetTickCount() then return end
     objectManager.tick = GetTickCount() + 125
     for _, object in pairs(objectManager.unsorted) do
       local nID = GetNetworkID(object)
@@ -587,7 +587,7 @@ function goslib:MakeMinionManager()
     end
   end
   OnLoop(function()
-    if minionManager.tick < GetTickCount() then return end
+    if minionManager.tick > GetTickCount() then return end
     minionManager.tick = GetTickCount() + 125
     for i, object in pairs(minionManager.unsorted) do
       local object = minionManager.unsorted[i]
