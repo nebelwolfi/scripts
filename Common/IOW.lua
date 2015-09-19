@@ -11,6 +11,7 @@ function InspiredsOrbWalker:__init()
   self.altAttacks = Set { "caitlynheadshotmissile", "frostarrow", "garenslash2", "kennenmegaproc", "lucianpassiveattack", "masteryidoublestrike", "quinnwenhanced", "renektonexecute", "renektonsuperexecute", "rengarnewpassivebuffdash", "trundleq", "xenzhaothrust", "xenzhaothrust2", "xenzhaothrust3" }
   self.resetAttacks = Set { "dariusnoxiantacticsonh", "fioraflurry", "garenq", "hecarimrapidslash", "jaxempowertwo", "jaycehypercharge", "leonashieldofdaybreak", "luciane", "lucianq", "monkeykingdoubleattack", "mordekaisermaceofspades", "nasusq", "nautiluspiercinggaze", "netherblade", "parley", "poppydevastatingblow", "powerfist", "renektonpreexecute", "rengarq", "shyvanadoubleattack", "sivirw", "takedown", "talonnoxiandiplomacy", "trundletrollsmash", "vaynetumble", "vie", "volibearq", "xenzhaocombotarget", "yorickspectral", "reksaiq", "riventricleave", "itemtitanichydracleave", "itemtiamatcleave" }
   self.rangeCircle = GoS:Circle(GoS.White)
+  self.tick = 0
   self:MakeMenu()
   OnLoop(function() self:Loop() end)
   OnProcessSpell(function(x,y) self:ProcessSpell(x,y) end)
@@ -67,7 +68,8 @@ function InspiredsOrbWalker:Mode()
 end
 
 function InspiredsOrbWalker:Loop()
-  if not self.loaded then return end
+  if not self.loaded or self.tick > GetTickCount() then return end
+  self.tick = GetTickCount() + 60
   self.rangeCircle.Draw(self.Config.drawcircle:Value())
   self.myRange = GetRange(myHero)+GetHitBox(myHero)+(self.Target and GetHitBox(self.Target) or GetHitBox(myHero))
   self.Target = self:GetTarget()
