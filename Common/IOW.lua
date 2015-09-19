@@ -1,4 +1,4 @@
-local IOWversion = 1.92
+local IOWversion = 1.91
 local myHeroName = GetObjectName(GetMyHero())
 
 class "InspiredsOrbWalker"
@@ -194,7 +194,6 @@ end
 
 function InspiredsOrbWalker:Orb(target)
   if self:DoAttack() and GoS:ValidTarget(target) and self:TimeToAttack() then
-    self.lastAttack = GetTickCount() + GetLatency() + 70
     AttackUnit(target)
   elseif self:DoWalk() and self:TimeToMove() then
     MoveToXYZ(GetMousePos())
@@ -206,6 +205,7 @@ function InspiredsOrbWalker:TimeToMove()
 end
 
 function InspiredsOrbWalker:TimeToAttack()
+  --print(self:GetFullAttackSpeed())
   return self.lastAttack + 1000/self:GetFullAttackSpeed() < GetTickCount() - GetLatency()
 end
 
