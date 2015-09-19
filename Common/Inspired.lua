@@ -1,4 +1,4 @@
-local InspiredVersion = 24
+_G.InspiredVersion = 24
 
 function print(msg, title)
   if not msg then return end
