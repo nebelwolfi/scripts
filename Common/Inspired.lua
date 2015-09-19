@@ -1,4 +1,4 @@
-local InspiredVersion = 23
+local InspiredVersion = 24
 
 function print(msg, title)
   if not msg then return end
@@ -24,19 +24,19 @@ function Value()
   return self.__val
 end
 
-local _SC = { menuKey = 16, menuIndex = -1, instances = {}, keySwitch = nil, listSwitch = nil, sliderSwitch = nil, lastSwitch = 0 }
+local _SC = { menuKey = 16, width = 200, menuIndex = -1, instances = {}, keySwitch = nil, listSwitch = nil, sliderSwitch = nil, lastSwitch = 0 }
 local _SCP = {x = 15, y = -5}
 
 function __Menu__Draw()
   if KeyIsDown(_SC.menuKey) or _SC.keySwitch or _SC.listSwitch or _SC.sliderSwitch or GoS.Menu.s.Value() then
     __Menu__Browse()
-    __Menu__WndMsg()
-    FillRect(_SCP.x-2,_SCP.y+18,150+4,4+20*#_SC.instances,ARGB(55, 255, 255, 255))
+    __Menu__WndTick()
+    FillRect(_SCP.x-2,_SCP.y+18,_SC.width+4,4+20*#_SC.instances,ARGB(55, 255, 255, 255))
     for _=1, #_SC.instances do
       local instance = _SC.instances[_]
-      FillRect(_SCP.x,_SCP.y+20*_,150,20,ARGB(255, 0, 0, 0))
-      DrawText(" "..instance.__name.." ",15,_SCP.x+75-GoS:GetTextArea(instance.__name,15),_SCP.y+1+20*_,0xffffffff)
-      DrawText(">",15,_SCP.x+135,_SCP.y+1+20*_,0xffffffff)
+      FillRect(_SCP.x,_SCP.y+20*_,_SC.width,20,ARGB(255, 0, 0, 0))
+      DrawText(" "..instance.__name.." ",15,_SCP.x,_SCP.y+1+20*_,0xffffffff)
+      DrawText(">",15,_SCP.x+_SC.width-15,_SCP.y+1+20*_,0xffffffff)
     end
     for _=1, #_SC.instances do
       local instance = _SC.instances[_]
@@ -72,10 +72,10 @@ function __Menu__Draw()
 end
 
 function __Menu_DrawSubMenu(instance, _, num)
-  FillRect(_SCP.x-2+155*num,_SCP.y-2+20*_,150+4,4+20,ARGB(55, 255, 255, 255))
-  FillRect(_SCP.x+155*num,_SCP.y+20*_,150,20,ARGB(255, 0, 0, 0))
-  DrawText(" "..instance.__name.." ",15,_SCP.x+num*150+75-GoS:GetTextArea(instance.__name,15),_SCP.y+1+20*_,0xffffffff)
-  DrawText(">",15,_SCP.x+135+150*num,_SCP.y+1+20*_,0xffffffff)
+  FillRect(_SCP.x-2+(_SC.width+5)*num,_SCP.y-2+20*_,_SC.width+4,4+20,ARGB(55, 255, 255, 255))
+  FillRect(_SCP.x+(_SC.width+5)*num,_SCP.y+20*_,_SC.width,20,ARGB(255, 0, 0, 0))
+  DrawText(" "..instance.__name.." ",15,_SCP.x+num*(_SC.width+5),_SCP.y+1+20*_,0xffffffff)
+  DrawText(">",15,_SCP.x+_SC.width-15+_SC.width*num,_SCP.y+1+20*_,0xffffffff)
   if #instance.__subMenus > 0 and instance.__active then
     for i=1, #instance.__subMenus do
       local sub = instance.__subMenus[i]
@@ -91,30 +91,30 @@ end
 
 function __Menu_DrawParam(param, xoff, yoff)
   if param.__head.__active then
-    FillRect(_SCP.x-2+155*xoff,_SCP.y-2+20*yoff,150+4,4+20,ARGB(55, 255, 255, 255))
-    FillRect(_SCP.x+155*xoff,_SCP.y+20*yoff,150,20,ARGB(255, 0, 0, 0))
+    FillRect(_SCP.x-2+(_SC.width+5)*xoff,_SCP.y-2+20*yoff,_SC.width+4,4+20,ARGB(55, 255, 255, 255))
+    FillRect(_SCP.x+(_SC.width+5)*xoff,_SCP.y+20*yoff,_SC.width,20,ARGB(255, 0, 0, 0))
     if param.__type == "boolean" then
-      DrawText(" "..param.__name.." ",15,_SCP.x+155*xoff+75-GoS:GetTextArea(param.__name,15),_SCP.y+1+20*yoff,0xffffffff)
-      FillRect(_SCP.x+130+155*xoff,_SCP.y+20*yoff+2,15,15, param.__val and GoS.Green or GoS.Red)
+      DrawText(" "..param.__name.." ",15,_SCP.x+(_SC.width+5)*xoff,_SCP.y+1+20*yoff,0xffffffff)
+      FillRect(_SCP.x+_SC.width-20+(_SC.width+5)*xoff,_SCP.y+20*yoff+2,15,15, param.__val and GoS.Green or GoS.Red)
     elseif param.__type == "key" then
-      DrawText(" "..param.__name.." ",15,_SCP.x+155*xoff+75-GoS:GetTextArea(param.__name,15),_SCP.y+1+20*yoff,0xffffffff)
-      FillRect(_SCP.x+130+155*xoff,_SCP.y+20*yoff+2,15,15, param.Value() and ARGB(150,0,255,0) or ARGB(150,255,0,0))
-      DrawText("["..param.__key.."]",15,_SCP.x+125+155*xoff,_SCP.y+20*yoff+1,0xffffffff)
+      DrawText(" "..param.__name.." ",15,_SCP.x+(_SC.width+5)*xoff,_SCP.y+1+20*yoff,0xffffffff)
+      FillRect(_SCP.x+_SC.width-20+(_SC.width+5)*xoff,_SCP.y+20*yoff+2,15,15, param.Value() and ARGB(150,0,255,0) or ARGB(150,255,0,0))
+      DrawText("["..(param.__key == 32 and "  " or string.char(param.__key)).."]",15,_SCP.x+_SC.width-25+(_SC.width+5)*xoff,_SCP.y+20*yoff+1,0xffffffff)
     elseif param.__type == "slider" then
-      DrawText(" "..param.__name.." ",15,_SCP.x+155*xoff+75-GoS:GetTextArea(param.__name,15),_SCP.y+1+20*yoff,0xffffffff)
-      DrawText("<|>",15,_SCP.x+125+155*xoff,_SCP.y+1+20*yoff,0xffffffff)
+      DrawText(" "..param.__name.." ",15,_SCP.x+(_SC.width+5)*xoff,_SCP.y+1+20*yoff,0xffffffff)
+      DrawText("<|>",15,_SCP.x+_SC.width-25+(_SC.width+5)*xoff,_SCP.y+1+20*yoff,0xffffffff)
     elseif param.__type == "list" then
-      DrawText(" "..param.__name.." ",15,_SCP.x+155*xoff+75-GoS:GetTextArea(param.__name,15),_SCP.y+1+20*yoff,0xffffffff)
-      DrawText("v",15,_SCP.x+140+155*xoff,_SCP.y+1+20*yoff,0xffffffff)
+      DrawText(" "..param.__name.." ",15,_SCP.x+(_SC.width+5)*xoff,_SCP.y+1+20*yoff,0xffffffff)
+      DrawText("v",15,_SCP.x+_SC.width-10+(_SC.width+5)*xoff,_SCP.y+1+20*yoff,0xffffffff)
     elseif param.__type == "info" then
-      DrawText(" "..param.__name.." ",15,_SCP.x+155*xoff+75-GoS:GetTextArea(param.__name,15),_SCP.y+1+20*yoff,0xffffffff)
+      DrawText(" "..param.__name.." ",15,_SCP.x+(_SC.width+5)*xoff,_SCP.y+1+20*yoff,0xffffffff)
     end
   end
 end
 
 function __Menu__DrawListSwitch(param, x, y)
-  FillRect(x-2, y-2, 154, 20*#param.__list+4, ARGB(55, 255, 255, 255))
-  FillRect(x, y, 150, 20*#param.__list,ARGB(255, 0, 0, 0))
+  FillRect(x-2, y-2, _SC.width+4, 20*#param.__list+4, ARGB(55, 255, 255, 255))
+  FillRect(x, y, _SC.width, 20*#param.__list,ARGB(255, 0, 0, 0))
   for i = 1, #param.__list do
     local entry = param.__list[i]
     if param.__val == i then
@@ -125,14 +125,14 @@ function __Menu__DrawListSwitch(param, x, y)
 end
 
 function __Menu__DrawSliderSwitch(param, x, y)
-  FillRect(x-2, y-2, 154, 44, ARGB(55, 255, 255, 255))
-  FillRect(x, y, 150, 40,ARGB(255, 0, 0, 0))
+  FillRect(x-2, y-2, _SC.width+4, 44, ARGB(55, 255, 255, 255))
+  FillRect(x, y, _SC.width, 40,ARGB(255, 0, 0, 0))
   DrawText("Value: "..math.ceil(math.floor(param.__val*param.__inc*1000)/param.__inc)/1000,15,x+5,y,0xffffffff)
-  DrawText("[X]",15,x+130,y,0xffffffff)
+  DrawText("[X]",15,x+_SC.width-20,y,0xffffffff)
   DrawText(param.__min,15,x+5,y+20,0xffffffff)
-  DrawText(param.__max,15,x+125,y+20,0xffffffff)
-  FillRect(x+15,y+20, 105, 18, ARGB(55, 255, 255, 255))
-  local off = 105 / math.abs(param.__min-param.__max) / param.__inc
+  DrawText(param.__max,15,x+_SC.width-25,y+20,0xffffffff)
+  FillRect(x+15,y+20, _SC.width-45, 18, ARGB(55, 255, 255, 255))
+  local off = (_SC.width-45) / math.abs(param.__min-param.__max) / param.__inc
   local v = x+15+(param.__val-param.__min)*off
   if param.__max == 0 then
     v = x+15+param.__val*off+math.abs(param.__min-param.__max)*off
@@ -149,9 +149,9 @@ function __Menu__Browse()
     local instance = _SC.instances[_]
     local x = _SCP.x
     local y = _SCP.y+20*_
-    local width = 150
+    local width = _SC.width
     local heigth = 20
-    if mmPos.x >= x and mmPos.x <= x+width and mmPos.y >= y and mmPos.y <= y+heigth then
+    if mmPos.x >= x and mmPos.x <= x+_SC.width and mmPos.y >= y and mmPos.y <= y+heigth then
       __Menu__ResetActive()
       _SC.instances[_].__active = true
       return;
@@ -167,9 +167,9 @@ end
 
 function __Menu__BrowseSubMenu(instance, _, num)
   local mmPos = GetCursorPos()
-  local x = _SCP.x+155*num
+  local x = _SCP.x+(_SC.width+5)*num
   local y = _SCP.y+20*_
-  local width = 150
+  local width = _SC.width
   local heigth = 20
   if mmPos.x >= x and mmPos.x <= x+width and mmPos.y >= y and mmPos.y <= y+heigth then
     if instance.__head then
@@ -208,80 +208,82 @@ function __Menu__ResetSubMenu(sub)
   end
 end
 
-function __Menu__WndMsg()
-  if KeyIsDown(1) and _SC.lastSwitch < GetTickCount() then
-    local mmPos = GetCursorPos()
-    if _SC.listSwitch then
-      local x = _SC.listSwitch.x
-      local y = _SC.listSwitch.y
-      if mmPos.x >= x and mmPos.x <= x+150 then
-        for i=1, #_SC.listSwitch.__list do
-          if mmPos.y >= y-20+i*20 and mmPos.y <= y+i*20 then
-            _SC.listSwitch.__val = i
-            GoS:DelayAction(function() _SC.listSwitch = nil end, 125)
-            _SC.lastSwitch = GetTickCount() + 125
-          end
+function __Menu__WndTick()
+  local mmPos = GetCursorPos()
+  if not KeyIsDown(1) then return end
+  if _SC.listSwitch then
+    local x = _SC.listSwitch.x
+    local y = _SC.listSwitch.y
+    if mmPos.x >= x and mmPos.x <= x+_SC.width then
+      for i=1, #_SC.listSwitch.__list do
+        if mmPos.y >= y-20+i*20 and mmPos.y <= y+i*20 then
+          _SC.listSwitch.__val = i
+          GoS:DelayAction(function() _SC.listSwitch = nil end, 125)
+          _SC.lastSwitch = GetTickCount() + 125
         end
       end
-    elseif _SC.sliderSwitch then
-      local x = _SC.sliderSwitch.x
-      local y = _SC.sliderSwitch.y
-      if mmPos.x >= x and mmPos.x <= x+150 and mmPos.y >= y+20 and mmPos.y <= y+40 then
-        if mmPos.x <= x+15 then
-          _SC.sliderSwitch.__val = _SC.sliderSwitch.__min
-        elseif mmPos.x >= x+120 then
-          _SC.sliderSwitch.__val = _SC.sliderSwitch.__max
-        else
-          local off = 105 / math.abs(_SC.sliderSwitch.__min-_SC.sliderSwitch.__max) / _SC.sliderSwitch.__inc
-          local v = (mmPos.x - x - 15) / off
-          _SC.sliderSwitch.__val = math.floor(v+_SC.sliderSwitch.__min) * _SC.sliderSwitch.__inc
-        end
-      end
-      if mmPos.x >= x+130 and mmPos.x <= x+150 and mmPos.y >= y-5 and mmPos.y <= y+15 then
-        _SC.sliderSwitch = nil
-        _SC.lastSwitch = GetTickCount() + 125
-      end
-    else
-      if mmPos.x >= 15 and mmPos.x <= 15+150 and mmPos.y >= 15 and mmPos.y <= 15+20*#_SC.instances then
-        return;
-      end
-      for _=1, #_SC.instances do
-        if _SC.instances[_].__active then
-          local yoff = #_SC.instances[_].__subMenus
-          for i=1, yoff do
-            local sub = _SC.instances[_].__subMenus[i]
-            if sub.__active and __Menu__SubMenuWndMsg(sub, i+_-1, 1) then
-              return;
-            end
-          end
-          for i=1, #_SC.instances[_].__params do
-            local x = _SCP.x+155
-            local y = _SCP.y+20*(yoff+i+_-1)
-            local width = 150
-            local heigth = 20
-            if mmPos.x >= x and mmPos.x <= x+width and mmPos.y >= y and mmPos.y <= y+heigth then
-              __Menu__SwitchParam(_SC.instances[_].__params[i], x, y)
-              return;
-            end
-          end
-        end
-      end
-      __Menu__ResetActive()
     end
+  elseif _SC.sliderSwitch then
+    local x = _SC.sliderSwitch.x
+    local y = _SC.sliderSwitch.y
+    if mmPos.x >= x and mmPos.x <= x+_SC.width and mmPos.y >= y+20 and mmPos.y <= y+40 then
+      if mmPos.x <= x+15 then
+        _SC.sliderSwitch.__val = _SC.sliderSwitch.__min
+      elseif mmPos.x >= x+_SC.width-30 then
+        _SC.sliderSwitch.__val = _SC.sliderSwitch.__max
+      else
+        local off = (_SC.width-45) / math.abs(_SC.sliderSwitch.__min-_SC.sliderSwitch.__max) / _SC.sliderSwitch.__inc
+        local v = (mmPos.x - x - 15) / off
+        _SC.sliderSwitch.__val = math.floor(v+_SC.sliderSwitch.__min) * _SC.sliderSwitch.__inc
+      end
+    end
+    if mmPos.x >= x+_SC.width-20 and mmPos.x <= x+_SC.width and mmPos.y >= y-5 and mmPos.y <= y+15 then
+      _SC.sliderSwitch = nil
+      _SC.lastSwitch = GetTickCount() + 125
+    end
+  end
+end
+
+function __Menu__WndMsg()
+  local mmPos = GetCursorPos()
+  if not _SC.listSwitch and not _SC.sliderSwitch then
+    if mmPos.x >= 15 and mmPos.x <= 15+_SC.width and mmPos.y >= 15 and mmPos.y <= 15+20*#_SC.instances then
+      return;
+    end
+    for _=1, #_SC.instances do
+      if _SC.instances[_].__active then
+        local yoff = #_SC.instances[_].__subMenus
+        for i=1, yoff do
+          local sub = _SC.instances[_].__subMenus[i]
+          if sub.__active and __Menu__SubMenuWndMsg(sub, i+_-1, 1) then
+            return;
+          end
+        end
+        for i=1, #_SC.instances[_].__params do
+          local x = _SCP.x+_SC.width+5
+          local y = _SCP.y+20*(yoff+i+_-1)
+          local heigth = 20
+          if mmPos.x >= x and mmPos.x <= x+_SC.width and mmPos.y >= y and mmPos.y <= y+heigth then
+            __Menu__SwitchParam(_SC.instances[_].__params[i], x, y)
+            return;
+          end
+        end
+      end
+    end
+    __Menu__ResetActive()
   end
 end
 
 function __Menu__SubMenuWndMsg(instance, _, num)
   local mmPos = GetCursorPos()
   local yoff = #instance.__subMenus
-  local xpos = _SCP.x+155*num+155
+  local xpos = _SCP.x+(_SC.width+5)*num+_SC.width+5
   local ypos = _SCP.y+_*20
   for i=1, #instance.__params do
     local x = xpos
     local y = ypos+(i-1)*20
-    local width = 150
     local heigth = 20
-    if mmPos.x >= x and mmPos.x <= x+width and mmPos.y >= y and mmPos.y <= y+heigth then
+    if mmPos.x >= x and mmPos.x <= x+_SC.width and mmPos.y >= y and mmPos.y <= y+heigth then
       __Menu__SwitchParam(instance.__params[i], x, y)
       return true
     end
@@ -296,19 +298,16 @@ end
 
 function __Menu__SwitchParam(param, x, y)
   if param.__type == "boolean" then
-    if param.__lastSwitch < GetTickCount() then
-      param.__lastSwitch = GetTickCount() + 125
-      param.__val = not param.__val
-    end
+    param.__val = not param.__val
   elseif param.__type == "key" then
     _SC.keySwitch = param
   elseif param.__type == "slider" then
     _SC.sliderSwitch = param
-    _SC.sliderSwitch.x = x+155
+    _SC.sliderSwitch.x = x+_SC.width+5
     _SC.sliderSwitch.y = y
   elseif param.__type == "list" then
     _SC.listSwitch = param
-    _SC.listSwitch.x = x+155
+    _SC.listSwitch.x = x+_SC.width+5
     _SC.listSwitch.y = y
   end
 end
@@ -385,10 +384,17 @@ end
 
 function goslib:SetupMenu()
   self.Menu = Menu("GoS-Library", "gos")
-  self.Menu:Boolean("s", "Show always", true)
+  self.Menu:Boolean("s", "Show always", false)
+  self.Menu:List("w", "Menu width", 2, {150, 200, 250, 300})
   self.Menu:List("l", "Language", 1, {"English", })
   OnLoop(function()
     __Menu__Draw()
+    _SC.width = self.Menu.w:Value() * 50 + 100
+  end)
+  OnWndMsg(function(m,p)
+    if (KeyIsDown(_SC.menuKey) or _SC.keySwitch or _SC.listSwitch or _SC.sliderSwitch or GoS.Menu.s.Value()) and m == WM_LBUTTONDOWN then
+      __Menu__WndMsg()
+    end
   end)
 end
 
@@ -538,7 +544,7 @@ function goslib:MakeObjectManager()
     end
   end
   OnCreateObj(function(object)
-    table.insert(objectManager.unsorted, object)
+    --table.insert(objectManager.unsorted, object)
   end)
   OnDeleteObj(function(object)
     objectManager.objects[GetNetworkID(object)] = nil
@@ -607,16 +613,16 @@ function goslib:AddGapcloseEvent(spell, range, targeted)
     self.GapcloseTargeted = targeted
     self.GapcloseRange = range
     self.str = {[_Q] = "Q", [_W] = "W", [_E] = "E", [_R] = "R"}
-    --GapcloseConfig = scriptConfig("gapclose", "Anti-Gapclose ("..str[spell]..")")
-    DelayAction(function()
-        for _,k in pairs(GetEnemyHeroes()) do
+    GapcloseConfig = Menu("Anti-Gapclose ("..self.str[spell]..")", "gapclose")
+    self:DelayAction(function()
+        for _,k in pairs(self:GetEnemyHeroes()) do
           if self.gapcloserTable[GetObjectName(k)] then
-            --GapcloseConfig.addParam(GetObjectName(k).."agap", "On "..GetObjectName(k).." "..(type(gapcloserTable[GetObjectName(k)]) == 'number' and str[gapcloserTable[GetObjectName(k)]] or (GetObjectName(k) == "LeeSin" and "Q" or "E")), SCRIPT_PARAM_ONOFF, true)
+            GapcloseConfig:Boolean(GetObjectName(k).."agap", "On "..GetObjectName(k).." "..(type(gapcloserTable[GetObjectName(k)]) == 'number' and self.str[gapcloserTable[GetObjectName(k)]] or (GetObjectName(k) == "LeeSin" and "Q" or "E")), true)
           end
         end
     end, 1)
     OnProcessSpell(function(unit, spell)
-      if not unit or not self.gapcloserTable[GetObjectName(unit)] or not GapcloseConfig[GetObjectName(unit).."agap"] then return end
+      if not unit or not self.gapcloserTable[GetObjectName(unit)] or not GapcloseConfig[GetObjectName(unit).."agap"]:Value() then return end
       local unitName = GetObjectName(unit)
       if spell.name == (type(self.gapcloserTable[unitName]) == 'number' and GetCastName(unit, self.gapcloserTable[unitName]) or self.gapcloserTable[unitName]) and (spell.target == myHero or self:GetDistanceSqr(spell.endPos) < self.GapcloseRange*self.GapcloseRange*4) then
         self.GapcloseTime = GetTickCount() + 2000
