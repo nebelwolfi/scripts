@@ -520,6 +520,7 @@ function goslib:MakeObjectManager()
   objectManager.objectLCallbackId = 1
   objectManager.objectACallbackId = 1
   objectManager.objectSCallbackId = 2
+  objectManager.tick = 0
   local done = false
   self.objectLoopEvents[objectManager.objectLCallbackId] = function(object)
     done = true
@@ -536,6 +537,8 @@ function goslib:MakeObjectManager()
     end
   end
   self.afterObjectLoopEvents[objectManager.objectSCallbackId] = function()
+    if objectManager.tick < GetTickCount() then return end
+    objectManager.tick = GetTickCount() + 125
     for _, object in pairs(objectManager.unsorted) do
       local nID = GetNetworkID(object)
       if nID and nID > 0 then
@@ -544,7 +547,7 @@ function goslib:MakeObjectManager()
     end
   end
   OnCreateObj(function(object)
-    --table.insert(objectManager.unsorted, object)
+    table.insert(objectManager.unsorted, object)
   end)
   OnDeleteObj(function(object)
     objectManager.objects[GetNetworkID(object)] = nil
@@ -565,6 +568,7 @@ function goslib:MakeMinionManager()
   minionManager.maxObjects = 0
   minionManager.objects = {}
   minionManager.unsorted = {}
+  minionManager.tick = 0
   for i, object in pairs(objectManager.objects) do
     if GetObjectType(object) == Obj_AI_Minion and IsObjectAlive(object) then
       local objName = GetObjectName(object)
@@ -583,6 +587,8 @@ function goslib:MakeMinionManager()
     end
   end
   OnLoop(function()
+    if minionManager.tick < GetTickCount() then return end
+    minionManager.tick = GetTickCount() + 125
     for i, object in pairs(minionManager.unsorted) do
       local object = minionManager.unsorted[i]
       local objName = GetObjectName(object)
