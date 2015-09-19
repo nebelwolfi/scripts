@@ -1,4 +1,4 @@
-local IOWversion = 1.91
+local IOWversion = 1.92
 local myHeroName = GetObjectName(GetMyHero())
 
 class "InspiredsOrbWalker"
@@ -76,7 +76,7 @@ end
 
 function InspiredsOrbWalker:GetTarget()
   if self.Config.h.Combo:Value() then
-    return GoS:GetTarget(self.myRange, DAMAGE_PHYSICAL)
+    return GoS:ValidTarget(self.Target, self.myRange) and self.Target or GoS:GetTarget(self.myRange, DAMAGE_PHYSICAL)
   elseif self.Config.h.Harass:Value() then
     for i=1, minionManager.maxObjects do
       local minion = minionManager.objects[i]
@@ -87,7 +87,7 @@ function InspiredsOrbWalker:GetTarget()
         end
       end
     end
-    return GoS:GetTarget(self.myRange, DAMAGE_PHYSICAL)
+    return GoS:ValidTarget(self.Target, self.myRange) and self.Target or GoS:GetTarget(self.myRange, DAMAGE_PHYSICAL)
   elseif self.Config.h.LaneClear:Value() then
     local highestMinion, highestHealth = nil, 0
     for i=1, minionManager.maxObjects do
@@ -205,7 +205,6 @@ function InspiredsOrbWalker:TimeToMove()
 end
 
 function InspiredsOrbWalker:TimeToAttack()
-  --print(self:GetFullAttackSpeed())
   return self.lastAttack + 1000/self:GetFullAttackSpeed() < GetTickCount() - GetLatency()
 end
 
