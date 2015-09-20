@@ -98,8 +98,8 @@ function __Menu_DrawParam(param, xoff, yoff)
       FillRect(_SCP.x+_SC.width-20+(_SC.width+5)*xoff,_SCP.y+20*yoff+2,15,15, param.__val and GoS.Green or GoS.Red)
     elseif param.__type == "key" then
       DrawText(" "..param.__name.." ",15,_SCP.x+(_SC.width+5)*xoff,_SCP.y+1+20*yoff,0xffffffff)
-      FillRect(_SCP.x+_SC.width-20+(_SC.width+5)*xoff,_SCP.y+20*yoff+2,15,15, param.Value() and ARGB(150,0,255,0) or ARGB(150,255,0,0))
-      DrawText("["..(param.__key == 32 and "  " or string.char(param.__key)).."]",15,_SCP.x+_SC.width-25+(_SC.width+5)*xoff,_SCP.y+20*yoff+1,0xffffffff)
+      FillRect(_SCP.x+_SC.width-21+(_SC.width+5)*xoff,_SCP.y+20*yoff+2,17,15, param.Value() and ARGB(150,0,255,0) or ARGB(150,255,0,0))
+      DrawText("["..(param.__key == 32 and "  " or string.char(param.__key)).."]",15,_SCP.x+_SC.width-22+(_SC.width+5)*xoff,_SCP.y+20*yoff+1,0xffffffff)
     elseif param.__type == "slider" then
       DrawText(" "..param.__name.." ",15,_SCP.x+(_SC.width+5)*xoff,_SCP.y+1+20*yoff,0xffffffff)
       DrawText("<|>",15,_SCP.x+_SC.width-25+(_SC.width+5)*xoff,_SCP.y+1+20*yoff,0xffffffff)
@@ -281,7 +281,7 @@ function __Menu__SubMenuWndMsg(instance, _, num)
   local ypos = _SCP.y+_*20
   for i=1, #instance.__params do
     local x = xpos
-    local y = ypos+(i-1)*20
+    local y = ypos+(yoff+i-1)*20
     local heigth = 20
     if mmPos.x >= x and mmPos.x <= x+_SC.width and mmPos.y >= y and mmPos.y <= y+heigth then
       __Menu__SwitchParam(instance.__params[i], x, y)
