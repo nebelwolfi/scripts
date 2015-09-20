@@ -238,7 +238,6 @@ function __Menu__WndTick()
       end
     end
     if mmPos.x >= x+_SC.width-20 and mmPos.x <= x+_SC.width and mmPos.y >= y-5 and mmPos.y <= y+15 then
-      _SC.sliderSwitch = nil
       GoS:DelayAction(function() _SC.sliderSwitch = nil end, 125)
       _SC.lastSwitch = GetTickCount() + 125
     end
