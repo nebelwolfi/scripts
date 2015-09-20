@@ -28,7 +28,7 @@ function Set(list)
 end
 
 function msg(x)
-  print(x, "InspiredsOrbWalker")
+  Msg(x, "InspiredsOrbWalker")
 end
 
 function InspiredsOrbWalker:MakeMenu()
@@ -228,7 +228,7 @@ function InspiredsOrbWalker:ProcessSpell(unit, spell)
       self.lastAttack = GetTickCount() - GetLatency()/2
     end
     if self.resetAttacks[spell.name:lower()] then
-      self.lastAttack = GetTickCount() + spell.windUpTime * 1000 + GetLatency() - 1000/self:GetFullAttackSpeed()
+      self.lastAttack = GetTickCount() + spell.windUpTime * 1000 + 70 + GetLatency() - 1000/self:GetFullAttackSpeed()
     end
   end
 end
