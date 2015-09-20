@@ -1,6 +1,22 @@
 _G.InspiredVersion = 25
 
-function print(msg, title)
+function print(...)
+    local t, len = {}, select("#",...)
+    for i=1, len do
+        local v = select(i,...)
+        local _type = type(v)
+        if _type == "string" then t[i] = v
+        elseif _type == "number" then t[i] = tostring(v)
+        elseif _type == "table" then t[i] = table.serialize(v)
+        elseif _type == "boolean" then t[i] = v and "true" or "false"
+        elseif _type == "userdata" then t[i] = ctostring(v)
+        else t[i] = _type
+        end
+    end
+    if len>0 then PrintChat(table.concat(t)) end
+end
+
+function Msg(msg, title)
   if not msg then return end
   PrintChat("<font color=\"#00FFFF\">["..(title or "GoS-Library").."]:</font> <font color=\"#FFFFFF\">"..tostring(msg).."</font>")
 end
@@ -1248,4 +1264,4 @@ end
 
 -- }
 
-print("Loaded.")
+Msg("Loaded.")
