@@ -203,11 +203,11 @@ function InspiredsOrbWalker:Orb(target)
 end
 
 function InspiredsOrbWalker:TimeToMove()
-  return (self.lastAttack + GetWindUp(myHero)*1000 + self.Config.cad:Value() < GetTickCount() + GetLatency() + 70) or (myHeroName == "Kalista")
+  return (self.lastAttack + GetWindUp(myHero)*1000 + self.Config.cad:Value() < GetTickCount() - GetLatency()/2) or (myHeroName == "Kalista")
 end
 
 function InspiredsOrbWalker:TimeToAttack()
-  return self.lastAttack + 1000/self:GetFullAttackSpeed() < GetTickCount() + GetLatency() + 70
+  return self.lastAttack + 1000/self:GetFullAttackSpeed() < GetTickCount() + GetLatency()/2 + 70
 end
 
 function InspiredsOrbWalker:DoAttack()
@@ -225,7 +225,7 @@ end
 function InspiredsOrbWalker:ProcessSpell(unit, spell)
   if unit and unit == myHero and spell and spell.name then
     if spell.name:lower():find("attack") or self.altAttacks[spell.name:lower()] then
-      self.lastAttack = GetTickCount()
+      self.lastAttack = GetTickCount() - GetLatency()/2
     end
     if self.resetAttacks[spell.name:lower()] then
       self.lastAttack = GetTickCount() + spell.windUpTime * 1000 + GetLatency() - 1000/self:GetFullAttackSpeed()
