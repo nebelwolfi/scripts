@@ -1,4 +1,4 @@
-local IOWversion = 1.92
+local IOWversion = 1.93
 local myHeroName = GetObjectName(GetMyHero())
 
 class "InspiredsOrbWalker"
@@ -203,11 +203,11 @@ function InspiredsOrbWalker:Orb(target)
 end
 
 function InspiredsOrbWalker:TimeToMove()
-  return (self.lastAttack + GetWindUp(myHero)*1000 + self.Config.cad:Value() < GetTickCount() - GetLatency()) or (myHeroName == "Kalista")
+  return (self.lastAttack + GetWindUp(myHero)*1000 + self.Config.cad:Value() < GetTickCount() + GetLatency() + 70) or (myHeroName == "Kalista")
 end
 
 function InspiredsOrbWalker:TimeToAttack()
-  return self.lastAttack + 1000/self:GetFullAttackSpeed() < GetTickCount() - GetLatency()
+  return self.lastAttack + 1000/self:GetFullAttackSpeed() < GetTickCount() + GetLatency() + 70
 end
 
 function InspiredsOrbWalker:DoAttack()
