@@ -976,7 +976,7 @@ function goslib:AlliesAround(pos, range)
   local c = 0
   if pos == nil then return 0 end
   for k,v in pairs(self:GetAllyHeroes()) do 
-    if v and self:ValidTarget(v) and self:GetDistanceSqr(pos,GetOrigin(v)) < range*range then
+    if v and GetOrigin(v) ~= nil and not IsDead(v) and IsVisible(v) and self:GetDistanceSqr(pos,GetOrigin(v)) < range*range then
       c = c + 1
     end
   end
