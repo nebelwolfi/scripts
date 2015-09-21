@@ -207,7 +207,7 @@ function InspiredsOrbWalker:TimeToMove()
 end
 
 function InspiredsOrbWalker:TimeToAttack()
-  return self.lastAttack + 1000/self:GetFullAttackSpeed() < GetTickCount() + GetLatency() + 70
+  return self.lastAttack + 1000/self:GetFullAttackSpeed() < GetTickCount() + GetLatency()/2 + 70
 end
 
 function InspiredsOrbWalker:DoAttack()
