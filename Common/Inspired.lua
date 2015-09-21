@@ -1,5 +1,45 @@
 _G.InspiredVersion = 25
 
+function ctype(t)
+    local _type = type(t)
+    if _type == "userdata" then
+        local metatable = getmetatable(t)
+        if not metatable or not metatable.__index then
+            t, _type = "userdata", "string"
+        end
+    end
+    if _type == "userdata" or _type == "table" then
+        local _getType = t.type or t.Type or t.__type
+        _type = type(_getType)=="function" and _getType(t) or type(_getType)=="string" and _getType or _type
+    end
+    return _type
+end
+
+function ctostring(t)
+    local _type = type(t)
+    if _type == "userdata" then
+        local metatable = getmetatable(t)
+        if not metatable or not metatable.__index then
+            t, _type = "userdata", "string"
+        end
+    end
+    if _type == "userdata" or _type == "table" then
+        local _tostring = t.tostring or t.toString or t.__tostring
+        if type(_tostring)=="function" then
+            local tstring = _tostring(t)
+            t = _tostring(t)
+        else
+            local _ctype = ctype(t) or "Unknown"
+            if _type == "table" then
+                t = tostring(t):gsub(_type,_ctype) or tostring(t)
+            else
+                t = _ctype
+            end
+        end
+    end
+    return tostring(t)
+end
+
 function print(...)
     local t, len = {}, select("#",...)
     for i=1, len do
