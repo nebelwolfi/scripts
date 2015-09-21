@@ -1,4 +1,12 @@
-_G.InspiredVersion = 25
+_G.InspiredVersion = 26
+
+function Set(list)
+  local set = {}
+  for _, l in ipairs(list) do 
+    set[l] = true 
+  end
+  return set
+end
 
 function ctype(t)
     local _type = type(t)
@@ -468,10 +476,14 @@ end
 
 function goslib:SetupVars()
   _G.myHero = GetMyHero()
-  _G.DAMAGE_MAGIC, _G.DAMAGE_PHYSICAL = 1, 2
+  _G.myHeroName = GetObjectName(myHero)
+  _G.DAMAGE_MAGIC, _G.DAMAGE_PHYSICAL, _G.DAMAGE_MIXED = 1, 2, 3
   _G.MINION_ALLY, _G.MINION_ENEMY, _G.MINION_JUNGLE = GetTeam(myHero), 300-GetTeam(myHero), 300
   local summonerNameOne = GetCastName(myHero,SUMMONER_1)
   local summonerNameTwo = GetCastName(myHero,SUMMONER_2)
+  mixed = Set {"Akali","Corki","Ekko","Evelynn","Ezreal","Kayle","Kennen","KogMaw","Malzahar","MissFortune","Mordekaiser","Pantheon","Poppy","Shaco","Skarner","Teemo","Tristana","TwistedFate","XinZhao","Yoric"}
+  ad = Set {"Aatrox","Corki","Darius","Draven","Ezreal","Fiora","Gangplank","Garen","Gnar","Graves","Hecarim","Irelia","JarvanIV","Jax","Jayce","Jinx","Kalista","KhaZix","KogMaw","LeeSin","Lucian","MasterYi","MissFortune","Nasus","Nocturne","Olaf","Pantheon","Quinn","RekSai","Renekton","Rengar","Riven","Shaco","Shyvana","Sion","Sivir","Talon","Tristana","Trundle","Tryndamere","Twitch","Udyr","Urgot","Varus","Vayne","Vi","Warwick","Wukong","XinZhao","Yasuo","Yoric","Zed"}
+  ap = Set {"Ahri","Akali","Alistar","Amumu","Anivia","Annie","Azir","Bard","Blitzcrank","Brand","Braum","Cassiopea","ChoGath","Diana","DrMundo","Ekko","Elise","Evelynn","Fiddlesticks","Fizz","Galio","Gragas","Heimerdinger","Janna","Karma","Karthus","Kassadin","Katarina","Kayle","Kennen","LeBlanc","Leona","Lissandra","Lulu","Lux","Malphite","Malzahar","Maokai","Mordekaiser","Morgana","Nami","Nautilus","Nidalee","Nunu","Orianna","Poppy","Rammus","Rumble","Ryze","Sejuani","Shen","Singed","Skarner","Sona","Soraka","Swain","Syndra","TahmKench","Taric","Teemo","Thresh","TwistedFate","Veigar","VelKoz","Viktor","Vladimir","Volibear","Xerath","Zac","Ziggz","Zilean","Zyra"}
   _G.Ignite = (summonerNameOne:lower():find("summonerdot") and SUMMONER_1 or (summonerNameTwo:lower():find("summonerdot") and SUMMONER_2 or nil))
   _G.Smite = (summonerNameOne:lower():find("summonersmite") and SUMMONER_1 or (summonerNameTwo:lower():find("summonersmite") and SUMMONER_2 or nil))
   _G.Exhaust = (summonerNameOne:lower():find("summonerexhaust") and SUMMONER_1 or (summonerNameTwo:lower():find("summonerexhaust") and SUMMONER_2 or nil))
@@ -867,10 +879,11 @@ function goslib:CalcDamage(source, target, addmg, apdmg)
 end
 
 function goslib:GetTarget(range, damageType)
-    damageType = damageType or 2
+    damageType = damageType or ad[myHeroName] and 2 or ap[myHeroName] and 1 or mixed[myHeroName] and 3 or 0
+    if damageType == 0 then print("Champion "..myHeroName.." not supported by the target selector. Please inform inspired.") end
     local target, steps = nil, 10000
     for _, k in pairs(self:GetEnemyHeroes()) do
-        local step = GetCurrentHP(k) / self:CalcDamage(GetMyHero(), k, DAMAGE_PHYSICAL == damageType and 100 or 0, DAMAGE_MAGIC == damageType and 100 or 0)
+        local step = GetCurrentHP(k) / self:CalcDamage(GetMyHero(), k, DAMAGE_MAGIC ~= damageType and 25 or 0, DAMAGE_PHYSICAL ~= damageType and 25 or 0)
         if k and self:ValidTarget(k, range) and step < steps then
             target = k
             steps = step
