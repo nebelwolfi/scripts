@@ -765,7 +765,7 @@ function goslib:AddGapcloseEvent(spell, range, targeted)
     self:DelayAction(function()
         for _,k in pairs(self:GetEnemyHeroes()) do
           if self.gapcloserTable[GetObjectName(k)] then
-            GapcloseConfig:Boolean(GetObjectName(k).."agap", "On "..GetObjectName(k).." "..(type(gapcloserTable[GetObjectName(k)]) == 'number' and self.str[gapcloserTable[GetObjectName(k)]] or (GetObjectName(k) == "LeeSin" and "Q" or "E")), true)
+            GapcloseConfig:Boolean(GetObjectName(k).."agap", "On "..GetObjectName(k).." "..(type(self.gapcloserTable[GetObjectName(k)]) == 'number' and self.str[self.gapcloserTable[GetObjectName(k)]] or (GetObjectName(k) == "LeeSin" and "Q" or "E")), true)
           end
         end
     end, 1)
