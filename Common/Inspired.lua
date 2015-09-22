@@ -770,7 +770,7 @@ function goslib:AddGapcloseEvent(spell, range, targeted)
         end
     end, 1)
     OnProcessSpell(function(unit, spell)
-      if not unit or not self.gapcloserTable[GetObjectName(unit)] or not GapcloseConfig[GetObjectName(unit).."agap"]:Value() then return end
+      if not unit or true or not self.gapcloserTable[GetObjectName(unit)] or not GapcloseConfig[GetObjectName(unit).."agap"] or not GapcloseConfig[GetObjectName(unit).."agap"]:Value() then return end
       local unitName = GetObjectName(unit)
       if spell.name == (type(self.gapcloserTable[unitName]) == 'number' and GetCastName(unit, self.gapcloserTable[unitName]) or self.gapcloserTable[unitName]) and (spell.target == myHero or self:GetDistanceSqr(spell.endPos) < self.GapcloseRange*self.GapcloseRange*4) then
         self.GapcloseTime = GetTickCount() + 2000
