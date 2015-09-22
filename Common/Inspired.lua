@@ -1,4 +1,4 @@
-_G.InspiredVersion = 26
+_G.InspiredVersion = 27
 
 function Set(list)
   local set = {}
@@ -74,11 +74,10 @@ function table.contains(t, what, member) --member is optional
 end
 
 function table.serialize(t, tab, functions)
-  assert(type(t) == "table", "table.serialize: Wrong Argument, table expected")
   local s, len = {"{\n"}, 1
   for i, v in pairs(t) do
     local iType, vType = type(i), type(v)
-    if vType~="userdata" and (functions or vType~="function") then
+    if vType~="userdata" and vType~="function" then
       if tab then 
         s[len+1] = tab 
         len = len + 1
@@ -93,14 +92,9 @@ function table.serialize(t, tab, functions)
       if vType == "number" then 
         s[len+6], s[len+7], len = v, ",\n", len + 7
       elseif vType == "string" then 
-        s[len+6], s[len+7], s[len+8], len = '"', v:unescape(), '",\n', len + 8
-      elseif vType == "table" then 
-        s[len+6], s[len+7], len = table.serialize(v, (tab or "") .. "\t", functions), ",\n", len + 7
+        s[len+6], s[len+7], s[len+8], len = '"', v, '",\n', len + 8
       elseif vType == "boolean" then 
         s[len+6], s[len+7], len = tostring(v), ",\n", len + 7
-      elseif vType == "function" and functions then
-        local dump = string.dump(v)
-        s[len+6], s[len+7], s[len+8], len = "load(Base64Decode(\"", Base64Encode(dump, #dump), "\")),\n", len + 8
       end
     end
   end
@@ -120,6 +114,83 @@ function table.merge(base, t, deepMerge)
     end
   end
   return base
+end
+
+--from http://lua-users.org/wiki/SplitJoin
+function string.split(str, delim, maxNb)
+    -- Eliminate bad cases...
+    if not delim or delim == "" or string.find(str, delim) == nil then
+        return { str }
+    end
+    maxNb = (maxNb and maxNb >= 1) and maxNb or 0
+    local result = {}
+    local pat = "(.-)" .. delim .. "()"
+    local nb = 0
+    local lastPos
+    for part, pos in string.gmatch(str, pat) do
+        nb = nb + 1
+        if nb == maxNb then
+            result[nb] = lastPos and string.sub(str, lastPos, #str) or str
+            break
+        end
+        result[nb] = part
+        lastPos = pos
+    end
+    -- Handle the last field
+    if nb ~= maxNb then
+        result[nb + 1] = string.sub(str, lastPos)
+    end
+    return result
+end
+
+function string.join(arg, del)
+    return table.concat(arg, del)
+end
+
+function string.trim(s)
+    return s:match'^%s*(.*%S)' or ''
+end
+
+function string.unescape(s)
+    return s:gsub(".",{
+        ["\a"] = [[\a]],
+        ["\b"] = [[\b]],
+        ["\f"] = [[\f]],
+        ["\n"] = [[\n]],
+        ["\r"] = [[\r]],
+        ["\t"] = [[\t]],
+        ["\v"] = [[\v]],
+        ["\\"] = [[\\]],
+        ['"'] = [[\"]],
+        ["'"] = [[\']],
+        ["["] = "\\[",
+        ["]"] = "\\]",
+      })
+end
+
+function math.isNaN(num)
+    return num ~= num
+end
+
+-- Round half away from zero
+function math.round(num, idp)
+    assert(type(num) == "number", "math.round: wrong argument types (<number> expected for num)")
+    assert(type(idp) == "number" or idp == nil, "math.round: wrong argument types (<integer> expected for idp)")
+    local mult = 10 ^ (idp or 0)
+    if num >= 0 then return math.floor(num * mult + 0.5) / mult
+    else return math.ceil(num * mult - 0.5) / mult
+    end
+end
+
+function math.close(a, b, eps)
+    assert(type(a) == "number" and type(b) == "number", "math.close: wrong argument types (at least 2 <number> expected)")
+    eps = eps or 1e-9
+    return math.abs(a - b) <= eps
+end
+
+function math.limit(val, min, max)
+    assert(type(val) == "number" and type(min) == "number" and type(max) == "number", "math.limit: wrong argument types (3 <number> expected)")
+    return math.min(max, math.max(min, val))
 end
 
 function print(...)
@@ -770,7 +841,7 @@ function goslib:AddGapcloseEvent(spell, range, targeted)
         end
     end, 1)
     OnProcessSpell(function(unit, spell)
-      if not unit or true or not self.gapcloserTable[GetObjectName(unit)] or not GapcloseConfig[GetObjectName(unit).."agap"] or not GapcloseConfig[GetObjectName(unit).."agap"]:Value() then return end
+      if not unit or not self.gapcloserTable[GetObjectName(unit)] or GapcloseConfig[GetObjectName(unit).."agap"] == nil or not GapcloseConfig[GetObjectName(unit).."agap"]:Value() then return end
       local unitName = GetObjectName(unit)
       if spell.name == (type(self.gapcloserTable[unitName]) == 'number' and GetCastName(unit, self.gapcloserTable[unitName]) or self.gapcloserTable[unitName]) and (spell.target == myHero or self:GetDistanceSqr(spell.endPos) < self.GapcloseRange*self.GapcloseRange*4) then
         self.GapcloseTime = GetTickCount() + 2000
