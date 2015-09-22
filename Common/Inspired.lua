@@ -48,6 +48,80 @@ function ctostring(t)
     return tostring(t)
 end
 
+function table.clear(t)
+  for i, v in pairs(t) do
+    t[i] = nil
+  end
+end
+
+function table.copy(from, deepCopy)
+  if type(from) == "table" then
+    local to = {}
+    for k, v in pairs(from) do
+      if deepCopy and type(v) == "table" then to[k] = table.copy(v)
+      else to[k] = v
+      end
+    end
+    return to
+  end
+end
+
+function table.contains(t, what, member) --member is optional
+    assert(type(t) == "table", "table.contains: wrong argument types (<table> expected for t)")
+    for i, v in pairs(t) do
+        if member and v[member] == what or v == what then return i, v end
+    end
+end
+
+function table.serialize(t, tab, functions)
+  assert(type(t) == "table", "table.serialize: Wrong Argument, table expected")
+  local s, len = {"{\n"}, 1
+  for i, v in pairs(t) do
+    local iType, vType = type(i), type(v)
+    if vType~="userdata" and (functions or vType~="function") then
+      if tab then 
+        s[len+1] = tab 
+        len = len + 1
+      end
+      s[len+1] = "\t"
+      if iType == "number" then
+        s[len+2], s[len+3], s[len+4] = "[", i, "]"
+      elseif iType == "string" then
+        s[len+2], s[len+3], s[len+4] = '["', i, '"]'
+      end
+      s[len+5] = " = "
+      if vType == "number" then 
+        s[len+6], s[len+7], len = v, ",\n", len + 7
+      elseif vType == "string" then 
+        s[len+6], s[len+7], s[len+8], len = '"', v:unescape(), '",\n', len + 8
+      elseif vType == "table" then 
+        s[len+6], s[len+7], len = table.serialize(v, (tab or "") .. "\t", functions), ",\n", len + 7
+      elseif vType == "boolean" then 
+        s[len+6], s[len+7], len = tostring(v), ",\n", len + 7
+      elseif vType == "function" and functions then
+        local dump = string.dump(v)
+        s[len+6], s[len+7], s[len+8], len = "load(Base64Decode(\"", Base64Encode(dump, #dump), "\")),\n", len + 8
+      end
+    end
+  end
+  if tab then 
+    s[len+1] = tab
+    len = len + 1
+  end
+  s[len+1] = "}"
+  return table.concat(s)
+end
+
+function table.merge(base, t, deepMerge)
+  for i, v in pairs(t) do
+    if deepMerge and type(v) == "table" and type(base[i]) == "table" then
+      base[i] = table.merge(base[i], v)
+    else base[i] = v
+    end
+  end
+  return base
+end
+
 function print(...)
     local t, len = {}, select("#",...)
     for i=1, len do
@@ -976,7 +1050,7 @@ function goslib:AlliesAround(pos, range)
   local c = 0
   if pos == nil then return 0 end
   for k,v in pairs(self:GetAllyHeroes()) do 
-    if v and GetOrigin(v) ~= nil and not IsDead(v) and IsVisible(v) and self:GetDistanceSqr(pos,GetOrigin(v)) < range*range then
+    if v and GetOrigin(v) ~= nil and not IsDead(v) and v ~= myHero and self:GetDistanceSqr(pos,GetOrigin(v)) < range*range then
       c = c + 1
     end
   end
