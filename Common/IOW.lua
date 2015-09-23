@@ -101,7 +101,7 @@ function InspiredsOrbWalker:GetTarget()
         if not highestMinion then highestMinion = minion highestHealth = health end
         if health > 0 then
           local dmg = self:GetDmg(minion) 
-          if (health2 < 0 or health2 < dmg*1.5) and health > dmg and health ~= GetCurrentHP(minion) then
+          if (health2 < 0 or health2 < dmg*2) and health > dmg and health ~= GetCurrentHP(minion) then
             return nil
           end
           if health < dmg then
