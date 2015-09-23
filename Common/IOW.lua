@@ -1,4 +1,4 @@
-local IOWversion = 1.97
+local IOWversion = 1.98
 local myHeroName = GetObjectName(GetMyHero())
 
 class "InspiredsOrbWalker"
@@ -100,6 +100,9 @@ function InspiredsOrbWalker:GetTarget()
         local health2 = GoS:PredictHealth(minion, 2000*GoS:GetDistance(minion)/GoS:GetProjectileSpeed(myHero) + GetWindUp(myHero)*2000)
         if not highestMinion then highestMinion = minion highestHealth = health end
         if health > 0 then
+          if health2 < 0 or health2 < self:GetDmg(minion) then
+            return nil
+          end
           if health < self:GetDmg(minion) then
             return minion
           elseif self.Config.lcm:Value() == 1 and health > highestHealth then
@@ -112,9 +115,6 @@ function InspiredsOrbWalker:GetTarget()
               highestHealth = health 
               highestMinion = minion
             end
-          end
-          if health2 < 0 then
-            return nil
           end
         end
       end
