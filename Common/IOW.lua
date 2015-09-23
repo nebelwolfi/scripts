@@ -1,4 +1,4 @@
-local IOWversion = 1.96
+local IOWversion = 1.97
 local myHeroName = GetObjectName(GetMyHero())
 
 class "InspiredsOrbWalker"
@@ -39,6 +39,7 @@ function InspiredsOrbWalker:MakeMenu()
   self.Config.h:Key("LastHit", "LastHit", string.byte("X"))
   self.Config.h:Key("LaneClear", "LaneClear", string.byte("V"))
   self.Config:Slider("cad", "Cancel Adjustment", 0, -100, 100, 1)
+  self.Config:List("lcm", "Lane Clear method", myHeroName == "Vayne" and 2 or 1, {"Focus Highest", "Stick to 1"})
   self.Config:Boolean("items", "Use Items", true)
   GoS:DelayAction(function()
     if GetRange(myHero) < 450 then
@@ -101,9 +102,16 @@ function InspiredsOrbWalker:GetTarget()
         if health > 0 then
           if health < self:GetDmg(minion) then
             return minion
-          elseif health > highestHealth then
+          elseif self.Config.lcm:Value() == 1 and health > highestHealth then
             highestHealth = health 
             highestMinion = minion
+          elseif self.Config.lcm:Value() == 2 then
+            if GoS:ValidTarget(self.Target) and GetObjectType(self.Target) ~= Obj_AI_Hero then
+              return self.Target
+            elseif health > highestHealth then
+              highestHealth = health 
+              highestMinion = minion
+            end
           end
           if health2 < 0 then
             return nil
@@ -230,6 +238,11 @@ function InspiredsOrbWalker:ProcessSpell(unit, spell)
   if unit and unit == myHero and spell and spell.name then
     if spell.name:lower():find("attack") or self.altAttacks[spell.name:lower()] then
       self.lastAttack = GetTickCount() - GetLatency()/2
+      GoS:DelayAction(function() 
+        if self.Config.items:Value() and (self.Config.h.Combo:Value() or self.Config.h.Harass:Value()) then
+          GoS:CastOffensiveItems(self.Target) 
+        end
+      end, GetWindUp(myHero)*1000)
     end
     if self.resetAttacks[spell.name:lower()] then
       self.lastAttack = GetTickCount() + spell.windUpTime * 1000 + 70 + GetLatency() - 1000/self:GetFullAttackSpeed()
