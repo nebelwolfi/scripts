@@ -1,4 +1,4 @@
-_G.InspiredVersion = 27
+_G.InspiredVersion = 28
 
 function Set(list)
   local set = {}
@@ -729,7 +729,8 @@ end
 function goslib:MakeObjectManager()
   _G.objectManager = {}
   objectManager.objects = {}
-  objectManager.unsorted = {}
+  objectManager.insertunsorted = {}
+  objectManager.deleteunsorted = {}
   objectManager.objectLCallbackId = 1
   objectManager.objectACallbackId = 1
   objectManager.objectSCallbackId = 2
@@ -751,20 +752,43 @@ function goslib:MakeObjectManager()
   end
   self.afterObjectLoopEvents[objectManager.objectSCallbackId] = function()
     if objectManager.tick > GetTickCount() then return end
-    objectManager.tick = GetTickCount() + 125
-    for _, object in pairs(objectManager.unsorted) do
+    objectManager.tick = GetTickCount() + 250
+    for _, object in pairs(objectManager.insertunsorted) do
       local nID = GetNetworkID(object)
       if nID and nID > 0 then
         objectManager.objects[nID] = object
+        objectManager.insertunsorted[_] = nil
+      end
+    end
+    for _, object in pairs(objectManager.deleteunsorted) do
+      local nID = GetNetworkID(object)
+      if nID and nID > 0 then
+        objectManager.objects[nID] = nil
+        objectManager.deleteunsorted[_] = nil
+      end
+    end
+    for _, object in pairs(objectManager.objects) do
+      if not IsObjectAlive(object) then
+        objectManager.objects[GetNetworkID(object)] = nil
       end
     end
   end
   OnCreateObj(function(object)
-    table.insert(objectManager.unsorted, object)
+    table.insert(objectManager.insertunsorted, object)
   end)
   OnDeleteObj(function(object)
-    objectManager.objects[GetNetworkID(object)] = nil
+    local nID = GetNetworkID(object)
+    if nID and nID > 0 then
+      objectManager.objects[nID] = nil
+    else
+      table.insert(objectManager.deleteunsorted, object)
+    end
   end)
+  local function CleanUp()
+    collectgarbage()
+    self:DelayAction(CleanUp, 10)
+  end
+  CleanUp()
 end
 
 function goslib:FindHeroes()
