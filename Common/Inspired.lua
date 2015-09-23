@@ -1,4 +1,4 @@
-_G.InspiredVersion = 28
+_G.InspiredVersion = 29
 
 function Set(list)
   local set = {}
@@ -729,16 +729,13 @@ end
 function goslib:MakeObjectManager()
   _G.objectManager = {}
   objectManager.objects = {}
-  objectManager.insertunsorted = {}
-  objectManager.deleteunsorted = {}
   objectManager.objectLCallbackId = 1
   objectManager.objectACallbackId = 1
-  objectManager.objectSCallbackId = 2
   objectManager.tick = 0
   local done = false
   self.objectLoopEvents[objectManager.objectLCallbackId] = function(object)
     done = true
-    objectManager.objects[GetNetworkID(object)] = object
+    objectManager.objects[object] = object
   end
   self.afterObjectLoopEvents[objectManager.objectACallbackId] = function()
     if done and self.objectLoopEvents[objectManager.objectLCallbackId] then
@@ -750,39 +747,11 @@ function goslib:MakeObjectManager()
       self.afterObjectLoopEvents[objectManager.objectACallbackId] = nil
     end
   end
-  self.afterObjectLoopEvents[objectManager.objectSCallbackId] = function()
-    if objectManager.tick > GetTickCount() then return end
-    objectManager.tick = GetTickCount() + 250
-    for _, object in pairs(objectManager.insertunsorted) do
-      local nID = GetNetworkID(object)
-      if nID and nID > 0 then
-        objectManager.objects[nID] = object
-        objectManager.insertunsorted[_] = nil
-      end
-    end
-    for _, object in pairs(objectManager.deleteunsorted) do
-      local nID = GetNetworkID(object)
-      if nID and nID > 0 then
-        objectManager.objects[nID] = nil
-        objectManager.deleteunsorted[_] = nil
-      end
-    end
-    for _, object in pairs(objectManager.objects) do
-      if not IsObjectAlive(object) then
-        objectManager.objects[GetNetworkID(object)] = nil
-      end
-    end
-  end
   OnCreateObj(function(object)
-    table.insert(objectManager.insertunsorted, object)
+    objectManager.objects[object] = object
   end)
   OnDeleteObj(function(object)
-    local nID = GetNetworkID(object)
-    if nID and nID > 0 then
-      objectManager.objects[nID] = nil
-    else
-      table.insert(objectManager.deleteunsorted, object)
-    end
+    objectManager.objects[object] = nil
   end)
   local function CleanUp()
     collectgarbage()
