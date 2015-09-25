@@ -952,7 +952,7 @@ end
 
 function goslib:ValidTarget(unit, range)
     range = range or 25000
-    if unit == nil or GetOrigin(unit) == nil or IsImmune(unit,myHero) or IsDead(unit) or not IsVisible(unit) or GetTeam(unit) == GetTeam(myHero) or not self:IsInDistance(unit, range) then return false end
+    if unit == nil or GetOrigin(unit) == nil or not IsTargetable(unit,myHero)l or IsImmune(unit,myHero) or IsDead(unit) or not IsVisible(unit) or GetTeam(unit) == GetTeam(myHero) or not self:IsInDistance(unit, range) then return false end
     return true
 end
 
