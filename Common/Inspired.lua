@@ -1,4 +1,4 @@
-_G.InspiredVersion = 29
+_G.InspiredVersion = 30
 
 function Set(list)
   local set = {}
@@ -338,8 +338,8 @@ function __Menu__DrawSliderSwitch(param, x, y)
   FillRect(x, y, _SC.width, 40,ARGB(255, 0, 0, 0))
   DrawText("Value: "..math.ceil(math.floor(param.__val*param.__inc*1000)/param.__inc)/1000,15,x+5,y,0xffffffff)
   DrawText("[X]",15,x+_SC.width-20,y,0xffffffff)
-  DrawText(param.__min,15,x+5,y+20,0xffffffff)
-  DrawText(param.__max,15,x+_SC.width-25,y+20,0xffffffff)
+  DrawText(" "..param.__min,15,x+5,y+20,0xffffffff)
+  DrawText(" "..param.__max,15,x+_SC.width-25,y+20,0xffffffff)
   FillRect(x+15,y+20, _SC.width-45, 18, ARGB(55, 255, 255, 255))
   local off = (_SC.width-45) / math.abs(param.__min-param.__max) / param.__inc
   local v = x+15+(param.__val-param.__min)*off
@@ -952,7 +952,7 @@ end
 
 function goslib:ValidTarget(unit, range)
     range = range or 25000
-    if unit == nil or GetOrigin(unit) == nil or not IsTargetable(unit,myHero)l or IsImmune(unit,myHero) or IsDead(unit) or not IsVisible(unit) or GetTeam(unit) == GetTeam(myHero) or not self:IsInDistance(unit, range) then return false end
+    if unit == nil or GetOrigin(unit) == nil or not IsTargetable(unit,myHero) or IsImmune(unit,myHero) or IsDead(unit) or not IsVisible(unit) or GetTeam(unit) == GetTeam(myHero) or not self:IsInDistance(unit, range) then return false end
     return true
 end
 
