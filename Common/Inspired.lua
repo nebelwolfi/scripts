@@ -1040,7 +1040,7 @@ function goslib:CastOffensiveItems(unit)
       return true
     end
   end
-  if ValidTarget(unit) then
+  if self:ValidTarget(unit) then
     for _,k in pairs(u) do
       slot = GetItemSlot(myHero,k)
       if slot ~= nil and slot ~= 0 and CanUseSpell(myHero, slot) == READY then
