@@ -329,7 +329,7 @@ function __Menu__DrawListSwitch(param, x, y)
     if param.__val == i then
       DrawText("->",15,x+5,20*(i-1)+y,0xffffffff)
     end
-    DrawText(entry,15,x+35,20*(i-1)+y,0xffffffff)
+    DrawText(tostring(entry),15,x+35,20*(i-1)+y,0xffffffff)
   end
 end
 
