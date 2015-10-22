@@ -845,6 +845,7 @@ local function CalcDamage(source, target, addmg, apdmg)
     local MagicArmorPercent = MagicArmor > 0 and math.floor(MagicArmor*100/(100+MagicArmor))/100 or math.ceil(MagicArmor*100/(100-MagicArmor))/100
     return math.floor(ADDmg*(1-ArmorPercent))+math.floor(APDmg*(1-MagicArmorPercent))
 end
+
 function TargetSelector:__init(head, id, name, mode, range, type, focusselected, ownteam, priorityTable)
 	self.head = head
 	self.id = id
@@ -1148,15 +1149,15 @@ function MenuConfig:__init(name, id, head)
 end
 
 function MenuConfig:Menu(id, name)
-	local m = MenuConfig(name, id, self)
-	table.insert(self.__subMenus, m)
-	self[id] = m
+    local m = MenuConfig(name, id, self)
+    table.insert(self.__subMenus, m)
+    self[id] = m
 end
 
 function MenuConfig:KeyBinding(id, name, key, isToggle, callback, forceDefault)
-	local key = KeyBinding(self, id, name, key, isToggle, callback, forceDefault)
-	table.insert(self.__params, key)
-	self[id] = key
+    local key = KeyBinding(self, id, name, key, isToggle, callback, forceDefault)
+    table.insert(self.__params, key)
+    self[id] = key
     __MC_LoadAll()
 end
 
@@ -1228,3 +1229,27 @@ PermaShow(mc.Show)
 PermaShow(mc.ontop)
 
 print("MenuConfig loaded.")
+
+-- backward compability
+function MenuConfig:SubMenu(id, name)
+    local m = MenuConfig(name, id, self)
+    table.insert(self.__subMenus, m)
+    self[id] = m
+end
+
+function MenuConfig:Key(id, name, key, isToggle, callback, forceDefault)
+    local key = KeyBinding(self, id, name, key, isToggle, callback, forceDefault)
+    table.insert(self.__params, key)
+    self[id] = key
+    __MC_LoadAll()
+end
+
+function MenuConfig:List(id, name, value, drop, callback, forceDefault)
+    local d = DropDown(self, id, name, value, drop, callback, forceDefault)
+    table.insert(self.__params, d)
+    self[id] = d
+    __MC_LoadAll()
+end
+
+_G.Menu = MenuConfig
+-- backward compability end
