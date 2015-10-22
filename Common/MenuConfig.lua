@@ -1102,10 +1102,10 @@ local function __PS__Draw()
     local ps = #PSadd.instances
     for k = 1, ps do
         local v = PSadd.instances[k]
-        FillRect(PS.x-1, PS.y+17*k-1, 2+mc.Width:Value()*50+25, 16, ARGB(55,255,255,255))
-        FillRect(PS.x, PS.y+17*k, mc.Width:Value()*50+25, 14, ARGB(155,0,0,0))
+        FillRect(PS.x-1, PS.y+17*k-1, 2+mc.Width:Value()*50+50+25, 16, ARGB(55,255,255,255))
+        FillRect(PS.x, PS.y+17*k, mc.Width:Value()*50+50+25, 14, ARGB(155,0,0,0))
         DrawText(v.p.name, 12, PS.x+2, PS.y+17*k, ARGB(255,255,255,255))
-        DrawText(v.p:Value() and " ON" or "OFF", 12, PS.x+2+mc.Width:Value()*50, PS.y+17*k, v.p:Value() and ARGB(255,0,255,0) or ARGB(255,255,0,0))
+        DrawText(v.p:Value() and " ON" or "OFF", 12, PS.x+2+mc.Width:Value()*50+50, PS.y+17*k, v.p:Value() and ARGB(255,0,255,0) or ARGB(255,255,0,0))
     end
     if PSadd.moveNow then
         local cpos = GetCursorPos()
