@@ -266,6 +266,7 @@ class "Section"
 class "TargetSelector"
 class "KeyBinding"
 class "PermaShow"
+
 local heroes = {}
 do
     local doSkip = false
@@ -525,7 +526,10 @@ local function __MC_WndMsg()
 			end
 			if p.active then 
 				if p.type == "Boolean" then
-					p:Value(not p:Value())
+                    if CursorIsUnder(MC.x+(4+MC.width)*k, MC.y+23*i, MC.width, 23) then
+                        isB = true
+                        p:Value(not p:Value())
+                    end
 				elseif p.type == "DropDown" then 
 					local padd = #p.drop
 					for m=1, padd do
@@ -558,10 +562,6 @@ local function __MC_WndMsg()
                             p.settings[2]:Value(m)
                         end
                     end
-                else
-					if CursorIsUnder(MC.x+(4+MC.width)*(k+1), MC.y+23*i, MC.width, 23*10) then
-						isB = true
-					end
 				end
 			end
 			return isB, ladd
@@ -816,17 +816,17 @@ function Empty:__init(head, id, value)
 	self.value = value or 0
 end
 
-_G.TARGET_LESS_CAST = 1
-_G.TARGET_LESS_CAST_PRIORITY = 2
-_G.TARGET_PRIORITY = 3
-_G.TARGET_MOST_AP = 4
-_G.TARGET_MOST_AD = 5
-_G.TARGET_CLOSEST = 6
-_G.TARGET_NEAR_MOUSE = 7
-_G.TARGET_LOW_HP = 8
-_G.TARGET_LOW_HP_PRIORITY = 9
-_G.DAMAGE_MAGIC = 1
-_G.DAMAGE_PHYSICAL = 2
+TARGET_LESS_CAST = 1
+TARGET_LESS_CAST_PRIORITY = 2
+TARGET_PRIORITY = 3
+TARGET_MOST_AP = 4
+TARGET_MOST_AD = 5
+TARGET_CLOSEST = 6
+TARGET_NEAR_MOUSE = 7
+TARGET_LOW_HP = 8
+TARGET_LOW_HP_PRIORITY = 9
+DAMAGE_MAGIC = 1
+DAMAGE_PHYSICAL = 2
 local function GetD(p1, p2)
     local dx = p1.x - p2.x
     local dz = p1.z - p2.z
