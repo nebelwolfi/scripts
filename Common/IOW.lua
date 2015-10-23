@@ -428,7 +428,7 @@ function InspiredsOrbWalker:GetDmg(source, target)
 		end
 	elseif sourceType == myHeroType then
 		if targetType == Obj_AI_Turret then
-			totalDamage = math.max(TotalDamage, GetBaseDamage(source) + 0.4 * GetBonusAP(source))
+			TotalDmg = math.max(TotalDmg, GetBaseDamage(source) + 0.4 * GetBonusAP(source))
 			damageMultiplier = 0.95 * damageMultiplier
 		else
 			--damageMultiplier = damageMultiplier * 0.95
@@ -450,7 +450,7 @@ function InspiredsOrbWalker:GetDmg(source, target)
 	local MagicArmorPercent = MagicArmor > 0 and math.floor(MagicArmor*100/(100+MagicArmor))/100 or math.ceil(MagicArmor*100/(100-MagicArmor))/100
 
 	ADDmg = TotalDmg
-	if source == myHero then
+	if source == myHero and targetType ~= Obj_AI_Turret then
 		if GetMaladySlot(source) then
 			APDmg = 15 + 0.15*AP
 		end
