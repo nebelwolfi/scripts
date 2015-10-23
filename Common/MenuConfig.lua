@@ -1,11 +1,11 @@
 myHero = GetMyHero()
 
 function Set(list)
-  local set = {}
-  for _, l in ipairs(list) do 
-	set[l] = true 
-  end
-  return set
+	local set = {}
+	for _, l in ipairs(list) do 
+		set[l] = true 
+	end
+	return set
 end
 
 function ctype(t)
@@ -58,9 +58,9 @@ function math.round(num, idp)
 end
 
 function table.clear(t)
-  for i, v in pairs(t) do
+	for i, v in pairs(t) do
 	t[i] = nil
-  end
+	end
 end
 
 function table.serialize(t, tab, functions)
@@ -124,7 +124,7 @@ function string.unescape(s)
 		["'"] = [[\']],
 		["["] = "\\[",
 		["]"] = "\\]",
-	  })
+		})
 end
 
 function print(...)
@@ -861,7 +861,7 @@ function TargetSelector:__init(head, id, name, mode, range, type, focusselected,
 		[5] = Set {"Alistar", "Amumu", "Blitzcrank", "Braum", "ChoGath", "DrMundo", "Garen", "Gnar", "Hecarim", "JarvanIV", "Leona", "Lulu", "Malphite", "Nasus", "Nautilus", "Nunu", "Olaf", "Rammus", "Renekton", "Sejuani", "Shen", "Shyvana", "Singed", "Sion", "Skarner", "Taric", "Thresh", "Volibear", "Warwick", "MonkeyKing", "Yorick", "Zac"},
 		[4] = Set {"Aatrox", "Darius", "Elise", "Evelynn", "Galio", "Gangplank", "Gragas", "Irelia", "Jax","LeeSin", "Maokai", "Morgana", "Nocturne", "Pantheon", "Poppy", "Rengar", "Rumble", "Ryze", "Swain","Trundle", "Tryndamere", "Udyr", "Urgot", "Vi", "XinZhao", "RekSai"},
 		[3] = Set {"Akali", "Diana", "Fiddlesticks", "Fiora", "Fizz", "Heimerdinger", "Janna", "Jayce", "Kassadin","Kayle", "KhaZix", "Lissandra", "Mordekaiser", "Nami", "Nidalee", "Riven", "Shaco", "Sona", "Soraka", "TahmKench", "Vladimir", "Yasuo", "Zilean", "Zyra"},
-		[2] = Set {"Ahri", "Anivia", "Annie",  "Brand",  "Cassiopeia", "Ekko", "Karma", "Karthus", "Katarina", "Kennen", "LeBlanc",  "Lux", "Malzahar", "MasterYi", "Orianna", "Syndra", "Talon",  "TwistedFate", "Veigar", "VelKoz", "Viktor", "Xerath", "Zed", "Ziggs" },
+		[2] = Set {"Ahri", "Anivia", "Annie",	"Brand",	"Cassiopeia", "Ekko", "Karma", "Karthus", "Katarina", "Kennen", "LeBlanc",	"Lux", "Malzahar", "MasterYi", "Orianna", "Syndra", "Talon",	"TwistedFate", "Veigar", "VelKoz", "Viktor", "Xerath", "Zed", "Ziggs" },
 		[1] = Set {"Ashe", "Caitlyn", "Corki", "Draven", "Ezreal", "Graves", "Jinx", "Kalista", "KogMaw", "Lucian", "MissFortune", "Quinn", "Sivir", "Teemo", "Tristana", "Twitch", "Varus", "Vayne"},
 	}
 	self.settings = {
