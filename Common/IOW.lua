@@ -35,7 +35,7 @@ end
 
 function MinionManager:CreateObj(o)
 	if o and GetObjectType(o) == Obj_AI_Minion then
-		if GetObjectBaseName(o):find('_') then
+		if GetObjectBaseName(o):find('_') or GetObjectName(o):find('_') then
 			self:insert(o)
 		end
 	end
@@ -487,7 +487,7 @@ function InspiredsOrbWalker:Orb()
 	if self.Config.wtt and self.Config.wtt:Value() then
 		self.targetPos = self.forcePos or GetOrigin(self.target)
 	else
-		self.targetPos = self.forcePos or nil
+		self.targetPos = nil
 	end
 	if self.isWindingUp then
 		if self.target and IsDead(self.target) then
