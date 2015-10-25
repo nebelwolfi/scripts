@@ -2288,7 +2288,7 @@ function InspiredsOrbWalker:MakeMenu()
   self.Config:ColorPick("circlecol", "Circle color", {255,255,255,255})
   self.Config:Slider("circlequal", "Circle quality", 4, 0, 8, 1)
   self.Config:Info("space", "")
-  self.ts = TargetSelector(GetRange(myHero), 1, DAMAGE_PHYSICAL)
+  self.ts = TargetSelector(GetRange(myHero), TARGET_LESS_CAST, DAMAGE_PHYSICAL)
   self.Config:TargetSelector("ts", "TargetSelector", self.ts)
   self.Config:Info("space", "")
   self.Config:Info("version", "Version: v"..IOWversion)
@@ -2343,7 +2343,9 @@ function InspiredsOrbWalker:Tick()
   if self.toLoad then
     if GetRange(myHero) > 0 then
       if self.Config.stick then
-        self.Config.stick:Value(GetRange(myHero))
+        if self.Config.stick:Value() == 0 then
+          self.Config.stick:Value(GetRange(myHero))
+        end
       end
       if GetRange(myHero) >= 450 then
         for _,p in pairs(self.Config.__params) do
