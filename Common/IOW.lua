@@ -1,4 +1,5 @@
 _G.IOWversion = 2
+require "MenuConfig"
 local myHero = GetMyHero()
 local myHeroName = GetObjectName(myHero)
 
