@@ -1549,22 +1549,22 @@ function GetAllyHeroes()
 end
 
 function DelayAction(func, delay, args)
-    if not delayedActionsExecuter then
+    if not GoS.delayedActionsExecuter then
         function delayedActionsExecuter()
-            for t, funcs in pairs(delayedActions) do
+            for t, funcs in pairs(GoS.delayedActions) do
                 if t <= GetTickCount() then
                     for _, f in ipairs(funcs) do f.func(unpack(f.args or {})) end
-                    delayedActions[t] = nil
+                    GoS.delayedActions[t] = nil
                 end
             end
         end
-        OnLoop(function() delayedActionsExecuter() end)
+        OnLoop(function() GoS.delayedActionsExecuter() end)
     end
     local t = GetTickCount() + (delay or 0)
-    if delayedActions[t] then 
-      table.insert(delayedActions[t], { func = func, args = args })
+    if GoS.delayedActions[t] then 
+      table.insert(GoS.delayedActions[t], { func = func, args = args })
     else 
-      delayedActions[t] = { { func = func, args = args } }
+      GoS.delayedActions[t] = { { func = func, args = args } }
     end
 end
 
