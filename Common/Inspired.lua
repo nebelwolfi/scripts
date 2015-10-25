@@ -2678,8 +2678,8 @@ do
     end)
     _G.minionManager = MinionManager()
   end
-  local summonerNameOne = summonerNameOne
-  local summonerNameTwo = summonerNameTwo
+  local summonerNameOne = GetCastName(myHero, SUMMONER_1)
+  local summonerNameTwo = GetCastName(myHero, SUMMONER_2)
   _G.Ignite = (summonerNameOne:lower():find("summonerdot") and SUMMONER_1 or (summonerNameTwo:lower():find("summonerdot") and SUMMONER_2 or nil))
   _G.Exhaust = (summonerNameOne:lower():find("summonerexhaust") and SUMMONER_1 or (summonerNameTwo:lower():find("summonerexhaust") and SUMMONER_2 or nil))
   _G.Barrier = (summonerNameOne:lower():find("summonerbarrier") and SUMMONER_1 or (summonerNameTwo:lower():find("summonerbarrier") and SUMMONER_2 or nil))
