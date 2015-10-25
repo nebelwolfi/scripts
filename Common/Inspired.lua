@@ -1029,23 +1029,11 @@ TARGET_LOW_HP = 8
 TARGET_LOW_HP_PRIORITY = 9
 DAMAGE_MAGIC = 1
 DAMAGE_PHYSICAL = 2
+
 local function GetD(p1, p2)
   local dx = p1.x - p2.x
   local dz = p1.z - p2.z
   return dx*dx + dz*dz
-end
-local function CalcDamage(source, target, addmg, apdmg)
-  local ADDmg = addmg or 0
-  local APDmg = apdmg or 0
-  local ArmorPen = GetObjectType(source) == Obj_AI_Minion and 0 or math.floor(GetArmorPenFlat(source))
-  local ArmorPenPercent = GetObjectType(source) == Obj_AI_Minion and 1 or math.floor(GetArmorPenPercent(source)*100)/100
-  local Armor = GetArmor(target)*ArmorPenPercent-ArmorPen
-  local ArmorPercent = (GetObjectType(source) == Obj_AI_Minion and Armor < 0) and 0 or Armor > 0 and math.floor(Armor*100/(100+Armor))/100 or math.ceil(Armor*100/(100-Armor))/100
-  local MagicPen = math.floor(GetMagicPenFlat(source))
-  local MagicPenPercent = math.floor(GetMagicPenPercent(source)*100)/100
-  local MagicArmor = GetMagicResist(target)*MagicPenPercent-MagicPen
-  local MagicArmorPercent = MagicArmor > 0 and math.floor(MagicArmor*100/(100+MagicArmor))/100 or math.ceil(MagicArmor*100/(100-MagicArmor))/100
-  return math.floor(ADDmg*(1-ArmorPercent))+math.floor(APDmg*(1-MagicArmorPercent))
 end
 
 function TargetSelector:__init(range, mode, type, focusselected, ownteam, priorityTable)
@@ -1591,7 +1579,7 @@ function CalcDamage(source, target, addmg, apdmg)
     local MagicPenPercent = math.floor(GetMagicPenPercent(source)*100)/100
     local MagicArmor = GetMagicResist(target)*MagicPenPercent-MagicPen
     local MagicArmorPercent = MagicArmor > 0 and math.floor(MagicArmor*100/(100+MagicArmor))/100 or math.ceil(MagicArmor*100/(100-MagicArmor))/100
-    return (GotBuff(source,"exhausted")  > 0 and 0.4 or 1) * math.floor(ADDmg*(1-ArmorPercent))+math.floor(APDmg*(1-MagicArmorPercent))
+    return (GotBuff(source,"exhausted")  > 0 and 0.6 or 1) * math.floor(ADDmg*(1-ArmorPercent))+math.floor(APDmg*(1-MagicArmorPercent))
 end
 
 function CastOffensiveItems(unit)
@@ -2657,11 +2645,7 @@ do
   _G.Garrison = (summonerNameOne:lower():find("summonerodingarrison") and SUMMONER_1 or (summonerNameTwo:lower():find("summonerodingarrison") and SUMMONER_2 or nil))
   _G.Ghost = (summonerNameOne:lower():find("summonerhaste") and SUMMONER_1 or (summonerNameTwo:lower():find("summonerhaste") and SUMMONER_2 or nil))
   _G.Heal = (summonerNameOne:lower():find("summonerheal") and SUMMONER_1 or (summonerNameTwo:lower():find("summonerheal") and SUMMONER_2 or nil))
-  _G.Smite = (summonerNameOne:lower():find("summonersmite") and SUMMONER_1 or (summonerNameTwo:lower():find("summonersmite") and SUMMONER_2 or nil))
-  _G.SmiteBlue = (summonerNameOne:lower():find("s5_summonersmiteplayerganker") and SUMMONER_1 or (summonerNameTwo:lower():find("s5_summonersmiteplayerganker") and SUMMONER_2 or nil))
-  _G.SmiteGrey = (summonerNameOne:lower():find("s5_summonersmitequick") and SUMMONER_1 or (summonerNameTwo:lower():find("s5_summonersmitequick") and SUMMONER_2 or nil))
-  _G.SmitePurple = (summonerNameOne:lower():find("itemsmiteaoe") and SUMMONER_1 or (summonerNameTwo:lower():find("itemsmiteaoe") and SUMMONER_2 or nil)) 
-  _G.SmiteRed = (summonerNameOne:lower():find("s5_summonersmiteduel") and SUMMONER_1 or (summonerNameTwo:lower():find("s5_summonersmiteduel") and SUMMONER_2 or nil))
+  _G.Smite = (summonerNameOne:lower():find("smite") and SUMMONER_1 or (summonerNameTwo:lower():find("smite") and SUMMONER_2 or nil))
   _G.Snowball = (summonerNameOne:lower():find("summonersnowball") and SUMMONER_1 or (summonerNameTwo:lower():find("summonersnowball") and SUMMONER_2 or nil))
   _G.Teleport = (summonerNameOne:lower():find("summonerteleport") and SUMMONER_1 or (summonerNameTwo:lower():find("summonerteleport") and SUMMONER_2 or nil))
 
