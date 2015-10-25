@@ -2025,8 +2025,6 @@ function MinionManager:insert(o)
   self.objects[FindSpot()] = o
 end
 
-
-
 function Ready(slot)
   return CanUseSpell(myHero, slot) == 0
 end IsReady = Ready
@@ -2036,13 +2034,15 @@ function GetLineFarmPosition(range, width)
     local BestHit = 0
     local objects = minionManager.objects
     for i, object in pairs(objects) do
-      local EndPos = Vector(myHero) + range * (Vector(object) - Vector(myHero)):normalized()
-      local hit = CountObjectsOnLineSegment(GetOrigin(myHero), EndPos, width, objects)
-      if hit > BestHit and GetDistanceSqr(GetOrigin(object)) < range^2 then
-        BestHit = hit
-        BestPos = Vector(object)
-        if BestHit == #objects then
-        break
+      if GetOrigin(object) ~= nil and IsObjectAlive(object) and GetTeam(object) ~= GetTeam(myHero) then
+        local EndPos = Vector(myHero) + range * (Vector(object) - Vector(myHero)):normalized()
+        local hit = CountObjectsOnLineSegment(GetOrigin(myHero), EndPos, width, objects)
+        if hit > BestHit and GetDistanceSqr(GetOrigin(object)) < range^2 then
+          BestHit = hit
+          BestPos = Vector(object)
+          if BestHit == #objects then
+          break
+          end
         end
       end
     end
@@ -2062,41 +2062,6 @@ function GetFarmPosition(range, width)
         if BestHit == #objects then
           break
         end
-      end
-  end
-  end
-  return BestPos, BestHit
-end
-
-function GetJLineFarmPosition(range, width)
-    local BestPos 
-    local BestHit = 0
-    local objects = minionManager.objects
-    for i, object in pairs(objects) do
-      local EndPos = Vector(myHero) + range * (Vector(object) - Vector(myHero)):normalized()
-      local hit = CountObjectsOnLineSegment(GetOrigin(myHero), EndPos, width, objects)
-      if hit > BestHit and GetDistanceSqr(GetOrigin(object)) < range * range then
-        BestHit = hit
-        BestPos = Vector(object)
-        if BestHit == #objects then
-        break
-        end
-      end
-    end
-    return BestPos, BestHit
-end
-
-function GetJFarmPosition(range, width)
-  local BestPos 
-  local BestHit = 0
-  local objects = minionManager.objects
-  for i, object in pairs(objects) do
-    local hit = CountObjectsNearPos(Vector(object), range, width, objects)
-    if hit > BestHit and GetDistanceSqr(Vector(object)) < range * range then
-      BestHit = hit
-      BestPos = Vector(object)
-      if BestHit == #objects then
-      break
       end
     end
   end
