@@ -2737,7 +2737,7 @@ do
     PermaShow(mc_cfg_base.Show)
     PermaShow(mc_cfg_base.ontop)
   end
-  if not _G.IOW then _G.IOW = InspiredsOrbWalker() end
+  if not _G.IOW and not _G.IACloaded then _G.IOW = InspiredsOrbWalker() end
 end
 
 Msg("Loaded.")
