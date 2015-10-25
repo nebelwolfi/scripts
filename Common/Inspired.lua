@@ -1660,6 +1660,28 @@ function ClosestAlly(pos)
   return ally
 end
 
+function MinionsAround(pos, range, team)
+  local c = 0
+  if pos == nil then return 0 end
+  for k,v in pairs(minionManager.objects) do 
+    if v and GetOrigin(v) ~= nil and not IsDead(v) and GetDistanceSqr(pos,GetOrigin(v)) < range*range and (not team or team == GetTeam(v)) then
+      c = c + 1
+    end
+  end
+  return c
+end
+
+function ClosestMinion(pos, team)
+  local m = nil
+  for k,v in pairs(minionManager.objects) do 
+    if not m and v then m = v end
+    if m and v and GetDistanceSqr(GetOrigin(m),pos) > GetDistanceSqr(GetOrigin(v),pos) and (not team or team == GetTeam(v)) then
+      m = v
+    end
+  end
+  return m
+end
+
 function VectorType(v)
     v = GetOrigin(v) or v
     return v and v.x and type(v.x) == "number" and ((v.y and type(v.y) == "number") or (v.z and type(v.z) == "number"))
