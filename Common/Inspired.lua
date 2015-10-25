@@ -2539,7 +2539,7 @@ do
   _G.DAMAGE_MAGIC, _G.DAMAGE_PHYSICAL, _G.DAMAGE_MIXED = 1, 2, 3
   _G.MINION_ALLY, _G.MINION_ENEMY, _G.MINION_JUNGLE = GetTeam(myHero), 300-GetTeam(myHero), 300
   _G.heroes = {}
-  do
+  if not _G.minionManager then
     OnObjectLoad(function(o)
       if GetObjectType(o) == Obj_AI_Hero then
         heroes[1+#heroes] = o
