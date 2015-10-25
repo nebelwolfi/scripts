@@ -2003,6 +2003,114 @@ function MinionManager:insert(o)
   self.objects[FindSpot()] = o
 end
 
+
+
+function Ready(slot)
+  return CanUseSpell(myHero, slot) == 0
+end IsReady = Ready
+
+function GetLineFarmPosition(range, width)
+    local BestPos 
+    local BestHit = 0
+    local objects = minionManager.objects
+    for i, object in pairs(objects) do
+      local EndPos = Vector(myHero) + range * (Vector(object) - Vector(myHero)):normalized()
+      local hit = CountObjectsOnLineSegment(GetOrigin(myHero), EndPos, width, objects)
+      if hit > BestHit and GetDistanceSqr(GetOrigin(object)) < range^2 then
+        BestHit = hit
+        BestPos = Vector(object)
+        if BestHit == #objects then
+        break
+        end
+      end
+    end
+    return BestPos, BestHit
+end
+
+function GetFarmPosition(range, width)
+  local BestPos 
+  local BestHit = 0
+  local objects = minionManager.objects
+  for i, object in pairs(objects) do
+    if GetOrigin(object) ~= nil and IsObjectAlive(object) and GetTeam(object) ~= GetTeam(myHero) then
+      local hit = CountObjectsNearPos(Vector(object), range, width, objects)
+      if hit > BestHit and GetDistanceSqr(Vector(object)) < range * range then
+        BestHit = hit
+        BestPos = Vector(object)
+        if BestHit == #objects then
+          break
+        end
+      end
+  end
+  end
+  return BestPos, BestHit
+end
+
+function GetJLineFarmPosition(range, width)
+    local BestPos 
+    local BestHit = 0
+    local objects = minionManager.objects
+    for i, object in pairs(objects) do
+      local EndPos = Vector(myHero) + range * (Vector(object) - Vector(myHero)):normalized()
+      local hit = CountObjectsOnLineSegment(GetOrigin(myHero), EndPos, width, objects)
+      if hit > BestHit and GetDistanceSqr(GetOrigin(object)) < range * range then
+        BestHit = hit
+        BestPos = Vector(object)
+        if BestHit == #objects then
+        break
+        end
+      end
+    end
+    return BestPos, BestHit
+end
+
+function GetJFarmPosition(range, width)
+  local BestPos 
+  local BestHit = 0
+  local objects = minionManager.objects
+  for i, object in pairs(objects) do
+    local hit = CountObjectsNearPos(Vector(object), range, width, objects)
+    if hit > BestHit and GetDistanceSqr(Vector(object)) < range * range then
+      BestHit = hit
+      BestPos = Vector(object)
+      if BestHit == #objects then
+      break
+      end
+    end
+  end
+  return BestPos, BestHit
+end
+
+function CountObjectsOnLineSegment(StartPos, EndPos, width, objects)
+  local n = 0
+  for i, object in pairs(objects) do
+    local pointSegment, pointLine, isOnSegment = VectorPointProjectionOnLineSegment(StartPos, EndPos, GetOrigin(object))
+    local w = width
+    if isOnSegment and GetDistanceSqr(pointSegment, GetOrigin(object)) < w^2 and GetDistanceSqr(StartPos, EndPos) > GetDistanceSqr(StartPos, GetOrigin(object)) then
+    n = n + 1
+    end
+  end
+  return n
+end
+
+function CountObjectsNearPos(pos, range, radius, objects)
+  local n = 0
+  for i, object in pairs(objects) do
+    if IsObjectAlive(object) and GetDistanceSqr(pos, Vector(object)) <= radius^2 then
+      n = n + 1
+    end
+  end
+  return n
+end
+
+function GetPercentHP(unit)
+  return 100 * GetCurrentHP(unit) / GetMaxHP(unit)
+end
+
+function GetPercentMP(unit)
+  return 100 * GetCurrentMana(unit) / GetMaxMana(unit)
+end
+
 -- }
 
 class "InspiredsOrbWalker"
@@ -2536,6 +2644,7 @@ end
 
 do
   _G.myHeroName = GetObjectName(myHero)
+  _G.mapID = GetMapID()
   _G.DAMAGE_MAGIC, _G.DAMAGE_PHYSICAL, _G.DAMAGE_MIXED = 1, 2, 3
   _G.MINION_ALLY, _G.MINION_ENEMY, _G.MINION_JUNGLE = GetTeam(myHero), 300-GetTeam(myHero), 300
   _G.heroes = {}
@@ -2547,11 +2656,27 @@ do
     end)
     _G.minionManager = MinionManager()
   end
-  local summonerNameOne = GetCastName(myHero,SUMMONER_1)
-  local summonerNameTwo = GetCastName(myHero,SUMMONER_2)
+  local summonerNameOne = summonerNameOne
+  local summonerNameTwo = summonerNameTwo
   _G.Ignite = (summonerNameOne:lower():find("summonerdot") and SUMMONER_1 or (summonerNameTwo:lower():find("summonerdot") and SUMMONER_2 or nil))
-  _G.Smite = (summonerNameOne:lower():find("summonersmite") and SUMMONER_1 or (summonerNameTwo:lower():find("summonersmite") and SUMMONER_2 or nil))
   _G.Exhaust = (summonerNameOne:lower():find("summonerexhaust") and SUMMONER_1 or (summonerNameTwo:lower():find("summonerexhaust") and SUMMONER_2 or nil))
+  _G.Barrier = (summonerNameOne:lower():find("summonerbarrier") and SUMMONER_1 or (summonerNameTwo:lower():find("summonerbarrier") and SUMMONER_2 or nil))
+  _G.ClairVoyance = (summonerNameOne:lower():find("summonerclairvoyance") and SUMMONER_1 or (summonerNameTwo:lower():find("summonerclairvoyance") and SUMMONER_2 or nil)) 
+  _G.Clarity = (summonerNameOne:lower():find("summonermana") and SUMMONER_1 or (summonerNameTwo:lower():find("summonermana") and SUMMONER_2 or nil)) 
+  _G.Cleanse = (summonerNameOne:lower():find("summonerboost") and SUMMONER_1 or (summonerNameTwo:lower():find("summonerboost") and SUMMONER_2 or nil)) 
+  _G.Flash = (summonerNameOne:lower():find("summonerflash") and SUMMONER_1 or (summonerNameTwo:lower():find("summonerflash") and SUMMONER_2 or nil)) 
+  _G.Garrison = (summonerNameOne:lower():find("summonerodingarrison") and SUMMONER_1 or (summonerNameTwo:lower():find("summonerodingarrison") and SUMMONER_2 or nil))
+  _G.Ghost = (summonerNameOne:lower():find("summonerhaste") and SUMMONER_1 or (summonerNameTwo:lower():find("summonerhaste") and SUMMONER_2 or nil))
+  _G.Heal = (summonerNameOne:lower():find("summonerheal") and SUMMONER_1 or (summonerNameTwo:lower():find("summonerheal") and SUMMONER_2 or nil))
+  _G.Smite = (summonerNameOne:lower():find("summonersmite") and SUMMONER_1 or (summonerNameTwo:lower():find("summonersmite") and SUMMONER_2 or nil))
+  _G.SmiteBlue = (summonerNameOne:lower():find("s5_summonersmiteplayerganker") and SUMMONER_1 or (summonerNameTwo:lower():find("s5_summonersmiteplayerganker") and SUMMONER_2 or nil))
+  _G.SmiteGrey = (summonerNameOne:lower():find("s5_summonersmitequick") and SUMMONER_1 or (summonerNameTwo:lower():find("s5_summonersmitequick") and SUMMONER_2 or nil))
+  _G.SmitePurple = (summonerNameOne:lower():find("itemsmiteaoe") and SUMMONER_1 or (summonerNameTwo:lower():find("itemsmiteaoe") and SUMMONER_2 or nil)) 
+  _G.SmiteRed = (summonerNameOne:lower():find("s5_summonersmiteduel") and SUMMONER_1 or (summonerNameTwo:lower():find("s5_summonersmiteduel") and SUMMONER_2 or nil))
+  _G.Snowball = (summonerNameOne:lower():find("summonersnowball") and SUMMONER_1 or (summonerNameTwo:lower():find("summonersnowball") and SUMMONER_2 or nil))
+  _G.Teleport = (summonerNameOne:lower():find("summonerteleport") and SUMMONER_1 or (summonerNameTwo:lower():find("summonerteleport") and SUMMONER_2 or nil))
+
+
   mixed = Set {"Akali","Corki","Ekko","Evelynn","Ezreal","Kayle","Kennen","KogMaw","Malzahar","MissFortune","Mordekaiser","Pantheon","Poppy","Shaco","Skarner","Teemo","Tristana","TwistedFate","XinZhao","Yoric"}
   ad = Set {"Aatrox","Corki","Darius","Draven","Ezreal","Fiora","Gangplank","Garen","Gnar","Graves","Hecarim","Irelia","JarvanIV","Jax","Jayce","Jinx","Kalista","KhaZix","KogMaw","LeeSin","Lucian","MasterYi","MissFortune","Nasus","Nocturne","Olaf","Pantheon","Quinn","RekSai","Renekton","Rengar","Riven","Shaco","Shyvana","Sion","Sivir","Talon","Tristana","Trundle","Tryndamere","Twitch","Udyr","Urgot","Varus","Vayne","Vi","Warwick","Wukong","XinZhao","Yasuo","Yoric","Zed"}
   ap = Set {"Ahri","Akali","Alistar","Amumu","Anivia","Annie","Azir","Bard","Blitzcrank","Brand","Braum","Cassiopea","ChoGath","Diana","DrMundo","Ekko","Elise","Evelynn","Fiddlesticks","Fizz","Galio","Gragas","Heimerdinger","Janna","Karma","Karthus","Kassadin","Katarina","Kayle","Kennen","LeBlanc","Leona","Lissandra","Lulu","Lux","Malphite","Malzahar","Maokai","Mordekaiser","Morgana","Nami","Nautilus","Nidalee","Nunu","Orianna","Poppy","Rammus","Rumble","Ryze","Sejuani","Shen","Singed","Skarner","Sona","Soraka","Swain","Syndra","TahmKench","Taric","Teemo","Thresh","TwistedFate","Veigar","VelKoz","Viktor","Vladimir","Volibear","Xerath","Zac","Ziggz","Zilean","Zyra"}
@@ -2581,6 +2706,24 @@ do
     ["Tristana"] = _W, ["Tryndamere"] = "Slash", ["Udyr"] = _E, ["Volibear"] = _Q, ["Vi"] = _Q, 
     ["XinZhao"] = _E, ["Yasuo"] = _E, ["Zac"] = _E, ["Ziggs"] = _W
   }
+  _G.Dashes = {
+    ["Vayne"]      = {Spellslot = _Q, Range = 300},
+    ["Riven"]      = {Spellslot = _E, Range = 325},
+    ["Ezreal"]     = {Spellslot = _E, Range = 450},
+    ["Caitlyn"]    = {Spellslot = _E, Range = 400},
+    ["Kassadin"]   = {Spellslot = _R, Range = 700},
+    ["Graves"]     = {Spellslot = _E, Range = 425},
+    ["Renekton"]   = {Spellslot = _E, Range = 450},
+    ["Aatrox"]     = {Spellslot = _Q, Range = 650},
+    ["Gragas"]     = {Spellslot = _E, Range = 600},
+    ["Khazix"]     = {Spellslot = _E, Range = 600},
+    ["Lucian"]     = {Spellslot = _E, Range = 425},
+    ["Sejuani"]    = {Spellslot = _Q, Range = 650},
+    ["Shen"]       = {Spellslot = _E, Range = 575},
+    ["Tryndamere"] = {Spellslot = _E, Range = 660},
+    ["Tristana"]   = {Spellslot = _W, Range = 900},
+    ["Corki"]      = {Spellslot = _W, Range = 800},
+  }
   GapcloseSpell, GapcloseTime, GapcloseUnit, GapcloseTargeted, GapcloseRange = 2, 0, nil, true, 450
   if not _G.mc_cfg_base then
     _G.mc_cfg_base = MenuConfig("MenuConfig", "MenuConfig")
@@ -2598,3 +2741,5 @@ do
 end
 
 Msg("Loaded.")
+
+return true
