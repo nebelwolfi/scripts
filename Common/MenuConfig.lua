@@ -1,5 +1,9 @@
 myHero = GetMyHero()
 
+local function FillRect(a,b,c,d,e)
+	DrawLine(a, b, a+c, b, d, e)
+end
+
 function Set(list)
 	local set = {}
 	for _, l in ipairs(list) do 
@@ -267,7 +271,7 @@ class "TargetSelector"
 class "KeyBinding"
 class "PermaShow"
 
-local heroes = {}
+_G.heroes = {}
 do
 	local doSkip = false
 	local shouldSkip = GetTickCount()
@@ -706,10 +710,12 @@ function Boolean:__init(head, id, name, value, callback, forceDefault)
 end
 
 function Boolean:Value(x)
-	if x ~= nil then 
-		self.value = x
-		if self.callback then self.callback(self.value) end
-		__MC_SaveAll()
+	if x ~= nil then
+		if self.value ~= x then
+			self.value = x
+			if self.callback then self.callback(self.value) end
+			__MC_SaveAll()
+		end
 	else 
 		return self.value
 	end
@@ -753,9 +759,11 @@ end
 
 function KeyBinding:Value(x)
 	if x ~= nil then
-		self.value = x
-		if self.callback then self.callback(self.value) end
-		__MC_SaveAll()
+		if self.value ~= x then
+			self.value = x
+			if self.callback then self.callback(self.value) end
+			__MC_SaveAll()
+		end
 	else
 		return self.value
 	end
@@ -1047,9 +1055,11 @@ end
 
 function DropDown:Value(x)
 	if x ~= nil then
-		self.value = x
-		if self.callback then self.callback(self.value) end
-		__MC_SaveAll()
+		if self.value ~= x then
+			self.value = x
+			if self.callback then self.callback(self.value) end
+			__MC_SaveAll()
+		end
 	else
 		return self.value
 	end
@@ -1070,12 +1080,14 @@ end
 
 function Slider:Value(x)
 	if x ~= nil then
-		if x < self.min then self.value = self.min
-		elseif x > self.max then self.value = self.max
-		else self.value = x
+		if self.value ~= x then
+			if x < self.min then self.value = self.min
+			elseif x > self.max then self.value = self.max
+			else self.value = x
+			end
+			if self.callback then self.callback(self.value) end
+			__MC_SaveAll()
 		end
-		if self.callback then self.callback(self.value) end
-		__MC_SaveAll()
 	else
 		return self.value
 	end
@@ -1126,7 +1138,7 @@ local function __PS__WndMsg(msg, key)
 		PSadd.moveNow = {x = cpos.x - PS.x, y = cpos.y - PS.y}
 	end
 end
-OnWndMsg(__PS__WndMsg)
+--OnWndMsg(__PS__WndMsg)
 
 function PermaShow:__init(p)
 	assert(p.type == "Boolean" or p.type == "KeyBinding", "Parameter must be of type Boolean or KeyBinding!")
