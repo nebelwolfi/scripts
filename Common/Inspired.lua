@@ -1453,14 +1453,14 @@ function AddGapcloseEvent(spell, range, targeted)
     DelayAction(function()
         for _,k in pairs(GetEnemyHeroes()) do
           if GoS.gapcloserTable[GetObjectName(k)] then
-            GapcloseConfig:Boolean(GetObjectName(k).."agap", "On "..GetObjectName(k).." "..(type(gapcloserTable[GetObjectName(k)]) == 'number' and GoS.str[gapcloserTable[GetObjectName(k)]] or (GetObjectName(k) == "LeeSin" and "Q" or "E")), true)
+            GapcloseConfig:Boolean(GetObjectName(k).."agap", "On "..GetObjectName(k).." "..(type(GoS.gapcloserTable[GetObjectName(k)]) == 'number' and GoS.str[GoS.gapcloserTable[GetObjectName(k)]] or (GetObjectName(k) == "LeeSin" and "Q" or "E")), true)
           end
         end
     end, 1)
     OnProcessSpell(function(unit, spell)
       if not unit or not GoS.gapcloserTable[GetObjectName(unit)] or GapcloseConfig[GetObjectName(unit).."agap"] == nil or not GapcloseConfig[GetObjectName(unit).."agap"]:Value() then return end
       local unitName = GetObjectName(unit)
-      if spell.name == (type(gapcloserTable[unitName]) == 'number' and GetCastName(unit, GoS.gapcloserTable[unitName]) or GoS.gapcloserTable[unitName]) and (spell.target == myHero or GetDistanceSqr(spell.endPos) < GapcloseRange*GapcloseRange*4) then
+      if spell.name == (type(GoS.gapcloserTable[unitName]) == 'number' and GetCastName(unit, GoS.gapcloserTable[unitName]) or GoS.gapcloserTable[unitName]) and (spell.target == myHero or GetDistanceSqr(spell.endPos) < GapcloseRange*GapcloseRange*4) then
         GapcloseTime = GetTickCount() + 2000
         GapcloseUnit = unit
       end
