@@ -2377,7 +2377,7 @@ function InspiredsOrbWalker:GetLaneClear()
   local m = nil
   for i=1, self.mobs.maxObjects do
     local o = self.mobs.objects[i]
-    if o and IsObjectAlive(o) and GetTeam(o) == 300-GetTeam(myHero) then
+    if o and IsObjectAlive(o) then
       if self:CanOrb(o) then
         if GetTeam(o) <= 200 and self:PredictHealth(o, 2000/(GetAttackSpeed(myHero)*GetBaseAttackSpeed(myHero)) + 2000 * math.sqrt(GetDistanceSqr(GetOrigin(o), GetOrigin(myHero))) / self:GetProjectileSpeed(myHero)) < self:GetDmg(myHero, o) then
           return nil
