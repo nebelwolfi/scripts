@@ -1465,7 +1465,7 @@ function AddGapcloseEvent(spell, range, targeted)
         GapcloseUnit = unit
       end
     end)
-    OnLoop(function(myHero)
+    OnTick(function(myHero)
       if CanUseSpell(myHero, GapcloseSpell) == READY and GapcloseTime and GapcloseUnit and GapcloseTime >GetTickCount() then
         local pos = GetOrigin(GapcloseUnit)
         if GapcloseTargeted then
@@ -1558,7 +1558,7 @@ function DelayAction(func, delay, args)
                 end
             end
         end
-        OnLoop(function() GoS.delayedActionsExecuter() end)
+        OnTick(function() GoS.delayedActionsExecuter() end)
     end
     local t = GetTickCount() + (delay or 0)
     if GoS.delayedActions[t] then 
