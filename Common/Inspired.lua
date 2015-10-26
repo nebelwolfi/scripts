@@ -2377,7 +2377,7 @@ function InspiredsOrbWalker:GetLaneClear()
   local m = nil
   for i=1, self.mobs.maxObjects do
     local o = self.mobs.objects[i]
-    if o and IsObjectAlive(o) then
+    if o and IsObjectAlive(o) and GetTeam(o) ~= MINION_ALLY then
       if self:CanOrb(o) then
         if GetTeam(o) <= 200 and self:PredictHealth(o, 2000/(GetAttackSpeed(myHero)*GetBaseAttackSpeed(myHero)) + 2000 * math.sqrt(GetDistanceSqr(GetOrigin(o), GetOrigin(myHero))) / self:GetProjectileSpeed(myHero)) < self:GetDmg(myHero, o) then
           return nil
@@ -2536,7 +2536,7 @@ function InspiredsOrbWalker:Orb()
     self.target = self:GetTarget()
     if self.isWindingDown or not self.target or not self.attacksEnabled then
       if GetDistanceSqr(GetOrigin(myHero), GetMousePos()) > self.Config.stop:Value()^2 and self.movementEnabled then
-        if self.targetPos and GetDistanceSqr(self.targetPos, GetOrigin(myHero)) < (self.Config.stick:Value())^2 then
+        if self.targetPos and (not self.target or not GetObjectType(self.target) == GetObjectType(myHero)) and GetDistanceSqr(self.targetPos, GetOrigin(myHero)) < (self.Config.stick:Value())^2 then
           if GetDistanceSqr(GetOrigin(myHero), self.targetPos) > GetRange(myHero)^2 then
             MoveToXYZ(self:MakePos(self.targetPos))
           end
