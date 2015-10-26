@@ -2348,7 +2348,7 @@ end
 
 function InspiredsOrbWalker:GetTarget()
   if self.Config.h.Combo:Value() then
-    return self:CanOrb(self.forceTarget) and self.forceTarget or (self.Config.sticky:Value() and self:CanOrb(self.target)) and self.target or self.Config.ts:GetTarget()
+    return self:CanOrb(self.forceTarget) and self.forceTarget or (self.Config.sticky:Value() and self:CanOrb(self.target) and GetObjectType(self.target) == GetObjectType(myHero)) and self.target or self.Config.ts:GetTarget()
   elseif self.Config.h.Harass:Value() then
     return self:GetLastHit() or self:CanOrb(self.forceTarget) and self.forceTarget or (self.Config.sticky:Value() and self:CanOrb(self.target)) and self.target or self.Config.ts:GetTarget()
   elseif self.Config.h.LastHit:Value() then
