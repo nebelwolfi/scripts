@@ -1550,7 +1550,7 @@ end
 
 function DelayAction(func, delay, args)
     if not GoS.delayedActionsExecuter then
-        function delayedActionsExecuter()
+        function GoS.delayedActionsExecuter()
             for t, funcs in pairs(GoS.delayedActions) do
                 if t <= GetTickCount() then
                     for _, f in ipairs(funcs) do f.func(unpack(f.args or {})) end
