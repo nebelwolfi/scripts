@@ -1448,8 +1448,8 @@ function AddGapcloseEvent(spell, range, targeted)
     GapcloseUnit = nil
     GapcloseTargeted = targeted
     GapcloseRange = range
-    str = {[_Q] = "Q", [_W] = "W", [_E] = "E", [_R] = "R"}
-    GapcloseConfig = Menu("Anti-Gapclose ("..self.str[spell]..")", "gapclose")
+    GoS.str = {[_Q] = "Q", [_W] = "W", [_E] = "E", [_R] = "R"}
+    GapcloseConfig = Menu("Anti-Gapclose ("..GoS.str[spell]..")", "gapclose")
     DelayAction(function()
         for _,k in pairs(GetEnemyHeroes()) do
           if GoS.gapcloserTable[GetObjectName(k)] then
