@@ -2059,10 +2059,12 @@ end
 function CountObjectsOnLineSegment(StartPos, EndPos, width, objects)
   local n = 0
   for i, object in pairs(objects) do
-    local pointSegment, pointLine, isOnSegment = VectorPointProjectionOnLineSegment(StartPos, EndPos, GetOrigin(object))
-    local w = width
-    if isOnSegment and GetDistanceSqr(pointSegment, GetOrigin(object)) < w^2 and GetDistanceSqr(StartPos, EndPos) > GetDistanceSqr(StartPos, GetOrigin(object)) then
-    n = n + 1
+    if GetOrigin(object) ~= nil and IsObjectAlive(object) and GetTeam(object) ~= GetTeam(myHero) then
+      local pointSegment, pointLine, isOnSegment = VectorPointProjectionOnLineSegment(StartPos, EndPos, GetOrigin(object))
+      local w = width
+      if isOnSegment and GetDistanceSqr(pointSegment, GetOrigin(object)) < w^2 and GetDistanceSqr(StartPos, EndPos) > GetDistanceSqr(StartPos, GetOrigin(object)) then
+        n = n + 1
+      end
     end
   end
   return n
@@ -2071,7 +2073,7 @@ end
 function CountObjectsNearPos(pos, range, radius, objects)
   local n = 0
   for i, object in pairs(objects) do
-    if IsObjectAlive(object) and GetDistanceSqr(pos, Vector(object)) <= radius^2 then
+    if IsObjectAlive(object) and GetTeam(object) ~= GetTeam(myHero) and GetDistanceSqr(pos, Vector(object)) <= radius^2 then
       n = n + 1
     end
   end
