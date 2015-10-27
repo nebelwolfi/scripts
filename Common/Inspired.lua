@@ -544,9 +544,11 @@ local function __MC_LoadInstance(ins, saved)
           p:Value({saved[p.id].color.a,saved[p.id].color.r,saved[p.id].color.g,saved[p.id].color.b})
         elseif p.type == "KeyBinding" then
           p:Toggle(saved[p.id].isToggle)
+          p:Key(saved[p.id].key)
+          if saved[p.id].isToggle then p:Value(saved[p.id].value) end
         elseif p.type == "TargetSelector" then
-          p.settings[1].value = saved[p.id].focus
-          p.settings[2].value = saved[p.id].mode
+          p.settings[1]:Value(saved[p.id].focus)
+          p.settings[2]:Value(saved[p.id].mode)
         else
           if p.value ~= nil then p.value = saved[p.id].value end
           if p.key ~= nil then p.key = saved[p.id].key end
@@ -1401,7 +1403,7 @@ function MenuConfig:TargetSelector(id, name, ts, forceDefault)
   ts.head = self
   ts.id = id
   ts.name = name
-  ts.forceDefault = forceDefault
+  ts.forceDefault = forceDefault or false
   table.insert(self.__params, ts)
   self[id] = ts
   __MC_LoadAll()
@@ -2098,7 +2100,7 @@ function InspiredsOrbWalker:__init()
   self.lastBoundingChange = 0
   self.lastStickChange = 0
   self.callbacks = {[1] = {}, [2] = {}, [3] = {}}
-  self.bonusDamageTable = { -- TODO: Lulu, Rumble, Nautilus, TwistedFate, Ziggs
+  self.bonusDamageTable = {
     ["Aatrox"] = function(source, target, ADDmg, APDmg, TRUEDmg)
         return ADDmg+(GotBuff(source, "aatroxwpower")>0 and 35*GetCastLevel(source, _W)+25 or 0), APDmg, TRUEDmg
       end,
