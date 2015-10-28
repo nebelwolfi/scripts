@@ -192,7 +192,7 @@ do
 			end
 			for _, thing in pairs(Prediction.Vars.dashes) do
 				if spell.name:lower():find(thing.name) then
-					local endPos = Vector(spell.endPos)
+					local endPos = Vector(spell.endPos or spell.target)
 					local realDist = GetDistance(unit, endPos)
 					if not thing.endP then
 						if thing.max then
