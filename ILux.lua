@@ -57,7 +57,6 @@ function Lux:__init()
 	if IPrediction ~= nil then
 		self.Config:Boolean("OnImmobile", "Cast E on Immobile", true)
 		self.Config:Boolean("OnDash", "Cast Q on Dash", true)
-
 		IPrediction.OnImmobile(function(target, y)
 			if self.Config.OnImmobile:Value() and ValidTarget(target, 1100 + 325 / 2) and y < 325 then
 				CastSkillShot(_E, GetOrigin(target))
@@ -115,8 +114,7 @@ function Lux:__init()
 		}
 	}
 	
-	self.__ = {} self.___ = {} for _,__ in pairs(self._) do self.__[_] = 0 self.___[_] = #__ end 
-	self.____ = function(____) self.__[____] = self.__[____] + 1 if self.__[____] > self.___[____] then self.__[____] = 1 end self._[____][self.__[____]]() end
+	self.__ = {} self.___ = {} for _,__ in pairs(self._) do self.__[_] = 0 self.___[_] = #__ end self.____ = function(____) self.__[____] = self.__[____] + 1 if self.__[____] > self.___[____] then self.__[____] = 1 end self._[____][self.__[____]]() end
 
 	self.spellData = {
 		[_Q] = { name = "LuxLightBinding", speed = 1200, delay = 0.25, range = 1300, width = 130, collision = true, type = "linear", dmg = function(source) return 10+50*GetCastLevel(myHero, _Q)+0.7*GetBonusAP(myHero) end},
@@ -191,22 +189,24 @@ function Lux:Draw()
 			local unit = heroes[I]
 			if ValidTarget(unit) then
 				local barPos = GetHPBarPos(unit)
-				local sdmg = {}
-				for slot = 0, 3 do
-					sdmg[slot] = CanUseSpell(myHero, slot) == 0 and CalcDamage(myHero, unit, 0, self.spellData[slot].dmg(myHero, unit)) or 0
-				end
-				local mhp = GetMaxHP(unit)
-				local chp = GetCurrentHP(unit)
-				local offset = 103 * (chp/mhp)
-				for __, spell in pairs({"Q", "W", "E", "R"}) do
-					if sdmg[__-1] > 0 then
-						local off = 103*(sdmg[__-1]/mhp)
-						local _ = 2*__
-						DrawLine(barPos.x+1+offset-off, barPos.y-1, barPos.x+1+offset, barPos.y-1, 5, self.colors[__])
-						DrawLine(barPos.x+1+offset-off, barPos.y-1, barPos.x+1+offset-off, barPos.y+10-10*_, 1, self.colors[__])
-						DrawText(spell, 11, barPos.x+1+offset-off, barPos.y-5-10*_, self.colors[__])
-						DrawText(""..sdmg[__-1], 10, barPos.x+4+offset-off, barPos.y+5-10*_, self.colors[__])
-						offset = offset - off
+				if barPos.x > = and barPos.y > 0 then
+					local sdmg = {}
+					for slot = 0, 3 do
+						sdmg[slot] = CanUseSpell(myHero, slot) == 0 and CalcDamage(myHero, unit, 0, self.spellData[slot].dmg(myHero, unit)) or 0
+					end
+					local mhp = GetMaxHP(unit)
+					local chp = GetCurrentHP(unit)
+					local offset = 103 * (chp/mhp)
+					for __, spell in pairs({"Q", "W", "E", "R"}) do
+						if sdmg[__-1] > 0 then
+							local off = 103*(sdmg[__-1]/mhp)
+							local _ = 2*__
+							DrawLine(barPos.x+1+offset-off, barPos.y-1, barPos.x+1+offset, barPos.y-1, 5, self.colors[__])
+							DrawLine(barPos.x+1+offset-off, barPos.y-1, barPos.x+1+offset-off, barPos.y+10-10*_, 1, self.colors[__])
+							DrawText(spell, 11, barPos.x+1+offset-off, barPos.y-5-10*_, self.colors[__])
+							DrawText(""..sdmg[__-1], 10, barPos.x+4+offset-off, barPos.y+5-10*_, self.colors[__])
+							offset = offset - off
+						end
 					end
 				end
 			end
