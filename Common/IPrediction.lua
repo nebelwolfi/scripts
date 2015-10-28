@@ -12,7 +12,6 @@ do
 		Heroes = {},
 		Slowed = {},
 		Stunned = {},
-		Casting = {},
 		Dashing = {},
 		Config = MenuConfig("nPrediction", "nPrediction"..myHeroName),
 		DashCallbacks = {},
