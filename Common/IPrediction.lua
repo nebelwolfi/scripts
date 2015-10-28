@@ -170,7 +170,7 @@ do
 	end
 
 	function Prediction.Callback.ProcessWaypoint(unit, waypoint)
-		if unit and IsObjectAlive(unit) then
+		if unit and IsObjectAlive(unit) and GetObjectType(unit) == GetObjectType(myHero) then
 			if unit ~= myHero and waypoint.index == 1 then
 				local current_way_point = Vector(waypoint.position)
 				local my_current_position = Vector(myHero)
