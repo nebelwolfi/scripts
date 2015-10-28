@@ -32,9 +32,6 @@ function Lux:__init()
 	self.Config:Menu("LastHit", "LastHit")
 	self.Config.LastHit:Boolean("Do", "Execute LastHit", true)
 	self.Config.LastHit:Empty("e1", -0.75)
-	self.Config.LastHit:Boolean("DoQ", "Use Q", false)
-	self.Config.LastHit:Slider("ManaQ", "Mana: Q", 80, 0, 100, 1)
-	self.Config.LastHit:Empty("e2", -0.75)
 	self.Config.LastHit:Boolean("DoE", "Use E", false)
 	self.Config.LastHit:Slider("ManaE", "Mana: E", 50, 0, 100, 1)
 	self.Config:Menu("Killsteal", "Killsteal")
@@ -89,7 +86,7 @@ function Lux:__init()
 		},
 		LastHit = {
 			function()
-				local doQ, doE = self.Config.LastHit.DoQ:Value() and not self.mightDieOfE and self.mana >= self.Config.LastHit.ManaQ:Value(), self.Config.LastHit.DoE:Value() and self.mana >= self.Config.LastHit.ManaE:Value()
+				local doQ, doE = not self.mightDieOfE and false, self.Config.LastHit.DoE:Value() and self.mana >= self.Config.LastHit.ManaE:Value()
 				for I = 1, minionManager.maxObjects do
 					local minion = minionManager.objects[I]
 					if ValidTarget(minion, 1200) then
@@ -112,11 +109,13 @@ function Lux:__init()
 			function() self:Killsteal() end
 		},
 		Misc = {
-			function() self.mana = GetCurrentMana(myHero)/GetMaxMana(myHero) end
+			function() self.mana = 100*GetCurrentMana(myHero)/GetMaxMana(myHero) end
 		}
 	}
 	self.__ = {} self.___ = {} 
-	for _,__ in pairs(self._) do self.__[_] = 0 self.___[_] = #__ end 
+	for _,__ in pairs(self._) do 
+		self.__[_] = 0 self.___[_] = #__ 
+	end 
 	self.____ = function(____) self.__[____] = self.__[____] + 1 if self.__[____] > self.___[____] then self.__[____] = 1 end self._[____][self.__[____]]() end
 
 	self.spellData = {
@@ -126,6 +125,7 @@ function Lux:__init()
 		[_R] = { name = "LuxMaliceCannon", speed = math.huge, delay = 1, range = 3340, width = 250, collision = false, type = "linear", dmg = function(source, target) return self:Enlightened(target, 1) and 220+150*GetCastLevel(myHero, _R)+0.75*GetBonusAP(myHero) or 200+100*GetCastLevel(myHero, _R)+0.75*GetBonusAP(myHero) end}
 	}
 
+	self.ts = {}
 	for I = 0, 3 do
 		self.ts[I] = TargetSelector(self.spellData[I].range + self.spellData[I].width / 2, I==1 and TARGET_LOW_HP_PRIORITY or TARGET_LESS_CAST_PRIORITY, DAMAGE_MAGIC, true, I==1 and true or false)
 	end
