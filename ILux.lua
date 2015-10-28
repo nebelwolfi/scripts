@@ -63,7 +63,7 @@ function Lux:__init()
 			end
 		end, 1100, 1300, 0.25, 325 / 2)
 		IPrediction.OnDash(function(target, y)
-			if self.Config.OnDash:Value() and ValidTarget(target, 1175 + 130 / 2) and y < 130 then
+			if self.Config.OnDash:Value() and ValidTarget(target, 1175 + 130 / 2) and GetDistance(y) < 1175 + 130 / 2 then
 				CastSkillShot(_Q, y)
 			end
 		end, 1100, 1200, 0.25, 130 / 2)
