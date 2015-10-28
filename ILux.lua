@@ -115,8 +115,7 @@ function Lux:__init()
 		}
 	}
 	
-	self.__ = {} self.___ = {} 
-	for _,__ in pairs(self._) do self.__[_] = 0 self.___[_] = #__ end 
+	self.__ = {} self.___ = {} for _,__ in pairs(self._) do self.__[_] = 0 self.___[_] = #__ end 
 	self.____ = function(____) self.__[____] = self.__[____] + 1 if self.__[____] > self.___[____] then self.__[____] = 1 end self._[____][self.__[____]]() end
 
 	self.spellData = {
@@ -190,23 +189,25 @@ function Lux:Draw()
 	if self.Config.Draw.DoD:Value() then
 		for I = 1, #heroes do
 			local unit = heroes[I]
-			local barPos = GetHPBarPos(unit)
-			local sdmg = {}
-			for slot = 0, 3 do
-				sdmg[slot] = CanUseSpell(myHero, slot) == 0 and CalcDamage(myHero, unit, 0, self.spellData[slot].dmg(myHero, unit)) or 0
-			end
-			local mhp = GetMaxHP(unit)
-			local chp = GetCurrentHP(unit)
-			local offset = 103 * (chp/mhp)
-			for __, spell in pairs({"Q", "W", "E", "R"}) do
-				if sdmg[__-1] > 0 then
-					local off = 103*(sdmg[__-1]/mhp)
-					local _ = 2*__
-					DrawLine(barPos.x+1+offset-off, barPos.y-1, barPos.x+1+offset, barPos.y-1, 10, self.colors[__])
-					DrawLine(barPos.x+1+offset-off, barPos.y-1, barPos.x+1+offset-off, barPos.y+10-10*_, 1, self.colors[__])
-					DrawText(spell, 11, barPos.x+1+offset-off, barPos.y-5-10*_, self.colors[__])
-					DrawText(""..sdmg[__-1], 10, barPos.x+4+offset-off, barPos.y+5-10*_, self.colors[__])
-					offset = offset - off
+			if ValidTarget(unit) then
+				local barPos = GetHPBarPos(unit)
+				local sdmg = {}
+				for slot = 0, 3 do
+					sdmg[slot] = CanUseSpell(myHero, slot) == 0 and CalcDamage(myHero, unit, 0, self.spellData[slot].dmg(myHero, unit)) or 0
+				end
+				local mhp = GetMaxHP(unit)
+				local chp = GetCurrentHP(unit)
+				local offset = 103 * (chp/mhp)
+				for __, spell in pairs({"Q", "W", "E", "R"}) do
+					if sdmg[__-1] > 0 then
+						local off = 103*(sdmg[__-1]/mhp)
+						local _ = 2*__
+						DrawLine(barPos.x+1+offset-off, barPos.y-1, barPos.x+1+offset, barPos.y-1, 5, self.colors[__])
+						DrawLine(barPos.x+1+offset-off, barPos.y-1, barPos.x+1+offset-off, barPos.y+10-10*_, 1, self.colors[__])
+						DrawText(spell, 11, barPos.x+1+offset-off, barPos.y-5-10*_, self.colors[__])
+						DrawText(""..sdmg[__-1], 10, barPos.x+4+offset-off, barPos.y+5-10*_, self.colors[__])
+						offset = offset - off
+					end
 				end
 			end
 		end
@@ -218,9 +219,7 @@ function Lux:Enlightened(unit, windup)
 end
 
 function Lux:Cast(spell)
-	if spell ~= _R and self.Config.windup:Value() and IOW.target and (IOW.isWindingUp or self.casted) then 
-		return 
-	end
+	if spell ~= _R and self.Config.windup:Value() and IOW.target and (IOW.isWindingUp or self.casted) then return end
 	local target = self.ts[spell]:GetTarget()
 	if target then
 		self:PredCast(spell, target, self.spellData[spell])
@@ -232,6 +231,7 @@ function Lux:Cast(spell)
 end
 
 function Lux:PredCast(spell, target, t)
+	if target == nil or GetOrigin(target) == nil or not IsTargetable(target) or IsImmune(target, myHero) or IsDead(target) or not IsVisible(target) then return false end
 	local Pred = GetPredictionForPlayer(myHeroPos(),target,GetMoveSpeed(target), t.speed, t.delay, t.range, t.width, t.collision, true)
 	if Pred.HitChance >= 1 then
 		CastSkillShot(spell, Pred.PredPos.x, Pred.PredPos.y, Pred.PredPos.z)
