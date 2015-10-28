@@ -57,7 +57,7 @@ function Lux:__init()
 	if IPrediction ~= nil then
 		self.Config:Boolean("OnImmobile", "Cast E on Immobile", true)
 		self.Config:Boolean("OnDash", "Cast Q on Dash", true)
-		
+
 		IPrediction.OnImmobile(function(target, y)
 			if self.Config.OnImmobile:Value() and ValidTarget(target, 1100 + 325 / 2) and y < 325 then
 				CastSkillShot(_E, GetOrigin(target))
@@ -114,6 +114,7 @@ function Lux:__init()
 			function() if self.Config.DoE:Value() then if GetCastName(myHero, _E) == "LuxLightstrikeToggle" then CastSpell(_E) end end end
 		}
 	}
+	
 	self.__ = {} self.___ = {} 
 	for _,__ in pairs(self._) do self.__[_] = 0 self.___[_] = #__ end 
 	self.____ = function(____) self.__[____] = self.__[____] + 1 if self.__[____] > self.___[____] then self.__[____] = 1 end self._[____][self.__[____]]() end
@@ -134,7 +135,6 @@ function Lux:__init()
 	self.colors = { 0xDFFFE258, 0xDF8866F4, 0xDF55F855, 0xDFFF5858 }
 	self.mana = 0
 	self.str = {[_Q] = "Q", [_W] = "W", [_E] = "E", [_R] = "R"}
-	self.ts = {}
 
 	OnTick(function() self:Tick() end)
 	OnDraw(function() self:Draw() end)
