@@ -1,5 +1,5 @@
 require('Inspired')
-require('IPrediction')
+pcall(require, 'IPrediction')
 
 class "Lux"
 
@@ -52,6 +52,7 @@ function Lux:__init()
 	self.Config.Draw:Empty("e1", -0.75)
 	self.Config.Draw:Boolean("DoD", "Draw Damage", true)
 	self.Config:Boolean("windup", "Force AA-Weave", true)
+	self.Config:Boolean("DoE", "Auto-detonate E", true)
 
 	if IPrediction ~= nil then
 
@@ -109,13 +110,12 @@ function Lux:__init()
 			function() self:Killsteal() end
 		},
 		Misc = {
-			function() self.mana = 100*GetCurrentMana(myHero)/GetMaxMana(myHero) end
+			function() self.mana = 100*GetCurrentMana(myHero)/GetMaxMana(myHero) end,
+			function() if self.Config.DoE:Value() then if GetCastName(myHero, _E) == "LuxLightstrikeToggle" then CastSpell(_E) end end
 		}
 	}
 	self.__ = {} self.___ = {} 
-	for _,__ in pairs(self._) do 
-		self.__[_] = 0 self.___[_] = #__ 
-	end 
+	for _,__ in pairs(self._) do self.__[_] = 0 self.___[_] = #__ end 
 	self.____ = function(____) self.__[____] = self.__[____] + 1 if self.__[____] > self.___[____] then self.__[____] = 1 end self._[____][self.__[____]]() end
 
 	self.spellData = {
