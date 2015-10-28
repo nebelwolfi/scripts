@@ -1074,7 +1074,7 @@ function TargetSelector:__init(range, mode, type, focusselected, ownteam, priori
           d = p
         end
       end
-      if t and d < GetHitBox(t)^2.25 then
+      if t and d < GetHitBox(t)^2.25 and (self.ownteam and GetTeam(t) == GetTeam(myHero) or GetTeam(t) ~= GetTeam(myHero)) then
         self.selected = t
       else
         self.selected = nil
