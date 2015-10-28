@@ -67,7 +67,7 @@ function Lux:__init()
 			if self.Config.OnDash:Value() and ValidTarget(target, 1175 + 130 / 2) and y < 130 then
 				CastSkillShot(_Q, y)
 			end
-		end, 1200, 1300, 0.25, 130 / 2)
+		end, 1100, 1200, 0.25, 130 / 2)
 	end
 
 	self._ = {
