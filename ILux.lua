@@ -55,19 +55,19 @@ function Lux:__init()
 	self.Config:Boolean("DoE", "Auto-detonate E", true)
 
 	if IPrediction ~= nil then
-
+		self.Config:Boolean("OnImmobile", "Cast E on Immobile", true)
+		self.Config:Boolean("OnDash", "Cast Q on Dash", true)
+		
 		IPrediction.OnImmobile(function(target, y)
-			if ValidTarget(target, 1100 + 325 / 2) and y < 325 then
+			if self.Config.OnImmobile:Value() and ValidTarget(target, 1100 + 325 / 2) and y < 325 then
 				CastSkillShot(_E, GetOrigin(target))
 			end
 		end, 1100, 1300, 0.25, 325 / 2)
-
 		IPrediction.OnDash(function(target, y)
-			if ValidTarget(target, 1175 + 130 / 2) and y < 130 then
+			if self.Config.OnDash:Value() and ValidTarget(target, 1175 + 130 / 2) and y < 130 then
 				CastSkillShot(_Q, y)
 			end
 		end, 1200, 1300, 0.25, 130 / 2)
-
 	end
 
 	self._ = {
