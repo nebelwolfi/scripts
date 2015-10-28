@@ -721,10 +721,11 @@ local function __MC_WndMsg()
     local function __MC_IsBrowseParam(i, p, k)
       local isB, ladd = false, 0
       if p.type == "Slider" then ladd = 1 end
+      if p.type == "Empty" then ladd = p.value end
       if CursorIsUnder(MC.x+(4+MC.width)*k, MC.y+23*i-2, MC.width, 23+ladd*23) then
         isB = true
       end
-      if p.active then 
+      if p.active then
         if p.type == "Boolean" then
           if CursorIsUnder(MC.x+(4+MC.width)*k, MC.y+23*i, MC.width, 23) then
             isB = true
@@ -821,6 +822,7 @@ local function __MC_WndMsg()
     end
   end
   local function __MC_WndMsg(msg, key)
+    if not IsGameOnTop() or IsChatOpened() then return end
     if MCadd.keyChange ~= nil then
       if key >= 16 and key ~= 117 then
         MCadd.keyChange.key = key
@@ -844,7 +846,8 @@ local function __MC_WndMsg()
   local function __MC_BrowseParam(i, p, k)
     local isB, ladd = false, 0
     if p.type == "Slider" then ladd = 1 end
-    if CursorIsUnder(MC.x+(4+MC.width)*k, MC.y+23*i+ladd*23, MC.width, 20) then
+    if p.type == "Empty" then ladd = p.value
+    elseif CursorIsUnder(MC.x+(4+MC.width)*k, MC.y+23*i+ladd*23, MC.width, 20) then
       __MC_ResetInstance(p.head, nil, true)
       p.active = true
     end
