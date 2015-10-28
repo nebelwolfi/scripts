@@ -111,7 +111,7 @@ function Lux:__init()
 		},
 		Misc = {
 			function() self.mana = 100*GetCurrentMana(myHero)/GetMaxMana(myHero) end,
-			function() if self.Config.DoE:Value() then if GetCastName(myHero, _E) == "LuxLightstrikeToggle" then CastSpell(_E) end end
+			function() if self.Config.DoE:Value() then if GetCastName(myHero, _E) == "LuxLightstrikeToggle" then CastSpell(_E) end end end
 		}
 	}
 	self.__ = {} self.___ = {} 
