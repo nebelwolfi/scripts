@@ -2611,6 +2611,7 @@ function InspiredsOrbWalker:MakeMenu()
   self.Config:DropDown("lcm", "Lane Clear method", myHeroName == "Vayne" and 2 or 1, {"Focus Highest", "Stick to 1"})
   self.Config:Boolean("sticky", "Stick to one Target", false, function() end, true)
   self.Config:Boolean("wtt", "Walk to Target", true)
+  self.Config:Boolean("Humanizer", "Humanizer", true)
   self.Config:Boolean("drawcircle", "Autoattack Circle", true)
   self.Config:ColorPick("circlecol", "Circle color", {255,255,255,255})
   self.Config:Slider("circlequal", "Circle quality", 4, 0, 8, 1)
@@ -2957,11 +2958,13 @@ function InspiredsOrbWalker:Orb()
 end
 
 function InspiredsOrbWalker:Move(pos)
-  if not self.lastPos then
+  if not self.Config.Humanizer:Value() then
+    MoveToXYZ(pos)
+  elseif not self.lastPos then
     self.lastPos = { pos, GetTickCount() }
     MoveToXYZ(pos)
   else
-    if self.lastPos[2] + 125 < GetTickCount() or GetDistance(pos, self.lastPos[1]) > 125 then
+    if self.lastPos[2] + 375 < GetTickCount() or (GetDistance(pos, self.lastPos[1]) > 225 and self.lastPos[2] + 225 < GetTickCount()) then
       self.lastPos = { pos, GetTickCount() }
       MoveToXYZ(pos)
     end
@@ -2973,7 +2976,7 @@ function InspiredsOrbWalker:MakePos(p)
   local hPos = GetOrigin(myHero)
   local tV = {x = (mPos.x-hPos.x), y = (mPos.z-hPos.z), z = (mPos.z-hPos.z)}
   local len = math.sqrt(tV.x * tV.x + tV.y * tV.y + tV.z * tV.z)
-  local ran = math.random(50)+math.random(50)+math.random(50)+math.random(50)+math.random(50)+math.random(50)+math.random(50)+math.random(50)+math.random(50)+math.random(50)
+  local ran = math.random(150)+math.random(150)+math.random(150)+math.random(150)+math.random(150)+math.random(150)+math.random(150)+math.random(150)+math.random(150)+math.random(150)
   return {x = hPos.x + (250+ran) * tV.x / len, y = hPos.y, z = hPos.z + (250+ran) * tV.z / len}
 end
 
