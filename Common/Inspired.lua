@@ -2733,11 +2733,18 @@ function InspiredsOrbWalker:GetTarget()
 end
 
 function InspiredsOrbWalker:GetLastHit()
+  local dmg = 0
+  local armor = 0
   for i=1, self.mobs.maxObjects do
     local o = self.mobs.objects[i]
     if o and IsObjectAlive(o) and GetTeam(o) == 300-GetTeam(myHero) then
       if self:CanOrb(o) then
-        if self:PredictHealth(o, 1000*GetWindUp(myHero) + 1000*math.sqrt(GetDistanceSqr(GetOrigin(o), GetOrigin(myHero))) / self:GetProjectileSpeed(myHero)) < self:GetDmg(myHero, o) then
+        local ar = GetArmor(o)
+        if dmg == 0 or armor ~= ar or GetObjectName(myHero) == "Vayne" then
+          dmg = self:GetDmg(myHero, o)
+          armor = ar
+        end
+        if self:PredictHealth(o, 1000*GetWindUp(myHero) + 1000*math.sqrt(GetDistanceSqr(GetOrigin(o), GetOrigin(myHero))) / self:GetProjectileSpeed(myHero)) < dmg then
           return o
         end
       end
