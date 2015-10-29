@@ -2162,7 +2162,7 @@ function InspiredsOrbWalker:__init()
         return ADDmg * 0.9, APDmg, TRUEDmg
       end,
     ["Kassadin"] = function(source, target, ADDmg, APDmg, TRUEDmg)
-        return ADDmg, APDmg + (GotBuff(source, "netherbladebuff") > 0 and 20+.1*GetBonusAP(source) or 0) + (GotBuff(source, "netherblade") > 0 and 25*GetCastLevel(source, _W)+15+.6*GetBonusAP(source) or 0), TRUEDmg
+        return ADDmg, APDmg + (GotBuff(source, "netherbladebuff") > 0 and 20+.1*GetBonusAP(source) or (GotBuff(source, "netherblade") > 0 and 25*GetCastLevel(source, _W)+15+.6*GetBonusAP(source) or 0)), TRUEDmg
       end,
     ["Kayle"] = function(source, target, ADDmg, APDmg, TRUEDmg)
         return ADDmg, APDmg + (GotBuff(source, "kaylerighteousfurybuff") > 0 and 5*GetCastLevel(source, _E)+5+.15*GetBonusAP(source) or 0) + (GotBuff(source, "judicatorrighteousfury") > 0 and 5*GetCastLevel(source, _E)+5+.15*GetBonusAP(source) or 0), TRUEDmg
@@ -2747,11 +2747,18 @@ end
 
 function InspiredsOrbWalker:GetLaneClear()
   local m = nil
+  local dmg = 0
+  local armor = 0
   for i=1, self.mobs.maxObjects do
     local o = self.mobs.objects[i]
     if o and IsObjectAlive(o) and GetTeam(o) == 300-GetTeam(myHero) then
       if self:CanOrb(o) then
-        if self:PredictHealth(o, 2000/(GetAttackSpeed(myHero)*GetBaseAttackSpeed(myHero)) + 2000 * math.sqrt(GetDistanceSqr(GetOrigin(o), GetOrigin(myHero))) / self:GetProjectileSpeed(myHero)) < self:GetDmg(myHero, o) then
+        local ar = GetArmor(o)
+        if dmg == 0 or armor ~= ar or GetObjectName(myHero) == "Vayne" then
+          dmg = self:GetDmg(myHero, o)
+          armor = ar
+        end
+        if self:PredictHealth(o, 2000/(GetAttackSpeed(myHero)*GetBaseAttackSpeed(myHero)) + 2000 * GetDistance(GetOrigin(o), GetOrigin(myHero)) / self:GetProjectileSpeed(myHero)) < dmg then
           return nil
         else
           m = o
