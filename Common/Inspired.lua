@@ -2926,10 +2926,10 @@ function InspiredsOrbWalker:Orb()
       if GetDistanceSqr(GetOrigin(myHero), GetMousePos()) > self.Config.stop:Value()^2 and self.movementEnabled then
         if self.targetPos and (not self.target or not GetObjectType(self.target) == GetObjectType(myHero)) and GetDistanceSqr(self.targetPos, GetOrigin(myHero)) < (self.Config.stick:Value())^2 then
           if GetDistanceSqr(GetOrigin(myHero), self.targetPos) > GetRange(myHero)^2 then
-            MoveToXYZ(self:MakePos(self.targetPos))
+            self:Move(self:MakePos(self.targetPos))
           end
         else
-          MoveToXYZ(self:MakePos(self.forcePos or GetMousePos()))
+          self:Move(self:MakePos(self.forcePos or GetMousePos()))
         end
       else
         HoldPosition()
@@ -2938,6 +2938,18 @@ function InspiredsOrbWalker:Orb()
       self:Execute(1, self.target)
       self.autoAttackT = GetTickCount()
       AttackUnit(self.target)
+    end
+  end
+end
+
+function InspiredsOrbWalker:Move(pos)
+  if not self.lastPos then
+    self.lastPos = { pos, GetTickCount() }
+    MoveToXYZ(pos)
+  else
+    if self.lastPos[2] + 125 < GetTickCount() or GetDistance(pos, self.lastPos[1]) > 125 then
+      self.lastPos = { pos, GetTickCount() }
+      MoveToXYZ(pos)
     end
   end
 end
