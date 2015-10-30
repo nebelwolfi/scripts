@@ -793,7 +793,7 @@ function SmoothEvade:Data()
 			[_W] = { name = "", range = 350},
 			[_E] = { name = "", range = 475},
 			[_R] = { name = "", range = 1200},
-			[-2] = { name = "", range = 1200, speed = 1200, delay = 0.125, width = 65, collision = false, aoe = false, type = "linear" }
+			[-2] = { name = "YasuoQ3", range = 1200, speed = 1200, delay = 0.125, width = 65, collision = false, aoe = false, type = "linear" }
 		},
 		["Yorick"] = {
 			[_Q] = { range = 0},
