@@ -66,7 +66,7 @@ function SmoothEvade:__init()
     DelayAction(function()
     	for _,k in pairs(heroes) do
 	      self.Config:Menu(GetObjectName(k), GetObjectName(k))
-	      for i=-3,4 do
+	      for i=-3,3 do
 	        if self.data and self.data[GetObjectName(k)] and self.data[GetObjectName(k)][i] and self.data[GetObjectName(k)][i].name ~= "" and self.data[GetObjectName(k)][i].type then
 	          self.Config[GetObjectName(k)]:Boolean(self.str[i], "Evade "..self.str[i], true)
 	        end
@@ -85,7 +85,7 @@ function SmoothEvade:__init()
     self.Config:Slider("er", "Extrarange", 20, 0, 100, 0)
     self.Config:DropDown("p", "Pathfinding", 1, {"Basic", "Advanced"})
     self.activeSpells = {}
-    self.str = {[-3] = "P", [-2] = "Q3", [-1] = "Q2", [_Q] = "Q", [_W] = "W", [_E] = "E", [_R] = "R"}
+    self.str = {[4] = "R2", [-3] = "P", [-2] = "Q3", [-1] = "Q2", [_Q] = "Q", [_W] = "W", [_E] = "E", [_R] = "R"}
 end
 
 function SmoothEvade:Pos()
@@ -307,7 +307,7 @@ function SmoothEvade:ProcessSpell(unit, spell)
 	if self.Config and unit and spell and spell.name and GetTeam(unit) ~= GetTeam(myHero) then
 		if spell.name:lower():find("attack") or not GetObjectName(spell.target) then return end
 		if self.data and self.data[GetObjectName(unit)] then
-			for i=-3,4 do
+			for i=-3,3 do
 				if self.Config[GetObjectName(unit)][self.str[i]] and spell.name:find(self.data[GetObjectName(unit)][i].name) then
 					s = {slot = i, source = unit, startTime = GetGameTimer(), startPos = Vector(unit), endPos = Vector(spell.endPos), name = spell.name}
 					table.insert(self.activeSpells, s)
@@ -349,9 +349,9 @@ function SmoothEvade:Data()
 			[_R] = { name = "InfernalGuardian", speed = math.huge, delay = 0.25, range = 600, width = 300, collision = false, aoe = true, type = "circular"}
 		},
 		["Ashe"] = {
-			[_Q] = { name = "", range = 700},
+			[_Q] = { range = 700},
 			[_W] = { name = "Volley", speed = 902, delay = 0.25, range = 1200, width = 100, collision = true, aoe = false, type = "cone"},
-			[_E] = { name = "", speed = 1500, delay = 0.5, range = 25000, width = 1400, collision = false, aoe = false, type = "linear"},
+			[_E] = { speed = 1500, delay = 0.5, range = 25000, width = 1400, collision = false, aoe = false, type = "linear"},
 			[_R] = { name = "EnchantedCrystalArrow", speed = 1600, delay = 0.5, range = 25000, width = 100, collision = true, aoe = false, type = "linear"}
 		},
 		["Azir"] = {
@@ -396,7 +396,8 @@ function SmoothEvade:Data()
 		},
 		["Corki"] = {
 			[_Q] = { name = "PhosphorusBomb", speed = 700, delay = 0.4, range = 825, width = 250, collision = false, aoe = false, type = "circular"},
-			[_R] = { name = "MissileBarrage", speed = 2000, delay = 0.200, range = 1225, width = 60, collision = false, aoe = false, type = "linear"},
+			[_R] = { name = "MissileBarrage", speed = 2000, delay = 0.200, range = 1300, width = 60, collision = false, aoe = false, type = "linear"},
+                        [4] = { name = "MissileBarrageBig", speed = 2000, delay = 0.200, range = 1500, width = 80, collision = false, aoe = false, type = "linear"},
 		},
 		["Darius"] = {
 			[_Q] = { name = "DariusCleave", speed = math.huge, delay = 0.75, range = 450, width = 450, type = "circular"},
@@ -444,7 +445,7 @@ function SmoothEvade:Data()
 		},
 		["Galio"] = {
 			[_Q] = { name = "GalioResoluteSmite", speed = 1300, delay = 0.25, range = 900, width = 250, collision = false, aoe = true, type = "circular"},
-			[_E] = { name = "", speed = 1200, delay = 0.25, range = 1000, width = 200, collision = false, aoe = false, type = "linear"}
+			[_E] = { name = "GalioRighteousGust", speed = 1200, delay = 0.25, range = 1000, width = 200, collision = false, aoe = false, type = "linear"}
 		},
 		["Gangplank"] = {
 			[_Q] = { name = "GangplankQWrapper", range = 900},
@@ -454,7 +455,9 @@ function SmoothEvade:Data()
 		["Garen"] = {
 		},
 		["Gnar"] = {
-			[_Q] = { name = "", speed = 1225, delay = 0.125, range = 1200, width = 80, collision = true, aoe = false, type = "linear"}
+			[_Q] = { name = "GnarQ", speed = 1225, delay = 0.125, range = 1200, width = 80, collision = false, aoe = false, type = "linear"},
+                        [-1] = { name = "GnarQReturn", speed = 1225, delay = 0, range = 2500, width = 75, collision = false, aoe = false, type = "linear"},
+                       [-2] = { name = "GnarBigQ", speed = 2100, delay = 0,5, range = 2500, width = 90, collision = false, aoe = false, type = "linear"} 
 		},
 		["Gragas"] = {
 			[_Q] = { name = "GragasQ", speed = 1000, delay = 0.250, range = 1000, width = 300, collision = false, aoe = true, type = "circular"},
@@ -462,9 +465,9 @@ function SmoothEvade:Data()
 			[_R] = { name = "GragasR", speed = 1000, delay = 0.250, range = 1050, width = 400, collision = false, aoe = true, type = "circular"}
 		},
 		["Graves"] = {
-			[_Q] = { name = "", speed = 1950, delay = 0.265, range = 750, width = 85, collision = false, aoe = false, type = "cone"},
-			[_W] = { name = "", speed = 1650, delay = 0.300, range = 700, width = 250, collision = false, aoe = true, type = "circular"},
-			[_R] = { name = "", speed = 2100, delay = 0.219, range = 1000, width = 100, collision = false, aoe = false, type = "linear"}
+			[_Q] = { name = "GravesClusterShot", speed = 1950, delay = 0.265, range = 750, width = 85, collision = false, aoe = false, type = "cone"},
+			[_W] = { name = "SmokeScreen", speed = 1650, delay = 0.300, range = 700, width = 250, collision = false, aoe = true, type = "circular"},
+			[_R] = { name = "GravesChargeShot", speed = 2100, delay = 0.219, range = 1000, width = 100, collision = false, aoe = false, type = "linear"}
 		},
 		["Hecarim"] = {
 			[_Q] = { name = "", speed = math.huge, delay = 0.250, range = 0, width = 350, collision = false, aoe = true, type = "circular"},
