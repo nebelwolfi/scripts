@@ -112,8 +112,10 @@ function SmoothEvade:Dodge()
 			else
 				MoveToXYZ(self.m.x, self.m.x, self.m.z)
 			end
+			IOW.forcePos = self.m
 			return
 		else
+			IOW.forcePos = nil
 			_G.Evade = false
 		end
 	end
@@ -835,4 +837,4 @@ function SmoothEvade:Data()
 	}
 end
 
-SmoothEvade()
+_G.SmoothEvade = SmoothEvade()
