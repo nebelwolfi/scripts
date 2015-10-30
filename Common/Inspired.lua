@@ -2923,7 +2923,6 @@ function InspiredsOrbWalker:GetProjectileSpeed(o)
 end
 
 function InspiredsOrbWalker:Orb()
-  if _G.Evade then return end
   if self.Config.wtt and self.Config.wtt:Value() then
     self.targetPos = self.forcePos or GetOrigin(self.target)
   else
