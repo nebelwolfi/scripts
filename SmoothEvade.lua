@@ -63,29 +63,29 @@ function SmoothEvade:__init()
 	OnProcessWaypoint(function(x,y) self:ProcessWaypoint(x,y) end)
 	OnDeleteObj(function(o) self:DeleteObj(o) end)
 	self:Data()
-    DelayAction(function()
-    	for _,k in pairs(heroes) do
-	      self.Config:Menu(GetObjectName(k), GetObjectName(k))
-	      for i=-3,3 do
-	        if self.data and self.data[GetObjectName(k)] and self.data[GetObjectName(k)][i] and self.data[GetObjectName(k)][i].name ~= "" and self.data[GetObjectName(k)][i].type then
-	          self.Config[GetObjectName(k)]:Boolean(self.str[i], "Evade "..self.str[i], true)
-	        end
-	      end
-	    end
+	DelayAction(function()
+		for _,k in pairs(heroes) do
+		  self.Config:Menu(GetObjectName(k), GetObjectName(k))
+		  for i=-3,4 do
+			if self.data and self.data[GetObjectName(k)] and self.data[GetObjectName(k)][i] and self.data[GetObjectName(k)][i].name ~= "" and self.data[GetObjectName(k)][i].type then
+			  self.Config[GetObjectName(k)]:Boolean(self.str[i], "Evade "..self.str[i], true)
+			end
+		  end
+		end
 	end, 1)
-    self.Config:Boolean("draw", "Draw", true)
-    self.Config:Boolean("e", "Evade", true)
-    if Dashes[GetObjectName(myHero)] then
-    	self.Config:Boolean("d", "Use Dash", true)
-    	self.Config:Boolean("od", "Use Dash only", false)
-    	self.dashKey = Dashes[GetObjectName(myHero)].Spellslot
-    end
-    self.Config:KeyBinding("se", "Stop Evade", string.byte("N"), true)
-    self.Config:Slider("ew", "Extrawidth", 20, 0, 100, 0)
-    self.Config:Slider("er", "Extrarange", 20, 0, 100, 0)
-    self.Config:DropDown("p", "Pathfinding", 1, {"Basic", "Advanced"})
-    self.activeSpells = {}
-    self.str = {[4] = "R2", [-3] = "P", [-2] = "Q3", [-1] = "Q2", [_Q] = "Q", [_W] = "W", [_E] = "E", [_R] = "R"}
+	self.Config:Boolean("draw", "Draw", true)
+	self.Config:Boolean("e", "Evade", true)
+	if Dashes[GetObjectName(myHero)] then
+		self.Config:Boolean("d", "Use Dash", true)
+		self.Config:Boolean("od", "Use Dash only", false)
+		self.dashKey = Dashes[GetObjectName(myHero)].Spellslot
+	end
+	self.Config:KeyBinding("se", "Stop Evade", string.byte("N"), true)
+	self.Config:Slider("ew", "Extrawidth", 20, 0, 100, 0)
+	self.Config:Slider("er", "Extrarange", 20, 0, 100, 0)
+	self.Config:DropDown("p", "Pathfinding", 1, {"Basic", "Advanced"})
+	self.activeSpells = {}
+	self.str = {[4] = "R2", [-3] = "P", [-2] = "Q3", [-1] = "Q2", [_Q] = "Q", [_W] = "W", [_E] = "E", [_R] = "R"}
 end
 
 function SmoothEvade:Pos()
@@ -95,11 +95,11 @@ end
 
 function SmoothEvade:ProcessWaypoint(unit, wp)
   if unit and wp and unit == myHero and wp.index == 1 then
-    self.moveVec = wp.position
-    if _G.Evade and GetDi(myHeroPos(), wp.position) < 25 then
-    	self.m = nil
-    	_G.Evade = false
-    end
+	self.moveVec = wp.position
+	if _G.Evade and GetDi(myHeroPos(), wp.position) < 25 then
+		self.m = nil
+		_G.Evade = false
+	end
   end
 end
 
@@ -307,7 +307,7 @@ function SmoothEvade:ProcessSpell(unit, spell)
 	if self.Config and unit and spell and spell.name and GetTeam(unit) ~= GetTeam(myHero) then
 		if spell.name:lower():find("attack") or not GetObjectName(spell.target) then return end
 		if self.data and self.data[GetObjectName(unit)] then
-			for i=-3,3 do
+			for i=-3,4 do
 				if self.Config[GetObjectName(unit)][self.str[i]] and spell.name:find(self.data[GetObjectName(unit)][i].name) then
 					s = {slot = i, source = unit, startTime = GetGameTimer(), startPos = Vector(unit), endPos = Vector(spell.endPos), name = spell.name}
 					table.insert(self.activeSpells, s)
@@ -398,7 +398,7 @@ function SmoothEvade:Data()
 		["Corki"] = {
 			[_Q] = { name = "PhosphorusBomb", speed = 700, delay = 0.4, range = 825, width = 250, collision = false, aoe = false, type = "circular"},
 			[_R] = { name = "MissileBarrage", speed = 2000, delay = 0.200, range = 1300, width = 60, collision = false, aoe = false, type = "linear"},
-                        [4]  = { name = "MissileBarrageBig", speed = 2000, delay = 0.200, range = 1500, width = 80, collision = false, aoe = false, type = "linear"},
+						[4]  = { name = "MissileBarrageBig", speed = 2000, delay = 0.200, range = 1500, width = 80, collision = false, aoe = false, type = "linear"},
 		},
 		["Darius"] = {
 			[_Q] = { name = "DariusCleave", speed = math.huge, delay = 0.75, range = 450, width = 450, type = "circular"},
@@ -457,8 +457,8 @@ function SmoothEvade:Data()
 		},
 		["Gnar"] = {
 			[_Q] = { name = "GnarQ", speed = 1225, delay = 0.125, range = 1200, width = 80, collision = false, aoe = false, type = "linear"},
-                        [-1] = { name = "GnarQReturn", speed = 1225, delay = 0, range = 2500, width = 75, collision = false, aoe = false, type = "linear"},
-                       [-2] = { name = "GnarBigQ", speed = 2100, delay = 0,5, range = 2500, width = 90, collision = false, aoe = false, type = "linear"} 
+						[-1] = { name = "GnarQReturn", speed = 1225, delay = 0, range = 2500, width = 75, collision = false, aoe = false, type = "linear"},
+					   [-2] = { name = "GnarBigQ", speed = 2100, delay = 0,5, range = 2500, width = 90, collision = false, aoe = false, type = "linear"} 
 		},
 		["Gragas"] = {
 			[_Q] = { name = "GragasQ", speed = 1000, delay = 0.250, range = 1000, width = 300, collision = false, aoe = true, type = "circular"},
@@ -525,10 +525,10 @@ function SmoothEvade:Data()
 			[_R] = { name = "", range = 550}
 		},
 		["Kayle"] = {
-	        [_Q] = { name = "JudicatorReckoning" },
-	        [_W] = { name = "JudicatorDivineBlessing" },
-	        [_E] = { name = "JudicatorRighteosFury" },
-	        [_R] = { name = "JudicatorIntervention" }
+			[_Q] = { name = "JudicatorReckoning" },
+			[_W] = { name = "JudicatorDivineBlessing" },
+			[_E] = { name = "JudicatorRighteosFury" },
+			[_R] = { name = "JudicatorIntervention" }
 		},
 		["Kennen"] = {
 			[_Q] = { name = "KennenShurikenHurlMissile1", speed = 1700, delay = 0.180, range = 1050, width = 70, collision = true, aoe = false, type = "linear"}
@@ -546,11 +546,11 @@ function SmoothEvade:Data()
 			[_Q] = { range = 700},
 			[_W] = { name = "LeblancDistortion", speed = 1300, delay = 0.250, range = 600, width = 250, collision = false, aoe = false, type = "circular"},
 			[_E] = { name = "LeblancSoulShackle", speed = 1300, delay = 0.250, range = 950, width = 55, collision = true, aoe = false, type = "linear"},
-	        [_R] = { range = 0}
+			[_R] = { range = 0}
 		},
 		["LeeSin"] = {
 			[_Q] = { name = "BlindMonkQOne", speed = 1750, delay = 0.25, range = 1000, width = 70, collision = true, aoe = false, type = "linear"},
-	        [_W] = { name = "", range = 600},
+			[_W] = { name = "", range = 600},
 			[_E] = { name = "BlindMonkEOne", speed = math.huge, delay = 0.25, range = 0, width = 450, collision = false, aoe = false, type = "circular"},
 			[_R] = { name = "BlindMonkR", speed = 2000, delay = 0.25, range = 2000, width = 150, collision = false, aoe = false, type = "linear"}
 		},
@@ -652,7 +652,7 @@ function SmoothEvade:Data()
 		["Riven"] = {
 			[_Q] = { name = "RivenTriCleave", speed = math.huge, delay = 0.250, range = 310, width = 225, collision = false, aoe = true, type = "circular"},
 			[_W] = { name = "RivenMartyr", speed = math.huge, delay = 0.250, range = 0, width = 265, collision = false, aoe = true, type = "circular"},
-	        [_E] = { range = 390},
+			[_E] = { range = 390},
 			[_R] = { name = "rivenizunablade", speed = 2200, delay = 0.5, range = 1100, width = 200, collision = false, aoe = false, type = "cone"}
 		},
 		["Rumble"] = {
@@ -679,8 +679,8 @@ function SmoothEvade:Data()
 		},
 		["Sion"] = {
 			[_Q] = { name = "SionQ", speed = math.huge, delay = 0.125, range = 925, width = 250, collision = false, aoe = false, type = "linear"}, -- cone
-		        [_E] = { name = "SionE", speed = 1400, delay = 0.250, range = 925, width = 60, collision = false, aoe = false, type = "linear"},
-		        [_R] = { name = "SionR", speed = 1700, delay = 0, range = 925, width = 250, collision = false, aoe = false, type = "special"}
+				[_E] = { name = "SionE", speed = 1400, delay = 0.250, range = 925, width = 60, collision = false, aoe = false, type = "linear"},
+				[_R] = { name = "SionR", speed = 1700, delay = 0, range = 925, width = 250, collision = false, aoe = false, type = "special"}
 		},
 		["Sivir"] = {
 			[_Q] = { name = "SivirQ", speed = 1330, delay = 0.250, range = 1075, width = 0, collision = false, aoe = false, type = "linear"}
