@@ -678,7 +678,9 @@ function SmoothEvade:Data()
 		["Singed"] = {
 		},
 		["Sion"] = {
-			[_Q] = { name = "", speed = math.huge, delay = 0.125, range = 925, width = 250, collision = false, aoe = false, type = "cone"}
+			[_Q] = { name = "SionQ", speed = math.huge, delay = 0.125, range = 925, width = 250, collision = false, aoe = false, type = "linear"}, -- cone
+		        [_E] = { name = "SionE", speed = 1400, delay = 0.250, range = 925, width = 60, collision = false, aoe = false, type = "linear"},
+		        [_R] = { name = "SionR", speed = 1700, delay = 0, range = 925, width = 250, collision = false, aoe = false, type = "linear"}
 		},
 		["Sivir"] = {
 			[_Q] = { name = "SivirQ", speed = 1330, delay = 0.250, range = 1075, width = 0, collision = false, aoe = false, type = "linear"}
@@ -824,7 +826,7 @@ function SmoothEvade:Data()
 			[_Q] = { name = "ZileanQ", speed = math.huge, delay = 0.5, range = 900, width = 150, collision = false, aoe = true, type = "circular"}
 		},
 		["Zyra"] = {
-			[-1] = { name = "zyrapassivedeathmanager" },
+			[-1] = { name = "zyrapassivedeathmanager" speed = 1900, delay = 0.5, range = 1475, width = 70, collision = false, aoe = false, type = "linear"},
 			[_Q] = { name = "ZyraQFissure", speed = math.huge, delay = 0.7, range = 800, width = 85, collision = false, aoe = true, type = "circular"},
 			[_E] = { name = "ZyraGraspingRoots", speed = 1150, delay = 0.25, range = 1100, width = 70, collision = false, aoe = false, type = "linear"},
 			[_R] = { name = "ZyraBrambleZone", speed = math.huge, delay = 1, range = 1100, width = 500, collision=false, aoe = true, type = "circular"}
