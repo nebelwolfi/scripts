@@ -2923,6 +2923,7 @@ function InspiredsOrbWalker:GetProjectileSpeed(o)
 end
 
 function InspiredsOrbWalker:Orb()
+  if _G.Evade then return end
   if self.Config.wtt and self.Config.wtt:Value() then
     self.targetPos = self.forcePos or GetOrigin(self.target)
   else
@@ -3099,6 +3100,7 @@ do
   }
   _G.Dashes = {
     ["Vayne"]      = {Spellslot = _Q, Range = 300},
+    ["Kindred"]    = {Spellslot = _Q, Range = 300},
     ["Riven"]      = {Spellslot = _E, Range = 325},
     ["Ezreal"]     = {Spellslot = _E, Range = 450},
     ["Caitlyn"]    = {Spellslot = _E, Range = 400},
