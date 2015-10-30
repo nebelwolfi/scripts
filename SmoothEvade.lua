@@ -680,7 +680,7 @@ function SmoothEvade:Data()
 		["Sion"] = {
 			[_Q] = { name = "SionQ", speed = 2000, delay = 0.125, range = 925, width = 250, collision = false, aoe = false, type = "linear"}, -- cone
 		        [_E] = { name = "SionE", speed = 1400, delay = 0.250, range = 925, width = 60, collision = false, aoe = false, type = "linear"},
-		        [_R] = { name = "SionR", speed = 1700, delay = 0, range = 925, width = 250, collision = false, aoe = false, type = "linear"}
+		        [_R] = { name = "SionR", speed = 1700, delay = 0, range = 925, width = 250, collision = false, aoe = false, type = "special"}
 		},
 		["Sivir"] = {
 			[_Q] = { name = "SivirQ", speed = 1330, delay = 0.250, range = 1075, width = 0, collision = false, aoe = false, type = "linear"}
