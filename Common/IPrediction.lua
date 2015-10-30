@@ -177,6 +177,7 @@ do
 				local diff_coordinates = {x = current_way_point.x - my_current_position.x, y = current_way_point.y - my_current_position.y}
 				local polar_coordinate = {theta = math.atan2(diff_coordinates.x, diff_coordinates.y), r = Prediction.Core.pythag(diff_coordinates.x, diff_coordinates.y)}
 				Prediction.Vars.Stunned[GetNetworkID(unit)] = {}
+				if not Prediction.Vars.WayPoints[GetNetworkID(unit)] then Prediction.Vars.WayPoints[GetNetworkID(unit)] = {} end
 				table.insert(Prediction.Vars.WayPoints[GetNetworkID(unit)], {waypoints = polar_coordinate, time = GetGameTimer()})
 			end
 		end
@@ -197,10 +198,10 @@ do
 					if not thing.endP then
 						if thing.max then
 							realDist = thing.range
-							endPos = Vector(spell.startPos) + Vector(Vector(spell.endPos) - Vector(spell.startPos)):normalized() * thing.range
+							pcall(function() endPos = Vector(spell.startPos) + Vector(Vector(spell.endPos) - Vector(spell.startPos)):normalized() * thing.range end)
 						elseif realDist > thing.range then
 							realDist = thing.range
-							endPos = Vector(spell.startPos) + Vector(Vector(spell.endPos) - Vector(spell.startPos)):normalized() * thing.range
+							pcall(function() endPos = Vector(spell.startPos) + Vector(Vector(spell.endPos) - Vector(spell.startPos)):normalized() * thing.range end)
 						end
 					end
 					Prediction.Vars.Dashing[GetNetworkID(unit)] = {startT = GetGameTimer() + spell.windUpTime, endT = GetGameTimer() + spell.windUpTime + realDist/(thing.speed or 1800), startPos = Vector(spell.startPos), endPos = endPos, dashSpeed = thing.peed, dashDistance = realDist}
