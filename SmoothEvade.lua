@@ -229,8 +229,7 @@ function SmoothEvade:FindSafeSpot(s,p,w,b,t)
 end
 
 function SmoothEvade:Draw()
-	if not self.Config.draw:Value() then return end
-	if _G.Evade and self.m then
+	if _G.Evade and self.m and self.Config.draw:Value() then
 		DrawCircle(self.m.x, self.m.y, self.m.z, GetHitBox(myHero), 2, 32, ARGB(255, 255, 255, 255))
 	end
 	if self.Config.se:Value() then
@@ -249,16 +248,16 @@ function SmoothEvade:Draw()
 					if GetD(spell.startPos,spell.endPos) ~= range * range then
 						spell.endPos = spell.startPos+Vector(Vector(spell.endPos)-spell.startPos):normalized()*(range + width)
 					end
-					if spell.startTime+delay > GetGameTimer() then
+					if spell.startTime+delay > GetGameTimer() and self.Config.draw:Value() then
 						DrawRectangleOutline(spell.startPos, spell.endPos, nil, width)
-					else
+					elseif self.Config.draw:Value() then
 						DrawRectangleOutline(spell.startPos, spell.endPos, spell.startPos+Vector(Vector(spell.endPos)-spell.startPos):normalized()*(speed*(GetGameTimer()-delay-spell.startTime) + width/2), width)
 					end
 				else
 					table.remove(self.activeSpells, _)
 				end
 			elseif type == "circular" then
-				if spell.startTime+range/speed+delay+self:GetGroundTime(spell.source, spell.slot) > GetGameTimer() then
+				if spell.startTime+range/speed+delay+self:GetGroundTime(spell.source, spell.slot) > GetGameTimer() and self.Config.draw:Value() then
 					DrawCircle(spell.endPos.x, spell.endPos.y, spell.endPos.z, width, 2, 32, ARGB(255, 255, 255, 255))
 					DrawCircle(spell.endPos.x, spell.endPos.y, spell.endPos.z, width+50, 2, 32, ARGB(55, 255, 255, 255))
 				else
@@ -267,14 +266,14 @@ function SmoothEvade:Draw()
 			end
 		elseif speed == math.huge then
 			if type == "circular" then
-				if spell.startTime+delay > GetGameTimer() then
+				if spell.startTime+delay > GetGameTimer() and self.Config.draw:Value() then
 					DrawCircle(spell.endPos.x, spell.endPos.y, spell.endPos.z, width, 2, 32, ARGB(255, 255, 255, 255))
 					DrawCircle(spell.endPos.x, spell.endPos.y, spell.endPos.z, width+50, 2, 32, ARGB(55, 255, 255, 255))
 				else
 					table.remove(self.activeSpells, _)
 				end
 			elseif type == "linear" then
-				if spell.startTime+delay > GetGameTimer() then
+				if spell.startTime+delay > GetGameTimer() and self.Config.draw:Value() then
 					if GetD(spell.startPos,spell.endPos) < range * range then
 						spell.endPos = spell.startPos+Vector(Vector(spell.endPos)-spell.startPos):normalized()*range
 					end
