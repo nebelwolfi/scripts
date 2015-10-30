@@ -297,4 +297,4 @@ function Lux:Killsteal()
 	end
 end
 
-Lux()
+if GetObjectName(myHero) == "Lux" then Lux() end
