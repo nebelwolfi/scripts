@@ -325,6 +325,7 @@ function SmoothEvade:Data()
 		},
 		["Ahri"] = {
 			[_Q] = { name = "AhriOrbofDeception", speed = 2500, delay = 0.25, range = 975, width = 100, collision = false, aoe = false, type = "linear"},
+			[-1] = { name = "AhriOrbofDeception!", speed = 915, delay = 0.61, range = 975, width = 100, collision = false, aoe = false, type = "linear"},
 			[_W] = { name = "AhriFoxFire", range = 700},
 			[_E] = { name = "AhriSeduce", speed = 1550, delay = 0.25, range = 1075, width = 65, collision = true, aoe = false, type = "linear"},
 			[_R] = { name = "AhriTumble", range = 450}
@@ -365,7 +366,7 @@ function SmoothEvade:Data()
 		},
 		["Blitzcrank"] = {
 			[_Q] = { name = "RocketGrab", speed = 1800, delay = 0.250, range = 900, width = 70, collision = true, type = "linear"},
-			[_W] = { name = "", range = 2500},
+			[_W] = { name = "OverDrive", range = 2500},
 			[_E] = { name = "PowerFist", range = 225},
 			[_R] = { name = "StaticField", speed = math.huge, delay = 0.25, range = 0, width = 500, collision = false, aoe = false, type = "circular"}
 		},
@@ -449,8 +450,8 @@ function SmoothEvade:Data()
 		},
 		["Gangplank"] = {
 			[_Q] = { name = "GangplankQWrapper", range = 900},
-			[_E] = { name = "", speed = math.huge, delay = 0.25, range = 900, width = 250, collision = false, aoe = true, type = "circular"},
-			[_R] = { name = "", speed = math.huge, delay = 0.25, range = 25000, width = 575, collision = false, aoe = true, type = "circular"}
+			[_E] = { name = "GangplankE", speed = math.huge, delay = 0.25, range = 900, width = 250, collision = false, aoe = true, type = "circular"},
+			[_R] = { name = "GangplankR", speed = math.huge, delay = 0.25, range = 25000, width = 575, collision = false, aoe = true, type = "circular"}
 		},
 		["Garen"] = {
 		},
@@ -466,12 +467,12 @@ function SmoothEvade:Data()
 		},
 		["Graves"] = {
 			[_Q] = { name = "GravesClusterShot", speed = 1950, delay = 0.265, range = 750, width = 85, collision = false, aoe = false, type = "cone"},
-			[_W] = { name = "SmokeScreen", speed = 1650, delay = 0.300, range = 700, width = 250, collision = false, aoe = true, type = "circular"},
-			[_R] = { name = "GravesChargeShot", speed = 2100, delay = 0.219, range = 1000, width = 100, collision = false, aoe = false, type = "linear"}
+			[_W] = { name = "GravesSmokeGrenade", speed = 1650, delay = 0.300, range = 700, width = 250, collision = false, aoe = true, type = "circular"},
+			[_R] = { name = "GravesChargedShot", speed = 2100, delay = 0.219, range = 1000, width = 100, collision = false, aoe = false, type = "linear"}
 		},
 		["Hecarim"] = {
-			[_Q] = { name = "", speed = math.huge, delay = 0.250, range = 0, width = 350, collision = false, aoe = true, type = "circular"},
-			[_R] = { name = "", speed = 1900, delay = 0.219, range = 1000, width = 200, collision = false, aoe = false, type = "linear"}
+			[_Q] = { name = "HecarimRapidSlash", speed = math.huge, delay = 0.250, range = 0, width = 350, collision = false, aoe = true, type = "circular"},
+			[_R] = { name = "HecarimUlt", speed = 1900, delay = 0.219, range = 1000, width = 200, collision = false, aoe = false, type = "linear"}
 		},
 		["Heimerdinger"] = {
 			[_W] = { name = "", speed = 900, delay = 0.500, range = 1325, width = 100, collision = true, aoe = false, type = "linear"},
@@ -494,7 +495,7 @@ function SmoothEvade:Data()
 			[_Q] = { name = "jayceshockblast", speed = 2350, delay = 0.15, range = 1750, width = 70, collision = true, aoe = false, type = "linear"}
 		},
 		["Jinx"] = {
-			[_W] = { name = "JinxWMissile", speed = 3000, delay = 0.600, range = 1400, width = 60, collision = true, aoe = false, type = "linear"},
+			[_W] = { name = "JinxW", speed = 3000, delay = 0.600, range = 1400, width = 60, collision = true, aoe = false, type = "linear"},
 			[_E] = { name = "JinxE", speed = 887, delay = 0.500, range = 830, width = 0, collision = false, aoe = true, type = "circular"},
 			[_R] = { name = "JinxR", speed = 1700, delay = 0.600, range = 20000, width = 120, collision = false, aoe = true, type = "circular"}
 		},
@@ -698,7 +699,7 @@ function SmoothEvade:Data()
 		["Syndra"] = {
 			[_Q] = { name = "SyndraQ", speed = math.huge, delay = 0.67, range = 790, width = 125, collision = false, aoe = true, type = "circular"},
 			[_W] = { name = "syndrawcast", speed = math.huge, delay = 0.8, range = 925, width = 190, collision = false, aoe = true, type = "circular"},
-			[_E] = { name = "", speed = 2500, delay = 0.25, range = 730, width = 45, collision = false, aoe = true, type = "cone"}
+			[_E] = { name = "SyndraE", speed = 2500, delay = 0.25, range = 730, width = 45, collision = false, aoe = true, type = "cone"}
 		},
 		["Talon"] = {
 			[_W] = { name = "", speed = 900, delay = 0.25, range = 600, width = 200, collision = false, aoe = false, type = "cone"},
@@ -706,35 +707,35 @@ function SmoothEvade:Data()
 			[_R] = { name = "", speed = math.huge, delay = 0.25, range = 0, width = 650, collision = false, aoe = false, type = "circular"}
 		},
 		["Taric"] = {
-			[_R] = { name = "", speed = math.huge, delay = 0.25, range = 0, width = 175, collision = false, aoe = false, type = "circular"}
+			[_R] = { name = "TaricHammerSmash", speed = math.huge, delay = 0.25, range = 0, width = 175, collision = false, aoe = false, type = "circular"}
 		},
 		["Teemo"] = {
-			[_Q] = { name = "", range = GetRange(myHero)+GetHitBox(myHero)*3},
-			[_W] = { name = "", range = 25000},
-			[_E] = { name = "", range = GetRange(myHero)+GetHitBox(myHero)},
-			[_R] = { name = "", speed = 1200, delay = 1.25, range = 900, width = 250, type = "circular"}
+			[_Q] = { name = "BlindingDart", range = GetRange(myHero)+GetHitBox(myHero)*3},
+			[_W] = { name = "MoveQuick", range = 25000},
+			[_E] = { name = "ToxicShot", range = GetRange(myHero)+GetHitBox(myHero)},
+			[_R] = { name = "TeemoRCast", speed = 1200, delay = 1.25, range = 900, width = 250, type = "circular"}
 		},
 		["Thresh"] = {
 			[_Q] = { name = "ThreshQ", speed = 1825, delay = 0.25, range = 1050, width = 70, collision = true, aoe = false, type = "linear"},
-			[_W] = { range = 25000},
+			[_W] = { name = "ThreshW", range = 25000},
 			[_E] = { name = "ThreshE", speed = 2000, delay = 0.25, range = 450, width = 110, collision = false, aoe = false, type = "linear"},
-			[_R] = { range = 450, width = 250}
+			[_R] = { name = "ThreshRPenta", range = 450, width = 250}
 		},
 		["Tristana"] = {
-			[_Q] = { name = "", range = 543 },
-			[_W] = { name = "", speed = 2100, delay = 0.25, range = 900, width = 125, collision = false, aoe = false, type = "circular"}
+			[_Q] = { name = "TristanaQ", range = 543 },
+			[_W] = { name = "TristanaW", speed = 2100, delay = 0.25, range = 900, width = 125, collision = false, aoe = false, type = "circular"}
 		},
 		["Trundle"] = {
-			[_Q] = { name = "", speed = math.huge, delay = 0.25, range = 1000, width = 125, collision = false, aoe = false, type = "circular"}
+			[_E] = { name = "TrundleCircle", speed = math.huge, delay = 0.25, range = 1000, width = 125, collision = false, aoe = false, type = "circular"}
 		},
 		["Tryndamere"] = {
-			[_E] = { name = "", speed = 700, delay = 0.250, range = 650, width = 160, collision = false, aoe = false, type = "linear"}
+			[_E] = { name = "slashCast", speed = 700, delay = 0.250, range = 650, width = 160, collision = false, aoe = false, type = "linear"}
 		},
 		["TwistedFate"] = {
 			[_Q] = { name = "WildCards", speed = 1500, delay = 0.250, range = 1200, width = 80, collision = false, aoe = false, type = "cone"}
 		},
 		["Twitch"] = {
-			[_W] = { name = "", speed = 1750, delay = 0.250, range = 950, width = 275, collision = false, aoe = true, type = "circular"}
+			[_W] = { name = "TwitchVenomCask", speed = 1750, delay = 0.250, range = 950, width = 275, collision = false, aoe = true, type = "circular"}
 		},
 		["Udyr"] = {
 		},
@@ -748,16 +749,16 @@ function SmoothEvade:Data()
 			[_R] = { name = "VarusR", speed = 1200, delay = 0.5, range = 800, width = 100, collision = false, aoe = false, type = "linear"}
 		},
 		["Vayne"] = {
-			[_Q] = { name = "", range = 450},
+			[_Q] = { name = "VayneTumble", range = 450},
 			[_W] = { name = "", range = GetRange(myHero)+GetHitBox(myHero)*2},
-			[_E] = { name = "", speed = 2000, delay = 0.25, range = 650, width = 0, collision = false, aoe = false, type = "linear"},
+			[_E] = { name = "VayneCondemn", speed = 2000, delay = 0.25, range = 650, width = 0, collision = false, aoe = false, type = "linear"},
 			[_R] = { name = "", range = 1000}
 		},
 		["Veigar"] = {
 			[_Q] = { name = "VeigarBalefulStrike", speed = 1200, delay = 0.25, range = 900, width = 70, collision = true, aoe = false, type = "linear"},
 			[_W] = { name = "VeigarDarkMatter", speed = math.huge, delay = 1.2, range = 900, width = 225, collision = false, aoe = false, type = "circular"},
-			[_E] = { name = "", speed = math.huge, delay = 0.75, range = 725, width = 275, collision = false, aoe = false, type = "circular"},
-			[_R] = { name = "", range = 650}
+			[_E] = { name = "VeigarEvenHorizon", speed = math.huge, delay = 0.75, range = 725, width = 275, collision = false, aoe = false, type = "circular"},
+			[_R] = { name = "VeigarPrimordialBurst", range = 650}
 		},
 		["VelKoz"] = {
 			[_Q] = { name = "VelKozQ", speed = 1300, delay = 0.066, range = 1050, width = 50, collision = true, aoe = false, type = "linear"},
@@ -769,46 +770,49 @@ function SmoothEvade:Data()
 			[_Q] = { name = "", speed = 1500, delay = 0.25, range = 715, width = 55, collision = false, aoe = false, type = "linear"}
 		},
 		["Viktor"] = {
-			[_Q] = { range = 0},
-			[_W] = { name = "", speed = 750, delay = 0.6, range = 700, width = 125, collision = false, aoe = true, type = "circular"},
+			[_Q] = { name = "ViktorPowerTransfer", range = 0},
+			[_W] = { name = "ViktorGravitonField", speed = 750, delay = 0.6, range = 700, width = 125, collision = false, aoe = true, type = "circular"},
 			[_E] = { name = "ViktorDeathRay", speed = 1200, delay = 0.25, range = 1200, width = 0, collision = false, aoe = false, type = "linear"},
-			[_R] = { name = "", speed = 1000, delay = 0.25, range = 700, width = 0, collision = false, aoe = true, type = "circular"}
+			[_R] = { name = "ViktorChaosStorm", speed = 1000, delay = 0.25, range = 700, width = 0, collision = false, aoe = true, type = "circular"}
 		},
 		["Vladimir"] = {
+			[_R] = { name = "VladimirHemoplague", speed = math.huge, delay = 0.25, range = 700, width = 175, collision = false, aoe = true, type = "circular"}
 		},
 		["Volibear"] = {
 		},
 		["Warwick"] = {
+		-- W KillSteal soon
 		},
 		["Wukong"] = {
 		},
 		["Xerath"] = {
-			[_Q] = { name = "", speed = math.huge, delay = 1.75, range = 750, width = 100, collision = false, aoe = false, type = "linear"},
-			[_W] = { name = "", speed = math.huge, delay = 0.25, range = 1100, width = 100, collision = false, aoe = true, type = "circular"},
-			[_E] = { name = "", speed = 1600, delay = 0.25, range = 1050, width = 70, collision = true, aoe = false, type = "linear"},
-			[_R] = { name = "", speed = math.huge, delay = 0.75, range = 3200, width = 245, collision = false, aoe = true, type = "circular"}
+			[_Q] = { name = "xeratharcanopulse2", speed = math.huge, delay = 1.75, range = 750, width = 100, collision = false, aoe = false, type = "linear"},
+			[_W] = { name = "XerathArcaneBarrage2", speed = math.huge, delay = 0.25, range = 1100, width = 100, collision = false, aoe = true, type = "circular"},
+			[_E] = { name = "XerathMageSpear", speed = 1600, delay = 0.25, range = 1050, width = 70, collision = true, aoe = false, type = "linear"},
+			[_R] = { name = "xerathrmissilewrapper", speed = math.huge, delay = 0.75, range = 3200, width = 245, collision = false, aoe = true, type = "circular"}
 		},
 		["XinZhao"] = {
-			[_R] = { name = "", speed = math.huge, delay = 0.25, range = 0, width = 375, collision = false, aoe = true, type = "circular"}
+			[_R] = { name = "XenZhaoParry", speed = math.huge, delay = 0.25, range = 0, width = 375, collision = false, aoe = true, type = "circular"}
 		},
 		["Yasuo"] = {
-			[_Q] = { name = "YasuoQ", speed = math.huge, delay = 0.25, range = 475, width = 40, collision = false, aoe = false, type = "linear"},
-			[_W] = { name = "", range = 350},
-			[_E] = { name = "", range = 475},
-			[_R] = { name = "", range = 1200},
-			[-2] = { name = "YasuoQ3", range = 1200, speed = 1200, delay = 0.125, width = 65, collision = false, aoe = false, type = "linear" }
+			[_Q] = { name = "YasuoQW", speed = math.huge, delay = 0.25, range = 475, width = 40, collision = false, aoe = false, type = "linear"},
+			[_W] = { name = "YasuoWMovingWall", range = 350},
+			[_E] = { name = "YasuoDashWrapper", range = 475},
+			[_R] = { name = "YasuoRKnockUpWCombo", range = 1200},
+			[-1] = { name = "yasuoq2w", speed = math.huge, delay = 0.25, range = 475, width = 40, collision = false, aoe = false, type = "linear"},
+			[-2] = { name = "yasuoq3w", range = 1200, speed = 1200, delay = 0.125, width = 65, collision = false, aoe = false, type = "linear" }
 		},
 		["Yorick"] = {
 			[_Q] = { range = 0},
-			[_W] = { name = "", speed = math.huge, delay = 0.25, range = 600, width = 175, collision = false, aoe = true, type = "circular"},
+			[_W] = { name = "YorickDecayed", speed = math.huge, delay = 0.25, range = 600, width = 175, collision = false, aoe = true, type = "circular"},
 			[_E] = { range = 0},
 		},
 		["Zac"] = {
-			[_Q] = { name = "", speed = 2500, delay = 0.110, range = 500, width = 110, collision = false, aoe = false, type = "linear"}
+			[_Q] = { name = "ZacQ", speed = 2500, delay = 0.110, range = 500, width = 110, collision = false, aoe = false, type = "linear"}
 		},
 		["Zed"] = {
-			[_Q] = { name = "ZedShuriken", speed = 1700, delay = 0.25, range = 900, width = 48, collision = false, aoe = false, type = "linear"},
-			[_E] = { name = "", speed = math.huge, delay = 0.25, range = 0, width = 300, collision = false, aoe = true, type = "circular"}
+			[_Q] = { name = "ZedQ", speed = 1700, delay = 0.25, range = 900, width = 50, collision = false, aoe = false, type = "linear"},
+			[_E] = { name = "ZedE", speed = math.huge, delay = 0.25, range = 0, width = 300, collision = false, aoe = true, type = "circular"}
 		},
 		["Ziggs"] = {
 			[_Q] = { name = "ZiggsQ", speed = 1750, delay = 0.25, range = 1400, width = 155, collision = true, aoe = false, type = "linear"},
@@ -817,7 +821,7 @@ function SmoothEvade:Data()
 			[_R] = { name = "ZiggsR", speed = 1750, delay = 0.14, range = 5300, width = 525, collision = false, aoe = true, type = "circular"}
 		},
 		["Zilean"] = {
-			[_Q] = { name = "", speed = math.huge, delay = 0.5, range = 900, width = 150, collision = false, aoe = true, type = "circular"}
+			[_Q] = { name = "ZileanQ", speed = math.huge, delay = 0.5, range = 900, width = 150, collision = false, aoe = true, type = "circular"}
 		},
 		["Zyra"] = {
 			[-1] = { name = "zyrapassivedeathmanager" },
