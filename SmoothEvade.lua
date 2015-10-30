@@ -73,10 +73,10 @@ function SmoothEvade:__init()
 		  end
 		end
 	end, 1)
-	self.Config:Boolean("draw", "Draw", true)
+	self.Config:Boolean("d", "Draw", true)
 	self.Config:Boolean("e", "Evade", true)
 	if Dashes[GetObjectName(myHero)] then
-		self.Config:Boolean("d", "Use Dash", true)
+		self.Config:Boolean("dd", "Use Dash", true)
 		self.Config:Boolean("od", "Use Dash only", false)
 		self.dashKey = Dashes[GetObjectName(myHero)].Spellslot
 	end
@@ -107,7 +107,7 @@ function SmoothEvade:Dodge()
 	if not self.Config.e:Value() then _G.Evade = false end
 	if _G.Evade and self.m ~= nil then
 		if GetD(self.m,myHeroPos()) > GetHitBox(myHero)*GetHitBox(myHero) and GetD(self.m,myHero) < GetMoveSpeed(myHero)^2 and self.m.time > GetGameTimer() and not self.Config.se:Value() then
-			if self.dashKey and self.Config.d:Value() and (CanUseSpell(myHero, self.dashKey) == 0 or self.Config.od:Value()) then
+			if self.dashKey and self.Config.dd:Value() and (CanUseSpell(myHero, self.dashKey) == 0 or self.Config.od:Value()) then
 				CastSkillShot(self.dashKey, self.m)
 			else
 				MoveToXYZ(self.m.x, self.m.x, self.m.z)
@@ -229,7 +229,8 @@ function SmoothEvade:FindSafeSpot(s,p,w,b,t)
 end
 
 function SmoothEvade:Draw()
-	if _G.Evade and self.m and self.Config.draw:Value() then
+	if not self.Config.d:Value() then return end
+	if _G.Evade and self.m then
 		DrawCircle(self.m.x, self.m.y, self.m.z, GetHitBox(myHero), 2, 32, ARGB(255, 255, 255, 255))
 	end
 	if self.Config.se:Value() then
@@ -248,16 +249,16 @@ function SmoothEvade:Draw()
 					if GetD(spell.startPos,spell.endPos) ~= range * range then
 						spell.endPos = spell.startPos+Vector(Vector(spell.endPos)-spell.startPos):normalized()*(range + width)
 					end
-					if spell.startTime+delay > GetGameTimer() and self.Config.draw:Value() then
+					if spell.startTime+delay > GetGameTimer() then
 						DrawRectangleOutline(spell.startPos, spell.endPos, nil, width)
-					elseif self.Config.draw:Value() then
+					else
 						DrawRectangleOutline(spell.startPos, spell.endPos, spell.startPos+Vector(Vector(spell.endPos)-spell.startPos):normalized()*(speed*(GetGameTimer()-delay-spell.startTime) + width/2), width)
 					end
 				else
 					table.remove(self.activeSpells, _)
 				end
 			elseif type == "circular" then
-				if spell.startTime+range/speed+delay+self:GetGroundTime(spell.source, spell.slot) > GetGameTimer() and self.Config.draw:Value() then
+				if spell.startTime+range/speed+delay+self:GetGroundTime(spell.source, spell.slot) > GetGameTimer() then
 					DrawCircle(spell.endPos.x, spell.endPos.y, spell.endPos.z, width, 2, 32, ARGB(255, 255, 255, 255))
 					DrawCircle(spell.endPos.x, spell.endPos.y, spell.endPos.z, width+50, 2, 32, ARGB(55, 255, 255, 255))
 				else
@@ -266,14 +267,14 @@ function SmoothEvade:Draw()
 			end
 		elseif speed == math.huge then
 			if type == "circular" then
-				if spell.startTime+delay > GetGameTimer() and self.Config.draw:Value() then
+				if spell.startTime+delay > GetGameTimer() then
 					DrawCircle(spell.endPos.x, spell.endPos.y, spell.endPos.z, width, 2, 32, ARGB(255, 255, 255, 255))
 					DrawCircle(spell.endPos.x, spell.endPos.y, spell.endPos.z, width+50, 2, 32, ARGB(55, 255, 255, 255))
 				else
 					table.remove(self.activeSpells, _)
 				end
 			elseif type == "linear" then
-				if spell.startTime+delay > GetGameTimer() and self.Config.draw:Value() then
+				if spell.startTime+delay > GetGameTimer() then
 					if GetD(spell.startPos,spell.endPos) < range * range then
 						spell.endPos = spell.startPos+Vector(Vector(spell.endPos)-spell.startPos):normalized()*range
 					end
