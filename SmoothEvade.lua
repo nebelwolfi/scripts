@@ -67,7 +67,7 @@ function SmoothEvade:__init()
     	for _,k in pairs(heroes) do
 	      self.Config:Menu(GetObjectName(k), GetObjectName(k))
 	      for i=-3,3 do
-	        if self.data and self.data[GetObjectName(k)] and self.data[GetObjectName(k)][i] then
+	        if self.data and self.data[GetObjectName(k)] and self.data[GetObjectName(k)][i] and self.data[GetObjectName(k)][i].name ~= "" and self.data[GetObjectName(k)][i].type then
 	          self.Config[GetObjectName(k)]:Boolean(self.str[i], "Evade "..self.str[i], true)
 	        end
 	      end
@@ -340,7 +340,7 @@ function SmoothEvade:Data()
 		},
 		["Anivia"] = {
 			[_Q] = { name = "FlashFrostSpell", speed = 850, delay = 0.250, range = 1200, width = 110, collision = false, aoe = false, type = "linear"},
-			[_R] = { name = "", speed = math.huge, delay = 0.100, range = 615, width = 350, collision = false, aoe = true, type = "circular"}
+			[_R] = { name = "", speed = math.huge, delay = math.huge, range = 615, width = 350, collision = false, aoe = true, type = "circular"}
 		},
 		["Annie"] = {
 			[_Q] = { name = "Disintegrate" },
@@ -572,7 +572,7 @@ function SmoothEvade:Data()
 			[_R] = { name = "LuxMaliceCannon", speed = math.huge, delay = 1, range = 3340, width = 250, collision = false, type = "linear"}
 		},
 		["Malphite"] = {
-			[_R] = { name = "", speed = 1600, delay = 0.5, range = 900, width = 500, collision = false, aoe = true, type = "circular"}
+			[_R] = { name = "UFSlash", speed = 1600, delay = 0.5, range = 900, width = 500, collision = false, aoe = true, type = "circular"}
 		},
 		["Malzahar"] = {
 			[_Q] = { name = "AlZaharCalloftheVoid1", speed = math.huge, delay = 1, range = 900, width = 100, collision = false, aoe = false, type = "linear"},
