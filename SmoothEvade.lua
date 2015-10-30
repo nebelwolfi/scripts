@@ -73,7 +73,7 @@ function SmoothEvade:__init()
 	      end
 	    end
 	end, 1)
-    self.Config:Boolean("d", "Draw", true)
+    self.Config:Boolean("draw", "Draw", true)
     self.Config:Boolean("e", "Evade", true)
     if Dashes[GetObjectName(myHero)] then
     	self.Config:Boolean("d", "Use Dash", true)
@@ -229,6 +229,7 @@ function SmoothEvade:FindSafeSpot(s,p,w,b,t)
 end
 
 function SmoothEvade:Draw()
+	if not self.Config.draw:Value() then return end
 	if _G.Evade and self.m then
 		DrawCircle(self.m.x, self.m.y, self.m.z, GetHitBox(myHero), 2, 32, ARGB(255, 255, 255, 255))
 	end
