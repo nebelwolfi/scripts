@@ -729,7 +729,7 @@ function SmoothEvade:Data()
 			[_E] = { name = "TrundleCircle", speed = math.huge, delay = 0.25, range = 1000, width = 125, collision = false, aoe = false, type = "circular"}
 		},
 		["Tryndamere"] = {
-			[_E] = { name = "slashCast", speed = 2000, delay = 0.250, range = 650, width = 200, collision = false, aoe = false, type = "linear"}
+			[_E] = { name = "slashCast", speed = 1500, delay = 0.250, range = 650, width = 160, collision = false, aoe = false, type = "linear"}
 		},
 		["TwistedFate"] = {
 			[_Q] = { name = "WildCards", speed = 1500, delay = 0.250, range = 1200, width = 80, collision = false, aoe = false, type = "cone"}
