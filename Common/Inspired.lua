@@ -1382,7 +1382,7 @@ function MenuConfig:DropDown(id, name, value, drop, callback, forceDefault)
 end
 
 function MenuConfig:ColorPick(id, name, color, callback, forceDefault)
-  local cp = ColorPick(self, id, name, color)
+  local cp = ColorPick(self, id, name, color, callback, forceDefault)
   table.insert(self.__params, cp)
   self[id] = cp
   __MC_LoadAll()
