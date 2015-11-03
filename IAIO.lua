@@ -92,7 +92,7 @@ function IAIO:Tick()
 		self.ts[i].dtype = self.Config["Skill"..str[i]].Damage:Value()
 		self.ts[i].ownteam = (spellData[i].logic == 4 or spellData[i].logic == 5)
 		local mode = IOW:Mode()
-		if mode ~= "" then
+		if mode ~= "" and GetCastName(myHero, i) == spellData[i].name then
 			local target = IOW.target or self.ts[i]:GetTarget()
 			if (target ~= nil or spellData[i].logic == 4) and self.Config["Skill"..str[i]]["Use"..mode]:Value() and (not self.Config["Skill"..str[i]]["Mana"..mode] or self.Config["Skill"..str[i]]["Mana"..mode]:Value() <= 100*GetCurrentMana(myHero)/GetMaxMana(myHero)) and CanUseSpell(myHero, i) == 0 then
 				if spellData[i].logic == 1 then
