@@ -510,7 +510,7 @@ local function __MC_SaveInstance(ins)
   for _, p in pairs(ins.__params) do
     if not toSave[p.id] then toSave[p.id] = {} end
     if p.type == "ColorPick" then
-      toSave[p.id].color = p:Value()
+      toSave[p.id].color = { a = p.color[1]:Value(), r = p.color[2]:Value(), g = p.color[3]:Value(), b = p.color[4]:Value(), }
     elseif p.type == "TargetSelector" then
       toSave[p.id].focus = p.settings[1]:Value()
       toSave[p.id].mode = p.settings[2]:Value()
@@ -538,7 +538,7 @@ end
 local function __MC_LoadInstance(ins, saved)
   if not saved then return end
   for _, p in pairs(ins.__params) do
-    if p.forceDefault == false then
+    if p.forceDefault == false or not p.forceDefault then
       if saved[p.id] then
         if p.type == "ColorPick" then
           p:Value({saved[p.id].color.a,saved[p.id].color.r,saved[p.id].color.g,saved[p.id].color.b})
