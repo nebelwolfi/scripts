@@ -3219,8 +3219,6 @@ function AutoUpdate(weblua, webversion, locallua, localversion)
     if webversion and tostring(webversion) ~= nil and tonumber(webversion) > localversion then
         WriteFile(gosu.request("https://raw.githubusercontent.com", weblua.."?no-cache="..(math.random(100000))), SCRIPT_PATH.."\\"..locallua)
         Msg("Updated"..(locallua and " "..locallua or "")..", please press 2x F6 to reload!", "AutoUpdater")
-    else
-        Msg("Latest version loaded.", "AutoUpdater")
     end
 end
 
