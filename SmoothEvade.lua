@@ -1,6 +1,7 @@
 require("Inspired")
 _G.EVADEloaded = true
 _G.EVADEversion = 2
+AutoUpdate("/Inspired-gos/scripts/master/SmoothEvade.lua","/Inspired-gos/scripts/master/SmoothEvade.version","SmoothEvade.lua",EVADEversion)
 local myHero = GetMyHero()
 local myHeroName = GetObjectName(myHero)
 _G.Evade = false
