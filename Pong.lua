@@ -11,6 +11,7 @@ for i=70,res.x-160,160 do
 end
 
 OnDrawMinimap(function()
+    if not doPlay then return end
 	FillRect(0, 0, 1920, 1080, 0xFF000000)
 	DrawText("Lifes: "..lifes, 25, 25, 25, 0xFFFFFFFF)
 	if startT then DrawText("Time: "..math.floor((GetGameTimer() - startT)), 25, 120, 25, 0xFFFFFFFF) end
@@ -30,6 +31,7 @@ OnDrawMinimap(function()
 end)
 
 OnTick(function()
+    if not doPlay then return end
 	if KeyIsDown(ARROW_LEFT) then
 		blockPos.x = math.max(0, blockPos.x - 15)
 	end
@@ -58,6 +60,10 @@ OnTick(function()
 end)
 
 OnWndMsg(function(msg, key)
+	if msg == 256 and key==122 then
+        doPlay=not doPlay
+    end
+    if not doPlay then return end
 	if key == 32 and msg==256 and #balls < 1 then
 		if not startT then startT = GetGameTimer() end
 		local tV = {x = math.random(10)-5, y = -10}
@@ -79,6 +85,13 @@ function InBlocks(x, y)
 		if x >= block.x and x <= block.x+150 and y >= block.y and y <= block.y+25 then
 			table.remove(blocks, _)
 			score = score + math.max(750, 1000 - math.ceil(GetGameTimer() - startT))
+            if #blocks == 0 then
+                for i=70,res.x-160,160 do
+	                for I=150,res.y-450,35 do
+		                table.insert(blocks, {x = i, y = I})
+	                end
+                end
+            end
 			return true
 		end
 	end
