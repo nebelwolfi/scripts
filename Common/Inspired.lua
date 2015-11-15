@@ -578,17 +578,22 @@ function __MC_Draw()
       FillRect(MC.x-1+(4+MC.width)*k, MC.y-1+23*i, MC.width+2, 22, ARGB(55,255,255,255))
       FillRect(MC.x+(4+MC.width)*k, MC.y+23*i, MC.width, 20, ARGB(255,0,0,0))
       DrawText(" "..p.name.." ",15,MC.x+(4+MC.width)*k,MC.y+1+23*i,0xffffffff)
-      FillRect(MC.x-1+4+MC.width*(k+1)-18, MC.y+2+23*i, 15, 15, p:Value() and ARGB(255,0,255,0) or ARGB(255,255,0,0))
+	  DrawScreenCircle(MC.x-1+4+MC.width*(k+1)-12, MC.y+10+23*i, 8, p:Value() and ARGB(255,0,255,0) or ARGB(255,255,0,0), 8)
+	  if p:Value() then
+        DrawText("ON",8,MC.x+MC.width*(k+1)-14,MC.y+6+23*i,0xffffffff)
+	  else
+        DrawText("OFF",8,MC.x+MC.width*(k+1)-15,MC.y+6+23*i,0xffffffff)
+      end
       return 0
     elseif p.type == "KeyBinding" then
       FillRect(MC.x-1+(4+MC.width)*k, MC.y-1+23*i, MC.width+2, 22, ARGB(55,255,255,255))
       FillRect(MC.x+(4+MC.width)*k, MC.y+23*i, MC.width, 20, ARGB(255,0,0,0))
       DrawText(" "..p.name.." ",15,MC.x+(4+MC.width)*k,MC.y+1+23*i,0xffffffff)
       if p.key > 32 and p.key < 96 then
-        FillRect(MC.x-1+4+MC.width*(k+1)-20, MC.y+2+23*i, 17, 15, p:Value() and ARGB(155,0,255,0) or ARGB(155,255,0,0))
+        FillRect(MC.x-1+4+MC.width*(k+1)-18, MC.y+4+23*i, 15, 13, p:Value() and ARGB(155,0,255,0) or ARGB(155,255,0,0))
         DrawText("["..(string.char(p.key)).."]",15,MC.x-1+4+MC.width*(k+1)-20, MC.y+1+23*i,0xffffffff)
       else
-        FillRect(MC.x-1+4+MC.width*(k+1)-23, MC.y+2+23*i, 22, 15, p:Value() and ARGB(155,0,255,0) or ARGB(155,255,0,0))
+        FillRect(MC.x-1+4+MC.width*(k+1)-23, MC.y+4+23*i, 22, 13, p:Value() and ARGB(155,0,255,0) or ARGB(155,255,0,0))
         DrawText("["..(p.key).."]",15,MC.x-1+4+MC.width*(k+1)-25, MC.y+1+23*i,0xffffffff)
       end
       if p.active then
@@ -598,26 +603,27 @@ function __MC_Draw()
       end
       return 0
     elseif p.type == "Slider" then
-      FillRect(MC.x-1+(4+MC.width)*k, MC.y-1+23*i, MC.width+2, 45, ARGB(55,255,255,255))
-      FillRect(MC.x+(4+MC.width)*k, MC.y+23*i, MC.width, 43, ARGB(255,0,0,0))
+      FillRect(MC.x-1+(4+MC.width)*k, MC.y-1+23*i, MC.width+2, 30, ARGB(55,255,255,255))
+      FillRect(MC.x+(4+MC.width)*k, MC.y+23*i, MC.width, 28, ARGB(255,0,0,0))
       DrawText(" "..p.name.." ",15,MC.x+(4+MC.width)*k,MC.y+1+23*i,0xffffffff)
       local psize = GetTextArea(""..p.value, 15)
-      DrawText(" "..p.value.." ",15,MC.x-1+4+MC.width*(k+1)-psize/2-5, MC.y+2+23*i, 0xffffffff)
-      DrawLine(MC.x+5+(4+MC.width)*k, MC.y+23*i+25,MC.x+(4+MC.width)*k+MC.width-5, MC.y+23*i+25,1,ARGB(255,255,255,255))
-      DrawText(" "..p.min.." ",10,MC.x+(4+MC.width)*k, MC.y+23*i+30, ARGB(255,255,255,255))
+      DrawText(" "..p.value.." ",15,MC.x-1+4+MC.width*(k+1)-psize/2-5, MC.y+23*i, 0xffffffff)
+      DrawLine(MC.x+5+(4+MC.width)*k, MC.y+23*i+20,MC.x+(4+MC.width)*k+MC.width-5, MC.y+23*i+20,1,ARGB(255,255,255,255))
+      --DrawText(" "..p.min.." ",10,MC.x+(4+MC.width)*k, MC.y+23*i+15, ARGB(255,255,255,255))
       local psize = GetTextArea(""..p.max, 10)
-      DrawText(" "..p.max.." ",10,MC.x+(4+MC.width)*k+MC.width-psize/2-8, MC.y+23*i+30, ARGB(255,255,255,255))
+      --DrawText(" "..p.max.." ",10,MC.x+(4+MC.width)*k+MC.width-psize/2-8, MC.y+23*i+15, ARGB(255,255,255,255))
       local lineWidth = MC.width - 10
       local delta = (p.value - p.min) / (p.max - p.min)
-      FillRect(MC.x+5+(4+MC.width)*k + lineWidth * delta - 1, MC.y+23*i+22, 3, 8, ARGB(255,255,255,255))
+      FillRect(MC.x+5+(4+MC.width)*k + lineWidth * delta - 2, MC.y+23*i+16, 5, 10, ARGB(155,0,0,0))
+      FillRect(MC.x+5+(4+MC.width)*k + lineWidth * delta - 1, MC.y+23*i+17, 3, 8, ARGB(255,255,255,255))
       if p.active then
-        if KeyIsDown(1) and CursorIsUnder(MC.x+4+(4+MC.width)*k, MC.y+23*i+15, lineWidth+2, 20) then
+        if KeyIsDown(1) and CursorIsUnder(MC.x+4+(4+MC.width)*k, MC.y+23*i, lineWidth+2, 30) then
           local cpos = GetCursorPos()
           local delta = (cpos.x - (MC.x+5+(4+MC.width)*k)) / lineWidth
           p:Value(math.round(delta * (p.max - p.min) + p.min), p.step)
         end
       end
-      return 1
+      return 0.35
     elseif p.type == "DropDown" then
       FillRect(MC.x-1+(4+MC.width)*k, MC.y-1+23*i, MC.width+2, 22, ARGB(55,255,255,255))
       FillRect(MC.x+(4+MC.width)*k, MC.y+23*i, MC.width, 20, ARGB(255,0,0,0))
@@ -646,9 +652,12 @@ function __MC_Draw()
       FillRect(MC.x-1+(4+MC.width)*k, MC.y-1+23*i, MC.width+2, 22, ARGB(55,255,255,255))
       FillRect(MC.x+(4+MC.width)*k, MC.y+23*i, MC.width, 20, ARGB(255,0,0,0))
       DrawText(" "..p.name.." ",15,MC.x+(4+MC.width)*k,MC.y+1+23*i,0xffffffff)
-      DrawText(">", 15, MC.x-1+4+MC.width*(k+1)-17, MC.y+1+23*i, 0xffffffff)
-      DrawText("|", 15, MC.x-1+4+MC.width*(k+1)-12, MC.y+1+23*i, 0xffffffff)
-      DrawText("<", 15, MC.x-1+4+MC.width*(k+1)-11, MC.y+1+23*i, 0xffffffff)
+	  for I = -1, 1 do
+		for j = -1, 1 do
+		  DrawText("x", 25, MC.x+4+MC.width*(k+1)-15+I, MC.y-6+23*i+j, 0xffffffff)
+		end
+	  end
+      DrawText("x", 25, MC.x+4+MC.width*(k+1)-15, MC.y-6+23*i, 0xff000000)
       if p.active then
         if CursorIsUnder(MC.x+(4+MC.width)*(k+1), MC.y+23*i+23, MC.width, 20) then
           p.settings[2].active = true
@@ -660,21 +669,27 @@ function __MC_Draw()
         end
         __MC_DrawParam(i, p.settings[1], k+1)
         __MC_DrawParam(i+1, p.settings[2], k+1)
+        local mode = p.settings[2]:Value()
+		if mode == 2 or mode == 3 or mode == 9 then
+		  for I=3,#p.settings do
+			p.settings[I].active = true
+			__MC_DrawParam(i+(I*1.35-2), p.settings[I], k+1)
+		  end
+		end
       end
       return 0
     elseif p.type == "ColorPick" then
       FillRect(MC.x-1+(4+MC.width)*k, MC.y-1+23*i, MC.width+2, 22, ARGB(55,255,255,255))
       FillRect(MC.x+(4+MC.width)*k, MC.y+23*i, MC.width, 20, ARGB(255,0,0,0))
       DrawText(" "..p.name.." ",15,MC.x+(4+MC.width)*k,MC.y+1+23*i,0xffffffff)
-      FillRect(MC.x-1+4+MC.width*(k+1)-18, MC.y+2+23*i, 5, 15, ARGB(255,255,0,0))
-      FillRect(MC.x-1+4+MC.width*(k+1)-13, MC.y+2+23*i, 5, 15, ARGB(255,0,255,0))
-      FillRect(MC.x-1+4+MC.width*(k+1)-8, MC.y+2+23*i, 5, 15, ARGB(255,0,0,255))
+	  DrawFilledScreenCircle(MC.x-1+4+MC.width*(k+1)-12, MC.y+10+23*i, 6, p:Value())
       if p.active then
         for c,v in pairs(p.color) do v.active = true end
         __MC_DrawParam(i, p.color[1], k+1)
-        __MC_DrawParam(i, p.color[2], k+2)
-        __MC_DrawParam(i+2, p.color[3], k+1)
-        __MC_DrawParam(i+2, p.color[4], k+2)
+        __MC_DrawParam(i, p.color[2], k+2.35)
+		FillRect(MC.x+(4+MC.width)*(k+2), MC.y+23*i, MC.width*0.35-3, 60, p:Value())
+        __MC_DrawParam(i+1.35, p.color[3], k+1)
+        __MC_DrawParam(i+1.35, p.color[4], k+2.35)
       end
       return 0
     elseif p.type == "Info" then
@@ -720,7 +735,7 @@ local function __MC_WndMsg()
   local function __MC_IsBrowsing()
     local function __MC_IsBrowseParam(i, p, k)
       local isB, ladd = false, 0
-      if p.type == "Slider" then ladd = 1 end
+      if p.type == "Slider" then ladd = 0.35 end
       if p.type == "Empty" then ladd = p.value end
       if CursorIsUnder(MC.x+(4+MC.width)*k, MC.y+23*i-2, MC.width, 23+ladd*23) then
         isB = true
@@ -749,20 +764,24 @@ local function __MC_WndMsg()
             isB = true
           end
         elseif p.type == "ColorPick" then 
-          if CursorIsUnder(MC.x+(4+MC.width)*(k+1), MC.y+23*i, MC.width*2+6, 23*4) then
+          if CursorIsUnder(MC.x+(4+MC.width)*(k+1), MC.y+23*i, MC.width*3+6, 23*4) then
             isB = true
           end
         elseif p.type == "TargetSelector" then
-          if CursorIsUnder(MC.x+(4+MC.width)*(k+1), MC.y+23*i, MC.width, 23*2) then
+          if CursorIsUnder(MC.x+(4+MC.width)*(k+1), MC.y+23*i, MC.width, 23) then
             p.settings[1]:Value(not p.settings[1]:Value())
             isB = true
+		  elseif CursorIsUnder(MC.x+(4+MC.width)*(k+1), MC.y+23*i, MC.width, 23*#p.settings*1.35) then
+			isB = true
           end
-          for m=1, 9 do
-            if CursorIsUnder(MC.x+(4+MC.width)*(k+2), MC.y+23*i+23+23*(m-1), MC.width, 23) then
-              isB = true
-              p.settings[2]:Value(m)
-            end
-          end
+	      if p.settings[2].active then
+			for m=1, 9 do
+			  if CursorIsUnder(MC.x+(4+MC.width)*(k+2), MC.y+23*i+23+23*(m-1), MC.width, 23) then
+				isB = true
+				p.settings[2]:Value(m)
+			  end
+			end
+		  end
         end
       end
       return isB, ladd
@@ -812,6 +831,7 @@ local function __MC_WndMsg()
     if not onlyParams then v.__active = false end
   end
   local function __MC_ResetActive(skipID, onlyParams)
+	if MCadd.lastChange + 375 > GetTickCount() then return end
     for k, v in pairs(MCadd.instances) do
       if not skipID or skipID ~= v.__id then
         __MC_ResetInstance(v, skipID, onlyParams)
@@ -845,7 +865,7 @@ local function __MC_WndMsg()
   end
   local function __MC_BrowseParam(i, p, k)
     local isB, ladd = false, 0
-    if p.type == "Slider" then ladd = 1 end
+    if p.type == "Slider" then ladd = 0.35 end
     if p.type == "Empty" then ladd = p.value
     elseif CursorIsUnder(MC.x+(4+MC.width)*k, MC.y+23*i+ladd*23, MC.width, 20) then
       __MC_ResetInstance(p.head, nil, true)
@@ -1051,7 +1071,7 @@ function TargetSelector:__init(range, mode, type, focusselected, ownteam, priori
   self.range = range or 1000
   self.focusselected = focusselected or false
   self.forceDefault = false
-  self.ownteam = ownteam
+  self.ownteam = ownteam or false
   self.priorityTable = priorityTable or {
     [5] = Set {"Alistar", "Amumu", "Blitzcrank", "Braum", "ChoGath", "DrMundo", "Garen", "Gnar", "Hecarim", "JarvanIV", "Leona", "Lulu", "Malphite", "Nasus", "Nautilus", "Nunu", "Olaf", "Rammus", "Renekton", "Sejuani", "Shen", "Shyvana", "Singed", "Sion", "Skarner", "Taric", "Thresh", "Volibear", "Warwick", "MonkeyKing", "Yorick", "Zac"},
     [4] = Set {"Aatrox", "Darius", "Elise", "Evelynn", "Galio", "Gangplank", "Gragas", "Irelia", "Jax","LeeSin", "Maokai", "Morgana", "Nocturne", "Pantheon", "Poppy", "Rengar", "Rumble", "Ryze", "Swain","Trundle", "Tryndamere", "Udyr", "Urgot", "Vi", "XinZhao", "RekSai"},
@@ -1063,8 +1083,17 @@ function TargetSelector:__init(range, mode, type, focusselected, ownteam, priori
           Boolean(head, "sel", "Focus selected:", self.focusselected, function(var) self.focusselected = var end, false),
           DropDown(head, "mode", "TargetSelector Mode:", self.mode, {"Less Cast", "Less Cast Priority", "Priority", "Most AP", "Most AD", "Closest", "Near Mouse", "Lowest Health", "Lowest Health Priority"}, function(var) self.mode = var end, false)
         }
+  local I = 0;
+  OnObjectLoad(function(hero)
+	  if GetObjectType(hero) == GetObjectType(myHero) then
+		if self.ownteam and GetTeam(hero) == GetTeam(myHero) or GetTeam(hero) ~= GetTeam(myHero) then
+			I = I + 1
+			table.insert(self.settings, Slider(head, GetObjectName(hero), "Priority: "..GetObjectName(hero), (self.priorityTable[5][GetObjectName(hero)] and 5 or self.priorityTable[4][GetObjectName(hero)] and 4 or self.priorityTable[3][GetObjectName(hero)] and 3 or self.priorityTable[2][GetObjectName(hero)] and 2 or self.priorityTable[1][GetObjectName(hero)] and 1 or 1), 1, 5, 0))
+		end
+	  end
+  end)
   OnWndMsg(function(msg, key)
-    if msg == 513 then
+    if msg == 513 and self.focusselected then
       local t, d = nil, math.huge
       local mpos = GetMousePos()
       for _, h in pairs(heroes) do
@@ -1094,6 +1123,16 @@ function TargetSelector:__init(range, mode, type, focusselected, ownteam, priori
   end)
 end
 
+function TargetSelector:GetPriority(hero)
+	for I=2, #self.settings do
+		local s = self.settings[I]
+		if s.id == GetObjectName(hero) then
+			return s:Value()
+		end
+	end
+	return 1
+end
+
 function TargetSelector:GetTarget()
   if self.focusselected then
     if self.IsValid(self.selected) then
@@ -1120,7 +1159,7 @@ function TargetSelector:GetTarget()
     for i=1, #heroes do
       local hero = heroes[i]
       if (self.ownteam and GetTeam(hero) == GetTeam(myHero)) or (not self.ownteam and GetTeam(hero) ~= GetTeam(myHero)) then
-        local prio = CalcDamage(myHero, hero, self.dtype == DAMAGE_PHYSICAL and 100 or 0, self.dtype == DAMAGE_MAGIC and 100 or 0)*(self.priorityTable[5][GetObjectName(hero)] and 5 or self.priorityTable[4][GetObjectName(hero)] and 4 or self.priorityTable[3][GetObjectName(hero)] and 3 or self.priorityTable[2][GetObjectName(hero)] and 2 or self.priorityTable[1][GetObjectName(hero)] and 1 or 10)
+        local prio = CalcDamage(myHero, hero, self.dtype == DAMAGE_PHYSICAL and 100 or 0, self.dtype == DAMAGE_MAGIC and 100 or 0)*(self:GetPriority(hero))
         if self.IsValid(hero, self.range) and prio < p then
           t = hero
           p = prio
@@ -1133,7 +1172,7 @@ function TargetSelector:GetTarget()
     for i=1, #heroes do
       local hero = heroes[i]
       if (self.ownteam and GetTeam(hero) == GetTeam(myHero)) or (not self.ownteam and GetTeam(hero) ~= GetTeam(myHero)) then
-        local prio = self.priorityTable[5][GetObjectName(hero)] and 5 or self.priorityTable[4][GetObjectName(hero)] and 4 or self.priorityTable[3][GetObjectName(hero)] and 3 or self.priorityTable[2][GetObjectName(hero)] and 2 or self.priorityTable[1][GetObjectName(hero)] and 1 or 10
+        local prio = self:GetPriority(hero)
         if self.IsValid(hero, self.range) and prio < p then
           t = hero
           p = prio
@@ -1211,7 +1250,7 @@ function TargetSelector:GetTarget()
     for i=1, #heroes do
       local hero = heroes[i]
       if (self.ownteam and GetTeam(hero) == GetTeam(myHero)) or (not self.ownteam and GetTeam(hero) ~= GetTeam(myHero)) then
-        local prio = GetCurrentHP(hero)*(self.priorityTable[5][GetObjectName(hero)] and 5 or self.priorityTable[4][GetObjectName(hero)] and 4 or self.priorityTable[3][GetObjectName(hero)] and 3 or self.priorityTable[2][GetObjectName(hero)] and 2 or self.priorityTable[1][GetObjectName(hero)] and 1 or 10)
+        local prio = GetCurrentHP(hero)*(self:GetPriority(hero))
         if self.IsValid(hero, self.range) and prio < p then
           t = hero
           p = prio
@@ -1443,14 +1482,14 @@ end
 _G.Menu = MenuConfig
 -- backward compability end
 
-function AddGapcloseEvent(spell, range, targeted)
+function AddGapcloseEvent(spell, range, targeted, cfg)
     GapcloseSpell = spell
     GapcloseTime = 0
     GapcloseUnit = nil
     GapcloseTargeted = targeted
     GapcloseRange = range
     GoS.str = {[_Q] = "Q", [_W] = "W", [_E] = "E", [_R] = "R"}
-    GapcloseConfig = Menu("Anti-Gapclose ("..GoS.str[spell]..")", "gapclose")
+    GapcloseConfig = cfg or Menu("Anti-Gapclose ("..GoS.str[spell]..")", "gapclose")
     DelayAction(function()
         for _,k in pairs(GetEnemyHeroes()) do
           if GoS.gapcloserTable[GetObjectName(k)] then
@@ -2018,14 +2057,14 @@ function Ready(slot)
   return CanUseSpell(myHero, slot) == 0
 end IsReady = Ready
 
-function GetLineFarmPosition(range, width)
+function GetLineFarmPosition(range, width, team)
     local BestPos 
     local BestHit = 0
     local objects = minionManager.objects
     for i, object in pairs(objects) do
-      if GetOrigin(object) ~= nil and IsObjectAlive(object) and GetTeam(object) ~= GetTeam(myHero) then
+      if GetOrigin(object) ~= nil and IsObjectAlive(object) and (not team or GetTeam(object) == team) then
         local EndPos = Vector(myHero) + range * (Vector(object) - Vector(myHero)):normalized()
-        local hit = CountObjectsOnLineSegment(GetOrigin(myHero), EndPos, width, objects)
+        local hit = CountObjectsOnLineSegment(GetOrigin(myHero), EndPos, width, objects, team)
         if hit > BestHit and GetDistanceSqr(GetOrigin(object)) < range^2 then
           BestHit = hit
           BestPos = Vector(object)
@@ -2038,13 +2077,13 @@ function GetLineFarmPosition(range, width)
     return BestPos, BestHit
 end
 
-function GetFarmPosition(range, width)
+function GetFarmPosition(range, width, team)
   local BestPos 
   local BestHit = 0
   local objects = minionManager.objects
   for i, object in pairs(objects) do
-    if GetOrigin(object) ~= nil and IsObjectAlive(object) and GetTeam(object) ~= GetTeam(myHero) then
-      local hit = CountObjectsNearPos(Vector(object), range, width, objects)
+    if GetOrigin(object) ~= nil and IsObjectAlive(object) and (not team or GetTeam(object) == team) then
+      local hit = CountObjectsNearPos(Vector(object), range, width, objects, team)
       if hit > BestHit and GetDistanceSqr(Vector(object)) < range * range then
         BestHit = hit
         BestPos = Vector(object)
@@ -2057,10 +2096,10 @@ function GetFarmPosition(range, width)
   return BestPos, BestHit
 end
 
-function CountObjectsOnLineSegment(StartPos, EndPos, width, objects)
+function CountObjectsOnLineSegment(StartPos, EndPos, width, objects, team)
   local n = 0
   for i, object in pairs(objects) do
-    if GetOrigin(object) ~= nil and IsObjectAlive(object) and GetTeam(object) ~= GetTeam(myHero) then
+    if GetOrigin(object) ~= nil and IsObjectAlive(object) and (not team or GetTeam(object) == team) then
       local pointSegment, pointLine, isOnSegment = VectorPointProjectionOnLineSegment(StartPos, EndPos, GetOrigin(object))
       local w = width
       if isOnSegment and GetDistanceSqr(pointSegment, GetOrigin(object)) < w^2 and GetDistanceSqr(StartPos, EndPos) > GetDistanceSqr(StartPos, GetOrigin(object)) then
@@ -2071,10 +2110,10 @@ function CountObjectsOnLineSegment(StartPos, EndPos, width, objects)
   return n
 end
 
-function CountObjectsNearPos(pos, range, radius, objects)
+function CountObjectsNearPos(pos, range, radius, objects, team)
   local n = 0
   for i, object in pairs(objects) do
-    if IsObjectAlive(object) and GetTeam(object) ~= GetTeam(myHero) and GetDistanceSqr(pos, Vector(object)) <= radius^2 then
+    if IsObjectAlive(object) and (not team or GetTeam(object) == team) and GetDistanceSqr(pos, Vector(object)) <= radius^2 then
       n = n + 1
     end
   end
@@ -2606,20 +2645,28 @@ function InspiredsOrbWalker:MakeMenu()
   self.Config.h:KeyBinding("Harass", "Harass", string.byte("C"))
   self.Config.h:KeyBinding("LastHit", "LastHit", string.byte("X"))
   self.Config.h:KeyBinding("LaneClear", "LaneClear", string.byte("V"))
-  self.Config:Slider("stop", "Stickyradius (mouse)", GetHitBox(myHero), 0, 250, 1, function() self.lastBoundingChange = GetTickCount() + 375 end)
-  self.Config:Slider("stick", "Stickyradius (target)", GetRange(myHero)*2, 0, 550, 1, function() self.lastStickChange = GetTickCount() + 375 end)
-  self.Config:DropDown("lcm", "Lane Clear method", myHeroName == "Vayne" and 2 or 1, {"Focus Highest", "Stick to 1"})
-  self.Config:Boolean("sticky", "Stick to one Target", false, function() end, true)
-  self.Config:Boolean("wtt", "Walk to Target", true)
+  self.Config:Menu("s", "Sticky Settings")
+  self.Config.s:Slider("stop", "Stickyradius (mouse)", GetHitBox(myHero), 0, 250, 1, function() self.lastBoundingChange = GetTickCount() + 375 end)
+  self.Config.s:Slider("stick", "Stickyradius (target)", GetRange(myHero)*2, 0, 550, 1, function() self.lastStickChange = GetTickCount() + 375 end)
+  self.Config:Menu("f", "Farm Settings")
+  self.Config.f:DropDown("dmgpred", "Damagepred Method", 1, {"Inspired", "GoS"})
+  self.Config:Menu("c", "Combo Settings")
+  self.Config.c:Boolean("sticky", "Stick to one Target", false, function() end, true)
+  self.Config.c:Boolean("wtt", "Walk to Target", true)
   self.Config:Boolean("Humanizer", "Humanizer", true)
-  self.Config:Boolean("drawcircle", "Autoattack Circle", true)
-  self.Config:ColorPick("circlecol", "Circle color", {255,255,255,255})
-  self.Config:Slider("circlequal", "Circle quality", 4, 0, 8, 1)
-  self.Config:Info("space", "")
+  self.Config:Menu("d", "Draw Settings")
+  self.Config.d:Menu("s", "Self")
+  self.Config.d.s:Boolean("drawcircle", "Autoattack Circle", true)
+  self.Config.d.s:ColorPick("circlecol", "Circle color", {255,255,255,255})
+  self.Config.d.s:Slider("circlequal", "Circle quality", 4, 0, 8, 1)
+  self.Config.d:Menu("e", "Enemy")
+  self.Config.d.e:Boolean("drawcircle", "Autoattack Circle", true)
+  self.Config.d.e:ColorPick("circlecol", "Circle color", {155,255,0,0})
+  self.Config.d.e:Slider("circlequal", "Circle quality", 4, 0, 8, 1)
+  self.Config.d:Menu("m", "Minions")
+  self.Config.d.m:Boolean("lh", "Last Hit Marker", true)
   self.ts = TargetSelector(GetRange(myHero), TARGET_LESS_CAST, DAMAGE_PHYSICAL)
   self.Config:TargetSelector("ts", "TargetSelector", self.ts)
-  self.Config:Info("space", "")
-  self.Config:Info("version", "Version: v"..IOWversion)
   self.Config:Boolean("OrbWalking", "OrbWalking", false)
   self.permaShow = PermaShow(self.Config.OrbWalking)
   for _,p in pairs(self.Config.__params) do
@@ -2656,38 +2703,47 @@ function InspiredsOrbWalker:SwitchPermaShow(mode)
 end
 
 function InspiredsOrbWalker:Draw()
-  if self.Config.drawcircle:Value() then
-    DrawCircle(GetOrigin(myHero), GetRange(myHero)+GetHitBox(myHero), 1, (512/self.Config.circlequal:Value()), self.Config.circlecol:Value())
+  local myRange = GetRange(myHero)+GetHitBox(myHero)
+  if self.Config.d.s.drawcircle:Value() then
+    DrawCircle(GetOrigin(myHero), myRange, 1, (512/self.Config.d.s.circlequal:Value()), self.Config.d.s.circlecol:Value())
+  end
+  if self.Config.d.e.drawcircle:Value() then
+	for i, hero in pairs(GetEnemyHeroes()) do
+		local r = GetRange(hero)+GetHitBox(hero)
+		if ValidTarget(hero, myRange*1.5+r*1.5) then
+			DrawCircle(GetOrigin(hero), r, 1, (512/self.Config.d.e.circlequal:Value()), self.Config.d.e.circlecol:Value())
+		end
+	end
   end
   if self.lastBoundingChange > GetTickCount() then
-    DrawCircle(GetOrigin(myHero), self.Config.stop:Value(), 2, 32, ARGB(255,255,255,255))
+    DrawCircle(GetOrigin(myHero), self.Config.s.stop:Value(), 2, 32, ARGB(255,255,255,255))
   end
-  if self.lastStickChange > GetTickCount() and self.Config.stick then
-    DrawCircle(GetOrigin(myHero), self.Config.stick:Value(), 2, 32, ARGB(255,255,255,255))
+  if self.lastStickChange > GetTickCount() and self.Config.s.stick then
+    DrawCircle(GetOrigin(myHero), self.Config.s.stick:Value(), 2, 32, ARGB(255,255,255,255))
   end
 end
 
 function InspiredsOrbWalker:Tick()
   if self.toLoad then
     if GetRange(myHero) > 0 then
-      if self.Config.stick then
-        if self.Config.stick:Value() == 0 then
-          self.Config.stick:Value(GetRange(myHero))
+      if self.Config.s.stick then
+        if self.Config.s.stick:Value() == 0 then
+          self.Config.s.stick:Value(GetRange(myHero))
         end
       end
-      if GetRange(myHero) >= 450 then
-        for _,p in pairs(self.Config.__params) do
+      if GetRange(myHero) >= 425 then
+        for _,p in pairs(self.Config.c.__params) do
           if p.id == "wtt" then
-            table.remove(self.Config.__params, _)
+            table.remove(self.Config.c.__params, _)
           end
         end
         self.Config["wtt"] = nil
-        for _,p in pairs(self.Config.__params) do
+        for _,p in pairs(self.Config.c.__params) do
           if p.id == "stick" then
-            table.remove(self.Config.__params, _)
+            table.remove(self.Config.c.__params, _)
           end
         end
-        self.Config["stick"] = nil
+        self.Config.s["stick"] = nil
       end
       self.toLoad = false
     end
@@ -2721,9 +2777,9 @@ end
 
 function InspiredsOrbWalker:GetTarget()
   if self.Config.h.Combo:Value() then
-    return self:CanOrb(self.forceTarget) and self.forceTarget or (self.Config.sticky:Value() and self:CanOrb(self.target) and GetObjectType(self.target) == GetObjectType(myHero)) and self.target or self.Config.ts:GetTarget()
+    return self:CanOrb(self.forceTarget) and self.forceTarget or (self.Config.c.sticky:Value() and self:CanOrb(self.target) and GetObjectType(self.target) == GetObjectType(myHero)) and self.target or self.Config.ts:GetTarget()
   elseif self.Config.h.Harass:Value() then
-    return self:GetLastHit() or self:CanOrb(self.forceTarget) and self.forceTarget or (self.Config.sticky:Value() and self:CanOrb(self.target)) and self.target or self.Config.ts:GetTarget()
+    return self:GetLastHit() or self:CanOrb(self.forceTarget) and self.forceTarget or (self.Config.c.sticky:Value() and self:CanOrb(self.target) and GetObjectType(self.target) == GetObjectType(myHero)) and self.target or self.Config.ts:GetTarget()
   elseif self.Config.h.LastHit:Value() then
     return self:GetLastHit()
   elseif self.Config.h.LaneClear:Value() then
@@ -2797,18 +2853,22 @@ function InspiredsOrbWalker:PredictHealth(unit, delta)
   if self.tableForHPPrediction[nID] then
     local dmg = 0
     delta = delta + GetLatency()
-    for _, k in pairs(self.tableForHPPrediction[nID]) do
-      if k.time < GetTickCount() then
-        if (k.time + k.reattacktime) - delta < GetTickCount() then
-          dmg = dmg + k.dmg
-        end
-        self.tableForHPPrediction[nID][_] = nil
-      else
-        if k.time - delta < GetTickCount() then
-          dmg = dmg + k.dmg
-        end
-      end
-    end
+	if self.Config.f.dmgpred:Value() == 1 then
+		for _, k in pairs(self.tableForHPPrediction[nID]) do
+		  if k.time < GetTickCount() then
+			if (k.time + k.reattacktime) - delta < GetTickCount() then
+			  dmg = dmg + k.dmg
+			end
+			self.tableForHPPrediction[nID][_] = nil
+		  else
+			if k.time - delta < GetTickCount() then
+			  dmg = dmg + k.dmg
+			end
+		  end
+		end
+	else
+		dmg = GetDamagePrediction(unit, delta)
+	end
     return GetCurrentHP(unit) - dmg
   else
     return GetCurrentHP(unit)
@@ -2923,7 +2983,7 @@ function InspiredsOrbWalker:GetProjectileSpeed(o)
 end
 
 function InspiredsOrbWalker:Orb()
-  if self.Config.wtt and self.Config.wtt:Value() then
+  if self.Config.c.wtt and self.Config.c.wtt:Value() then
     self.targetPos = self.forcePos or GetOrigin(self.target)
   else
     self.targetPos = nil
@@ -2938,8 +2998,8 @@ function InspiredsOrbWalker:Orb()
   else
     self.target = self:GetTarget()
     if self.isWindingDown or not self.target or not self.attacksEnabled then
-      if GetDistanceSqr(GetOrigin(myHero), GetMousePos()) > self.Config.stop:Value()^2 and self.movementEnabled then
-        if self.targetPos and (not self.target or not GetObjectType(self.target) == GetObjectType(myHero)) and GetDistanceSqr(self.targetPos, GetOrigin(myHero)) < (self.Config.stick:Value())^2 then
+      if GetDistanceSqr(GetOrigin(myHero), GetMousePos()) > self.Config.s.stop:Value()^2 and self.movementEnabled then
+        if self.targetPos and (not self.target or not GetObjectType(self.target) == GetObjectType(myHero)) and GetDistanceSqr(self.targetPos, GetOrigin(myHero)) < (self.Config.s.stick:Value())^2 then
           if GetDistanceSqr(GetOrigin(myHero), self.targetPos) > GetRange(myHero)^2 then
             self:Move(self:MakePos(self.targetPos))
           end
@@ -2950,9 +3010,11 @@ function InspiredsOrbWalker:Orb()
         HoldPosition()
       end
     else
-      self:Execute(1, self.target)
-      self.autoAttackT = GetTickCount()
-      AttackUnit(self.target)
+	  if myHeroName ~= "Graves" or GotBuff(myHero, "gravesbasicattackammo1") > 0 then
+		self:Execute(1, self.target)
+		self.autoAttackT = GetTickCount()
+		AttackUnit(self.target)
+	  end
     end
   end
 end
@@ -2976,7 +3038,7 @@ function InspiredsOrbWalker:MakePos(p)
   local hPos = GetOrigin(myHero)
   local tV = {x = (mPos.x-hPos.x), y = (mPos.z-hPos.z), z = (mPos.z-hPos.z)}
   local len = math.sqrt(tV.x * tV.x + tV.y * tV.y + tV.z * tV.z)
-  local ran = math.random(150)+math.random(150)+math.random(150)+math.random(150)+math.random(150)+math.random(150)+math.random(150)+math.random(150)+math.random(150)+math.random(150)
+  local ran = math.min(GetDistance(p), math.random(150)+math.random(150)+math.random(150)+math.random(150)+math.random(150)+math.random(150)+math.random(150)+math.random(150)+math.random(150)+math.random(150))
   return {x = hPos.x + (250+ran) * tV.x / len, y = hPos.y, z = hPos.z + (250+ran) * tV.z / len}
 end
 
@@ -3036,6 +3098,22 @@ function InspiredsOrbWalker:ResetAA()
   self.isWindingUp = false
   self.isWindingDown = false
   self.autoAttackT = 0
+end
+
+function DrawScreenCircle(x, y, size, color, quality, elliptic)
+  local quality = quality or 1;
+  local elliptic = elliptic or 1;
+  for theta=0,360,quality do
+    DrawLine(x + size * math.cos(2*math.pi/360*theta), y - elliptic * size * math.sin(2*math.pi/360*theta), x + size * math.cos(2*math.pi/360*(theta-1)), y - elliptic * size * math.sin(2*math.pi/360*(theta-1)), 1, color)
+  end
+end
+
+function DrawFilledScreenCircle(x, y, size, color, quality, elliptic)
+  local quality = quality or 1;
+  local elliptic = elliptic or 1;
+  for theta=0,360,quality do
+    DrawLine(x + size * math.cos(2*math.pi/360*theta), y - elliptic * size * math.sin(2*math.pi/360*theta), x + size * math.cos(2*math.pi/360*(theta-180)), y - elliptic * size * math.sin(2*math.pi/360*(theta-180)), 1, color)
+  end
 end
 
 do
@@ -3129,7 +3207,7 @@ do
     PermaShow(mc_cfg_base.Show)
     PermaShow(mc_cfg_base.ontop)
   end
-  if not _G.IOW and not _G.IACloaded then _G.IOW = InspiredsOrbWalker() end
+  if not _G.IOW and not _G.IAC then _G.IOW = InspiredsOrbWalker() end
 end
 
 return true
