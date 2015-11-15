@@ -3210,4 +3210,18 @@ do
   if not _G.IOW and not _G.IAC then _G.IOW = InspiredsOrbWalker() end
 end
 
+function AutoUpdate(weblua, webversion, locallua, localversion)
+    if not gosu then
+        package.cpath=string.gsub(package.path, ".lua", ".dll")
+        gosu=require("GOSUtility")
+    end
+    local webversion = gosu.request("https://raw.githubusercontent.com",webversion.."?no-cache="..(math.random(100000)))
+    if webversion and tostring(webversion) ~= nil and tonumber(webversion) > localversion then
+        WriteFile(gosu.request("https://raw.githubusercontent.com", weblua.."?no-cache="..(math.random(100000))), SCRIPT_PATH.."\\"..locallua)
+        Msg("Updated"..(locallua and " "..locallua or "")..", please press 2x F6 to reload!", "AutoUpdater")
+    else
+        Msg("Latest version loaded.", "AutoUpdater")
+    end
+end
+
 return true
