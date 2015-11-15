@@ -1,6 +1,6 @@
 require('Inspired')
 pcall(require, 'IPrediction')
-
+AutoUpdate("/Inspired-gos/scripts/master/ILux.lua","/Inspired-gos/scripts/master/ILux.version","ILux.lua",1)
 class "Lux"
 
 function Lux:__init()
