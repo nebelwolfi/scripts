@@ -311,7 +311,7 @@ function SmoothEvade:ProcessSpell(unit, spell)
 	if self.Config and unit and spell and spell.name and GetTeam(unit) ~= GetTeam(myHero) then
 		if spell.name:lower():find("attack") or not GetObjectName(spell.target) then return end
 		if self.data and self.data[GetObjectName(unit)] then
-			for i=-3,4 do
+			for i = -3,4 do
 				if self.Config[GetObjectName(unit)][self.str[i]] and spell.name:find(self.data[GetObjectName(unit)][i].name) then
 					s = {slot = i, source = unit, startTime = GetGameTimer(), startPos = Vector(unit), endPos = Vector(spell.endPos), name = spell.name}
 					table.insert(self.activeSpells, s)
@@ -787,7 +787,6 @@ function SmoothEvade:Data()
 		["Volibear"] = {
 		},
 		["Warwick"] = {
-		-- W KillSteal soon
 		},
 		["Wukong"] = {
 		},
