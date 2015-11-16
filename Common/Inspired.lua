@@ -2999,7 +2999,7 @@ function InspiredsOrbWalker:Orb()
     self.target = self:GetTarget()
     if self.isWindingDown or not self.target or not self.attacksEnabled then
       if GetDistanceSqr(GetOrigin(myHero), GetMousePos()) > self.Config.s.stop:Value()^2 and self.movementEnabled then
-        if self.targetPos and (not self.target or not GetObjectType(self.target) == GetObjectType(myHero)) and GetDistanceSqr(self.targetPos, GetOrigin(myHero)) < (self.Config.s.stick:Value())^2 then
+        if self.targetPos and self.Config.s.stick and (not self.target or not GetObjectType(self.target) == GetObjectType(myHero)) and GetDistanceSqr(self.targetPos, GetOrigin(myHero)) < (self.Config.s.stick:Value())^2 then
           if GetDistanceSqr(GetOrigin(myHero), self.targetPos) > GetRange(myHero)^2 then
             self:Move(self:MakePos(self.targetPos))
           end
