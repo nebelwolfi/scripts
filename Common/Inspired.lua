@@ -3221,5 +3221,10 @@ function AutoUpdate(weblua, webversion, locallua, localversion)
         Msg("Updated"..(locallua and " "..locallua or "")..", please press 2x F6 to reload!", "AutoUpdater")
     end
 end
+AutoUpdate(
+	"/Inspired-gos/scripts/master/Common/Inspired.lua", -- git lua url
+	"/Inspired-gos/scripts/master/Common/Inspired.version", -- git version url
+	"Common\\Inspired.lua", -- local lua path
+	0) -- local version number
 
 return true
