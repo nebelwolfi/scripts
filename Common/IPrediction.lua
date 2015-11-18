@@ -9,7 +9,7 @@ do
 	Prediction.WayPointManager = {}
 
 	Prediction.Vars = {
-		Version = 9,
+		Version = 10,
 		Heroes = {},
 		Slowed = {},
 		Stunned = {},
@@ -218,11 +218,11 @@ do
 		if i and d <= spell.width + GetHitBox(unit) and GetDistance(p) < spell.range + spell.width + GetHitBox(unit) then
 			return Prediction.User.State.ENEMY_IS_IMMOBILE, Vector(p), d
 		end
-		local wp = Prediction.WayPointManager.GetWayPoints(unit)
+		--[[ local wp = Prediction.WayPointManager.GetWayPoints(unit)
 		if #wp == 0 then
 			return Prediction.User.State.WILL_MISS, nil
 		end
-		--[[ TODO: cone | circular
+		TODO: cone | circular
 		if spell.type == "cone" then
 			chance, pos, info = Prediction.Core.PredictCone(unit, range, speed, delay, width, source)
 		elseif spell.type == "linear " then
