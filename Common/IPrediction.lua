@@ -128,7 +128,7 @@ do
 					stunCallback = Prediction.Vars.StunCallbacks[i]
 					local x, y, z = Prediction.User.Interface.IsUnitStunned(unit, stunCallback.range, stunCallback.speed, stunCallback.delay, stunCallback.width, stunCallback.source)
 					if x and y <= stunCallback.width + GetHitBox(unit) and GetDistance(z) < stunCallback.range + stunCallback.width + GetHitBox(unit) then
-						stunCallback.callback(z, y)
+						stunCallback.callback(unit, z, y)
 					end
 				end
 			end
@@ -454,7 +454,7 @@ do
 			"/Inspired-gos/scripts/master/Common/IPrediction.lua", -- git lua url
 			"/Inspired-gos/scripts/master/Common/IPrediction.version", -- git version url
 			"Common\\IPrediction.lua", -- local lua path
-			1) -- local version number
+			2) -- local version number
 	end
 
 	class "Spell"
