@@ -9,7 +9,7 @@ do
 	Prediction.WayPointManager = {}
 
 	Prediction.Vars = {
-		Version = 10,
+		Version = 11,
 		Heroes = {},
 		Slowed = {},
 		Stunned = {},
