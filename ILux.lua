@@ -1,6 +1,6 @@
 require('Inspired')
 pcall(require, 'IPrediction')
-AutoUpdate("/Inspired-gos/scripts/master/ILux.lua","/Inspired-gos/scripts/master/ILux.version","ILux.lua",1)
+AutoUpdate("/Inspired-gos/scripts/master/ILux.lua","/Inspired-gos/scripts/master/ILux.version","ILux.lua",2)
 class "Lux"
 
 function Lux:__init()
@@ -57,9 +57,9 @@ function Lux:__init()
 	if IPrediction ~= nil then
 		self.Config:Boolean("OnImmobile", "Cast E on Immobile", true)
 		self.Config:Boolean("OnDash", "Cast Q on Dash", true)
-		IPrediction.OnImmobile(function(target, y)
+		IPrediction.OnImmobile(function(target, pos, y)
 			if self.Config.OnImmobile:Value() and ValidTarget(target, 1100 + 325 / 2) and y < 325 then
-				CastSkillShot(_E, GetOrigin(target))
+				CastSkillShot(_E, pos)
 			end
 		end, 1100, 1300, 0.25, 325 / 2)
 		IPrediction.OnDash(function(target, y)
