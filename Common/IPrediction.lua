@@ -9,7 +9,7 @@ do
 	Prediction.WayPointManager = {}
 
 	Prediction.Vars = {
-		Version = 8,
+		Version = 9,
 		Heroes = {},
 		Slowed = {},
 		Stunned = {},
@@ -219,7 +219,7 @@ do
 			return Prediction.User.State.ENEMY_IS_IMMOBILE, Vector(p), d
 		end
 		local wp = Prediction.WayPointManager.GetWayPoints(unit)
-		if #wp <= 1 then
+		if #wp == 0 then
 			return Prediction.User.State.WILL_MISS, nil
 		end
 		--[[ TODO: cone | circular
