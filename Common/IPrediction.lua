@@ -234,7 +234,7 @@ do
 	end
 
 	function Prediction.Core.PredictPos(unit, delay)
-		return Vector(target)+Vector(Prediction.WayPointManager.GetDirection(unit)):normalized()*delay*GetMoveSpeed(unit)
+		return Vector(unit)+Vector(Prediction.WayPointManager.GetDirection(unit)):normalized()*delay*GetMoveSpeed(unit)
 	end
 
 	function Prediction.Core.PredictCone(unit, range, speed, delay, width, source)
