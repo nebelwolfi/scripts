@@ -200,7 +200,7 @@ do
 
 	function Prediction.Core.Predict(unit, spell, source)
 		local chance, pos, info = 0, nil, nil
-		if spell.collision > 0 then
+		if spell.collision > 0 and spell.collision < math.huge then
 			local x, y, z = IPrediction.Collision(myHero, unit, spell)
 			if x and y-spell.collision > 0 then
 				return Prediction.User.State.WILL_COLLIDE, nil, {num = y, objects = z}
@@ -453,7 +453,7 @@ do
 			"/Inspired-gos/scripts/master/Common/IPrediction.lua", -- git lua url
 			"/Inspired-gos/scripts/master/Common/IPrediction.version", -- git version url
 			"Common\\IPrediction.lua", -- local lua path
-			4) -- local version number
+			5) -- local version number
 	end
 
 	class "Spell"
