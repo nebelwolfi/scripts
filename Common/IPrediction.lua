@@ -167,9 +167,9 @@ do
 	end
 
 	function Prediction.Core.Collision(startP, endP, spell, type)
-		local startP = GetOrigin(startP)
+		local startP = Vector(startP)
 		local obj = endP
-		local endP = GetOrigin(endP)
+		local endP = Vector(endP)
 		local objects = {}
 		local collides = {}
 		if not type or type == Obj_AI_Minion then
@@ -185,7 +185,7 @@ do
 		for I=1, #objects do
 			local object = objects[I]
 			if object ~= obj and IsObjectAlive(object) and GetOrigin(object) ~= nil and IsVisible(object) then
-				local predP = GetOrigin(object)--Prediction.Core.Predict(object, spell, startP)
+				local predP = Vector(object)--Prediction.Core.Predict(object, spell, startP)
 				local ProjPoint,_,OnSegment = VectorPointProjectionOnLineSegment(startP, endP, predP)
 				if OnSegment then
 					if GetDistanceSqr(ProjPoint, predP) < (GetHitBox(object) + spell.width) ^ 2 then
@@ -453,7 +453,7 @@ do
 			"/Inspired-gos/scripts/master/Common/IPrediction.lua", -- git lua url
 			"/Inspired-gos/scripts/master/Common/IPrediction.version", -- git version url
 			"Common\\IPrediction.lua", -- local lua path
-			6) -- local version number
+			7) -- local version number
 	end
 
 	class "Spell"
