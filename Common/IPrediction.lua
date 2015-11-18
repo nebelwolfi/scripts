@@ -244,7 +244,6 @@ do
 
 	function Prediction.Core.PredictLinear(unit, range, speed, delay, width, source)
         local Position = Prediction.Core.PredictPos(unit, GetDistance(source,unit)/speed+delay)
-        print(GetDistance(Position, unit))
         return GetDistance(Position, source) < range + width + GetHitBox(unit) and Prediction.User.State.WILL_HIT or Prediction.User.State.WILL_MISS, Position
 	end
 
@@ -454,7 +453,7 @@ do
 			"/Inspired-gos/scripts/master/Common/IPrediction.lua", -- git lua url
 			"/Inspired-gos/scripts/master/Common/IPrediction.version", -- git version url
 			"Common\\IPrediction.lua", -- local lua path
-			3) -- local version number
+			4) -- local version number
 	end
 
 	class "Spell"
