@@ -450,6 +450,11 @@ do
 		end
 		Prediction.Vars.Config:Info("i1", "Loaded!")
 		Prediction.Vars.Config:Info("i2", "More menu options soon")
+		AutoUpdate(
+			"/Inspired-gos/scripts/master/Common/IPrediction.lua", -- git lua url
+			"/Inspired-gos/scripts/master/Common/IPrediction.version", -- git version url
+			"Common\\IPrediction.lua", -- local lua path
+			1) -- local version number
 	end
 
 	class "Spell"
