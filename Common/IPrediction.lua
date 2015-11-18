@@ -13,7 +13,7 @@ do
 		Slowed = {},
 		Stunned = {},
 		Dashing = {},
-		Config = MenuConfig("nPrediction", "nPrediction"..myHeroName),
+		Config = MenuConfig("IPrediction", "IPrediction"..myHeroName),
 		DashCallbacks = {},
 		StunCallbacks = {},
 		LastBuffTick = 0,
@@ -454,7 +454,7 @@ do
 			"/Inspired-gos/scripts/master/Common/IPrediction.lua", -- git lua url
 			"/Inspired-gos/scripts/master/Common/IPrediction.version", -- git version url
 			"Common\\IPrediction.lua", -- local lua path
-			2) -- local version number
+			3) -- local version number
 	end
 
 	class "Spell"
