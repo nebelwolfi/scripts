@@ -578,10 +578,10 @@ function __MC_Draw()
       FillRect(MC.x-1+(4+MC.width)*k, MC.y-1+23*i, MC.width+2, 22, ARGB(55,255,255,255))
       FillRect(MC.x+(4+MC.width)*k, MC.y+23*i, MC.width, 20, ARGB(255,0,0,0))
       DrawText(" "..p.name.." ",15,MC.x+(4+MC.width)*k,MC.y+1+23*i,0xffffffff)
-	  DrawScreenCircle(MC.x-1+4+MC.width*(k+1)-12, MC.y+10+23*i, 8, p:Value() and ARGB(255,0,255,0) or ARGB(255,255,0,0), 8)
-	  if p:Value() then
+    DrawScreenCircle(MC.x-1+4+MC.width*(k+1)-12, MC.y+10+23*i, 8, p:Value() and ARGB(255,0,255,0) or ARGB(255,255,0,0), 8)
+    if p:Value() then
         DrawText("ON",8,MC.x+MC.width*(k+1)-14,MC.y+6+23*i,0xffffffff)
-	  else
+    else
         DrawText("OFF",8,MC.x+MC.width*(k+1)-15,MC.y+6+23*i,0xffffffff)
       end
       return 0
@@ -652,11 +652,11 @@ function __MC_Draw()
       FillRect(MC.x-1+(4+MC.width)*k, MC.y-1+23*i, MC.width+2, 22, ARGB(55,255,255,255))
       FillRect(MC.x+(4+MC.width)*k, MC.y+23*i, MC.width, 20, ARGB(255,0,0,0))
       DrawText(" "..p.name.." ",15,MC.x+(4+MC.width)*k,MC.y+1+23*i,0xffffffff)
-	  for I = -1, 1 do
-		for j = -1, 1 do
-		  DrawText("x", 25, MC.x+4+MC.width*(k+1)-15+I, MC.y-6+23*i+j, 0xffffffff)
-		end
-	  end
+    for I = -1, 1 do
+    for j = -1, 1 do
+      DrawText("x", 25, MC.x+4+MC.width*(k+1)-15+I, MC.y-6+23*i+j, 0xffffffff)
+    end
+    end
       DrawText("x", 25, MC.x+4+MC.width*(k+1)-15, MC.y-6+23*i, 0xff000000)
       if p.active then
         if CursorIsUnder(MC.x+(4+MC.width)*(k+1), MC.y+23*i+23, MC.width, 20) then
@@ -670,24 +670,24 @@ function __MC_Draw()
         __MC_DrawParam(i, p.settings[1], k+1)
         __MC_DrawParam(i+1, p.settings[2], k+1)
         local mode = p.settings[2]:Value()
-		if mode == 2 or mode == 3 or mode == 9 then
-		  for I=3,#p.settings do
-			p.settings[I].active = true
-			__MC_DrawParam(i+(I*1.35-2), p.settings[I], k+1)
-		  end
-		end
+    if mode == 2 or mode == 3 or mode == 9 then
+      for I=3,#p.settings do
+      p.settings[I].active = true
+      __MC_DrawParam(i+(I*1.35-2), p.settings[I], k+1)
+      end
+    end
       end
       return 0
     elseif p.type == "ColorPick" then
       FillRect(MC.x-1+(4+MC.width)*k, MC.y-1+23*i, MC.width+2, 22, ARGB(55,255,255,255))
       FillRect(MC.x+(4+MC.width)*k, MC.y+23*i, MC.width, 20, ARGB(255,0,0,0))
       DrawText(" "..p.name.." ",15,MC.x+(4+MC.width)*k,MC.y+1+23*i,0xffffffff)
-	  DrawFilledScreenCircle(MC.x-1+4+MC.width*(k+1)-12, MC.y+10+23*i, 6, p:Value())
+    DrawFilledScreenCircle(MC.x-1+4+MC.width*(k+1)-12, MC.y+10+23*i, 6, p:Value())
       if p.active then
         for c,v in pairs(p.color) do v.active = true end
         __MC_DrawParam(i, p.color[1], k+1)
         __MC_DrawParam(i, p.color[2], k+2.35)
-		FillRect(MC.x+(4+MC.width)*(k+2), MC.y+23*i, MC.width*0.35-3, 60, p:Value())
+    FillRect(MC.x+(4+MC.width)*(k+2), MC.y+23*i, MC.width*0.35-3, 60, p:Value())
         __MC_DrawParam(i+1.35, p.color[3], k+1)
         __MC_DrawParam(i+1.35, p.color[4], k+2.35)
       end
@@ -771,17 +771,17 @@ local function __MC_WndMsg()
           if CursorIsUnder(MC.x+(4+MC.width)*(k+1), MC.y+23*i, MC.width, 23) then
             p.settings[1]:Value(not p.settings[1]:Value())
             isB = true
-		  elseif CursorIsUnder(MC.x+(4+MC.width)*(k+1), MC.y+23*i, MC.width, 23*#p.settings*1.35) then
-			isB = true
+      elseif CursorIsUnder(MC.x+(4+MC.width)*(k+1), MC.y+23*i, MC.width, 23*#p.settings*1.35) then
+      isB = true
           end
-	      if p.settings[2].active then
-			for m=1, 9 do
-			  if CursorIsUnder(MC.x+(4+MC.width)*(k+2), MC.y+23*i+23+23*(m-1), MC.width, 23) then
-				isB = true
-				p.settings[2]:Value(m)
-			  end
-			end
-		  end
+        if p.settings[2].active then
+      for m=1, 9 do
+        if CursorIsUnder(MC.x+(4+MC.width)*(k+2), MC.y+23*i+23+23*(m-1), MC.width, 23) then
+        isB = true
+        p.settings[2]:Value(m)
+        end
+      end
+      end
         end
       end
       return isB, ladd
@@ -831,7 +831,7 @@ local function __MC_WndMsg()
     if not onlyParams then v.__active = false end
   end
   local function __MC_ResetActive(skipID, onlyParams)
-	if MCadd.lastChange + 375 > GetTickCount() then return end
+  if MCadd.lastChange + 375 > GetTickCount() then return end
     for k, v in pairs(MCadd.instances) do
       if not skipID or skipID ~= v.__id then
         __MC_ResetInstance(v, skipID, onlyParams)
@@ -1085,12 +1085,12 @@ function TargetSelector:__init(range, mode, type, focusselected, ownteam, priori
         }
   local I = 0;
   OnObjectLoad(function(hero)
-	  if GetObjectType(hero) == GetObjectType(myHero) then
-		if self.ownteam and GetTeam(hero) == GetTeam(myHero) or GetTeam(hero) ~= GetTeam(myHero) then
-			I = I + 1
-			table.insert(self.settings, Slider(head, GetObjectName(hero), "Priority: "..GetObjectName(hero), (self.priorityTable[5][GetObjectName(hero)] and 5 or self.priorityTable[4][GetObjectName(hero)] and 4 or self.priorityTable[3][GetObjectName(hero)] and 3 or self.priorityTable[2][GetObjectName(hero)] and 2 or self.priorityTable[1][GetObjectName(hero)] and 1 or 1), 1, 5, 0))
-		end
-	  end
+    if GetObjectType(hero) == GetObjectType(myHero) then
+    if self.ownteam and GetTeam(hero) == GetTeam(myHero) or GetTeam(hero) ~= GetTeam(myHero) then
+      I = I + 1
+      table.insert(self.settings, Slider(head, GetObjectName(hero), "Priority: "..GetObjectName(hero), (self.priorityTable[5][GetObjectName(hero)] and 5 or self.priorityTable[4][GetObjectName(hero)] and 4 or self.priorityTable[3][GetObjectName(hero)] and 3 or self.priorityTable[2][GetObjectName(hero)] and 2 or self.priorityTable[1][GetObjectName(hero)] and 1 or 1), 1, 5, 0))
+    end
+    end
   end)
   OnWndMsg(function(msg, key)
     if msg == 513 and self.focusselected then
@@ -1124,13 +1124,13 @@ function TargetSelector:__init(range, mode, type, focusselected, ownteam, priori
 end
 
 function TargetSelector:GetPriority(hero)
-	for I=2, #self.settings do
-		local s = self.settings[I]
-		if s.id == GetObjectName(hero) then
-			return s:Value()
-		end
-	end
-	return 1
+  for I=2, #self.settings do
+    local s = self.settings[I]
+    if s.id == GetObjectName(hero) then
+      return s:Value()
+    end
+  end
+  return 1
 end
 
 function TargetSelector:GetTarget()
@@ -1534,11 +1534,71 @@ function GetDistance(p1,p2)
   return math.sqrt(GetDistanceSqr(p1,p2))
 end
 
+local _turrets, __turrets__OnTick
+local function __Turrets__init()
+    if _turrets == nil then
+        _turrets = {}
+        local turretRange = 950
+        local fountainRange = 1050
+        local visibilityRange = 1300
+        OnObjectLoad(function(object)
+            if object ~= nil and GetObjectType(object) == Obj_AI_Turret then
+                local turretName = GetObjectBaseName(object)
+                _turrets[turretName] = {
+                    object = object,
+                    team = GetTeam(object),
+                    range = turretRange,
+                    visibilityRange = visibilityRange,
+                    x = GetOrigin(object).x,
+                    y = GetOrigin(object).y,
+                    z = GetOrigin(object).z,
+                }
+                if turretName == "Turret_OrderTurretShrine_A" or turretName == "Turret_ChaosTurretShrine_A" then
+                    _turrets[turretName].range = fountainRange
+                    OnObjectLoad(function(object2)
+                        if object2 ~= nil and GetObjectType(object2) == Obj_AI_SpawnPoint and GetDistanceSqr(GetOrigin(object), GetOrigin(object2)) < 1000000 then
+                            _turrets[turretName].x = GetOrigin(object2).x
+                            _turrets[turretName].z = GetOrigin(object2).z
+                        elseif object2 ~= nil and GetObjectType(object2) == Obj_AI_Shop and GetTeam(object2) == GetTeam(object) then
+                            _turrets[turretName].y = GetOrigin(object2).y
+                        end
+                    end)
+                end
+            end
+        end)
+        function __turrets__OnTick()
+            for name, turret in pairs(_turrets) do
+                if not IsObjectAlive(turret.object) or IsDead(turret.object) or GetCurrentHP(turret.object) == 0 then
+                    _turrets[name] = nil
+                end
+            end
+        end
+        OnTick(__turrets__OnTick)
+    end
+end;__Turrets__init()
+
+function GetTurrets()
+  return _turrets
+end
+
+function GetUnderTurret(pos, enemyTurret)
+  local enemyTurret = (enemyTurret ~= false)
+  for _, turret in pairs(_turrets) do
+    if turret ~= nil and (turret.team ~= GetTeam(player)) == enemyTurret and GetDistanceSqr(turret, pos) <= (turret.range) ^ 2 then
+      return turret
+    end
+  end
+end
+
+function UnderTurret(pos, enemyTurret)
+  return (GetUnderTurret(pos, enemyTurret) ~= nil)
+end
+
 function GetDistanceSqr(p1,p2)
-    p2 = p2 or myHeroPos()
-    local dx = p1.x - p2.x
-    local dz = (p1.z or p1.y) - (p2.z or p2.y)
-    return dx*dx + dz*dz
+  p2 = p2 or myHeroPos()
+  local dx = p1.x - p2.x
+  local dz = (p1.z or p1.y) - (p2.z or p2.y)
+  return dx*dx + dz*dz
 end
 
 function GetYDistance(p1, p2)
@@ -2708,12 +2768,12 @@ function InspiredsOrbWalker:Draw()
     DrawCircle(GetOrigin(myHero), myRange, 1, (512/self.Config.d.s.circlequal:Value()), self.Config.d.s.circlecol:Value())
   end
   if self.Config.d.e.drawcircle:Value() then
-	for i, hero in pairs(GetEnemyHeroes()) do
-		local r = GetRange(hero)+GetHitBox(hero)
-		if ValidTarget(hero, myRange*1.5+r*1.5) then
-			DrawCircle(GetOrigin(hero), r, 1, (512/self.Config.d.e.circlequal:Value()), self.Config.d.e.circlecol:Value())
-		end
-	end
+  for i, hero in pairs(GetEnemyHeroes()) do
+    local r = GetRange(hero)+GetHitBox(hero)
+    if ValidTarget(hero, myRange*1.5+r*1.5) then
+      DrawCircle(GetOrigin(hero), r, 1, (512/self.Config.d.e.circlequal:Value()), self.Config.d.e.circlecol:Value())
+    end
+  end
   end
   if self.lastBoundingChange > GetTickCount() then
     DrawCircle(GetOrigin(myHero), self.Config.s.stop:Value(), 2, 32, ARGB(255,255,255,255))
@@ -2853,22 +2913,22 @@ function InspiredsOrbWalker:PredictHealth(unit, delta)
   if self.tableForHPPrediction[nID] then
     local dmg = 0
     delta = delta + GetLatency()
-	if self.Config.f.dmgpred:Value() == 1 then
-		for _, k in pairs(self.tableForHPPrediction[nID]) do
-		  if k.time < GetTickCount() then
-			if (k.time + k.reattacktime) - delta < GetTickCount() then
-			  dmg = dmg + k.dmg
-			end
-			self.tableForHPPrediction[nID][_] = nil
-		  else
-			if k.time - delta < GetTickCount() then
-			  dmg = dmg + k.dmg
-			end
-		  end
-		end
-	else
-		dmg = GetDamagePrediction(unit, delta)
-	end
+  if self.Config.f.dmgpred:Value() == 1 then
+    for _, k in pairs(self.tableForHPPrediction[nID]) do
+      if k.time < GetTickCount() then
+      if (k.time + k.reattacktime) - delta < GetTickCount() then
+        dmg = dmg + k.dmg
+      end
+      self.tableForHPPrediction[nID][_] = nil
+      else
+      if k.time - delta < GetTickCount() then
+        dmg = dmg + k.dmg
+      end
+      end
+    end
+  else
+    dmg = GetDamagePrediction(unit, delta)
+  end
     return GetCurrentHP(unit) - dmg
   else
     return GetCurrentHP(unit)
@@ -3010,11 +3070,11 @@ function InspiredsOrbWalker:Orb()
         HoldPosition()
       end
     else
-	  if myHeroName ~= "Graves" or GotBuff(myHero, "gravesbasicattackammo1") > 0 then
-		self:Execute(1, self.target)
-		self.autoAttackT = GetTickCount()
-		AttackUnit(self.target)
-	  end
+      if myHeroName ~= "Graves" or GotBuff(myHero, "gravesbasicattackammo1") > 0 then
+        self:Execute(1, self.target)
+        self.autoAttackT = GetTickCount()
+        AttackUnit(self.target)
+      end
     end
   end
 end
@@ -3222,9 +3282,9 @@ function AutoUpdate(weblua, webversion, locallua, localversion)
     end
 end
 AutoUpdate(
-	"/Inspired-gos/scripts/master/Common/Inspired.lua", -- git lua url
-	"/Inspired-gos/scripts/master/Common/Inspired.version", -- git version url
-	"Common\\Inspired.lua", -- local lua path
-	0) -- local version number
+  "/Inspired-gos/scripts/master/Common/Inspired.lua", -- git lua url
+  "/Inspired-gos/scripts/master/Common/Inspired.version", -- git version url
+  "Common\\Inspired.lua", -- local lua path
+  1) -- local version number
 
 return true
