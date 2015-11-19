@@ -1358,10 +1358,10 @@ local function __PS__Draw()
   local ps = #PSadd.instances
   for k = 1, ps do
     local v = PSadd.instances[k]
-    FillRect(PS.x-1, PS.y+17*k-1, 2+MC.width:Value()*50+50+25, 16, ARGB(55,255,255,255))
-    FillRect(PS.x, PS.y+17*k, MC.width:Value()*50+50+25, 14, ARGB(155,0,0,0))
+    FillRect(PS.x-1, PS.y+17*k-1, 2+MC.width/2+50+25, 16, ARGB(55,255,255,255))
+    FillRect(PS.x, PS.y+17*k, MC.width/2+50+25, 14, ARGB(155,0,0,0))
     DrawText(v.p.name, 12, PS.x+2, PS.y+17*k, ARGB(255,255,255,255))
-    DrawText(v.p:Value() and " ON" or "OFF", 12, PS.x+2+MC.width:Value()*50+50, PS.y+17*k, v.p:Value() and ARGB(255,0,255,0) or ARGB(255,255,0,0))
+    DrawText(v.p:Value() and " ON" or "OFF", 12, PS.x+2+MC.width/2+50, PS.y+17*k, v.p:Value() and ARGB(255,0,255,0) or ARGB(255,255,0,0))
   end
   if PSadd.moveNow then
     local cpos = GetCursorPos()
@@ -1377,12 +1377,12 @@ local function __PS__WndMsg(msg, key)
   if msg == 514 then
     if PSadd.moveNow then PSadd.moveNow = nil end
   end
-  if msg == 513 and CursorIsUnder(PS.x, PS.y, MC.width:Value()*50+25, 17*#PSadd.instances+17) then
+  if msg == 513 and CursorIsUnder(PS.x, PS.y, MC.width/2+25, 17*#PSadd.instances+17) then
     local cpos = GetCursorPos()
     PSadd.moveNow = {x = cpos.x - PS.x, y = cpos.y - PS.y}
   end
 end
---OnWndMsg(__PS__WndMsg)
+OnWndMsg(__PS__WndMsg)
 
 function PermaShow:__init(p)
   assert(p.type == "Boolean" or p.type == "KeyBinding", "Parameter must be of type Boolean or KeyBinding!")
@@ -3313,6 +3313,6 @@ AutoUpdate(
   "/Inspired-gos/scripts/master/Common/Inspired.lua", -- git lua url
   "/Inspired-gos/scripts/master/Common/Inspired.version", -- git version url
   "Common\\Inspired.lua", -- local lua path
-  1.02) -- local version number
+  1.03) -- local version number
 
 return true
