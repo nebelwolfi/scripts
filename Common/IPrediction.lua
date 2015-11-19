@@ -9,7 +9,7 @@ do
 	Prediction.WayPointManager = {}
 
 	Prediction.Vars = {
-		Version = 12,
+		Version = 13,
 		Heroes = {},
 		Slowed = {},
 		Stunned = {},
@@ -175,12 +175,18 @@ do
 		local collides = {}
 		if not type or type == Obj_AI_Minion then
 			for i=1, minionManager.maxObjects do
-				table.insert(objects, minionManager.objects[i])
+				local object = minionManager.objects[i]
+				if object and GetTeam(object) == GetTeam(obj) then
+					table.insert(objects, object)
+				end
 			end
 		end
 		if not type or type == Obj_AI_Hero then
 			for i=1, #heroes do
-				table.insert(objects, heroes[i])
+				local object = heroes[i]
+				if GetTeam(object) == GetTeam(obj) then
+					table.insert(objects, object)
+				end
 			end
 		end
 		for I=1, #objects do
@@ -297,6 +303,7 @@ do
 
 	function Prediction.WayPointManager.GetSimulatedPath(unit)
 		local wp = Prediction.WayPointManager.GetPath(unit)
+		-- TODO
 		return wp
 	end
 
