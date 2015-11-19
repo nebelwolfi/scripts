@@ -1,20 +1,22 @@
 require("Inspired")
 require("IPrediction")
-AutoUpdate("/Inspired-gos/scripts/master/IMundo.lua","/Inspired-gos/scripts/master/IMundo.version","IMundo.lua",2)
+AutoUpdate("/Inspired-gos/scripts/master/IMundo.lua","/Inspired-gos/scripts/master/IMundo.version","IMundo.lua",3)
 local myQ = { name = "InfectedCleaverMissile", speed = 2000, delay = 0.250, range = 1000, width = 75, collision = true, aoe = false, type = "linear"}
 myQ.pred = IPrediction.Prediction(myQ)
 local menu = MenuConfig("IMundo", "IMundo")
 if FileExist(SPRITE_PATH.."\\mundo.png") then
 	menu:Sprite("mundo", "mundo.png", 250, 220, 130, ARGB(255,255,255,255))
 end
-menu:KeyBinding("throw", "THROW", string.byte("T"), true, function() end, false);
-menu:KeyBinding("farm", "FARM", string.byte("Z"), true, function() end, false);
+menu:KeyBinding("throw", "THROW (Toggle)", string.byte("T"), true, function() end, false);
+menu:KeyBinding("farm", "FARM (Toggle)", string.byte("Z"), true, function() end, false);
+menu:KeyBinding("throw2", "THROW", string.byte(" "));
+menu:KeyBinding("farm2", "FARM", string.byte("X"));
 menu:Boolean("kill", "KILLSTEAL", true);
 menu:Boolean("draw", "DRAW", true);
 menu:ColorPick("color", "COLOR", {255, 140, 0, 255});
 menu:Slider("quality", "QUALITY", 4, 0, 8, 1);
 OnTick(function()
-	if menu.throw:Value() then
+	if menu.throw:Value() or menu.throw2:Value() then
 		for _, target in pairs(GetEnemyHeroes()) do
 			if ValidTarget(target, 1050) then
 				local hitchance, pos = myQ.pred:Predict(target)
@@ -24,7 +26,7 @@ OnTick(function()
 			end
 		end
 	end
-	if menu.farm:Value() then
+	if menu.farm:Value() or menu.farm2:Value() then
 		for i=1, minionManager.maxObjects do
 			local minion = minionManager.objects[i]
 			if ValidTarget(minion, 1050) and IOW:PredictHealth(minion, GetDistance(minion)/2) < CalcDamage(myHero, minion, 0, 30+50*GetCastLevel(myHero, _Q)) then
