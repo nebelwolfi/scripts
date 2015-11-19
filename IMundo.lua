@@ -1,10 +1,12 @@
 require("Inspired")
 require("IPrediction")
-AutoUpdate("/Inspired-gos/scripts/master/IMundo.lua","/Inspired-gos/scripts/master/IMundo.version","IMundo.lua",1)
+AutoUpdate("/Inspired-gos/scripts/master/IMundo.lua","/Inspired-gos/scripts/master/IMundo.version","IMundo.lua",2)
 local myQ = { name = "InfectedCleaverMissile", speed = 2000, delay = 0.250, range = 1000, width = 75, collision = true, aoe = false, type = "linear"}
 myQ.pred = IPrediction.Prediction(myQ)
 local menu = MenuConfig("IMundo", "IMundo")
-menu:Sprite("mundo", "mundo.png", 250, 220, 130, ARGB(255,255,255,255))
+if FileExist(SPRITE_PATH.."\\mundo.png") then
+	menu:Sprite("mundo", "mundo.png", 250, 220, 130, ARGB(255,255,255,255))
+end
 menu:KeyBinding("throw", "THROW", string.byte("T"), true, function() end, false);
 menu:KeyBinding("farm", "FARM", string.byte("Z"), true, function() end, false);
 menu:Boolean("kill", "KILLSTEAL", true);
