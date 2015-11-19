@@ -480,6 +480,7 @@ class "Empty"
 class "Section"
 class "TargetSelector"
 class "KeyBinding"
+class "Sprite"
 class "PermaShow"
 
 if not GetSave("MenuConfig").Menu_Base then 
@@ -579,10 +580,10 @@ function __MC_Draw()
       FillRect(MC.x+(4+MC.width)*k, MC.y+23*i, MC.width, 20, ARGB(255,0,0,0))
       DrawText(" "..p.name.." ",15,MC.x+(4+MC.width)*k,MC.y+1+23*i,0xffffffff)
     DrawScreenCircle(MC.x-1+4+MC.width*(k+1)-12, MC.y+10+23*i, 8, p:Value() and ARGB(255,0,255,0) or ARGB(255,255,0,0), 8)
-    if p:Value() then
-        DrawText("ON",8,MC.x+MC.width*(k+1)-14,MC.y+6+23*i,0xffffffff)
-    else
-        DrawText("OFF",8,MC.x+MC.width*(k+1)-15,MC.y+6+23*i,0xffffffff)
+      if p:Value() then
+          DrawText("ON",8,MC.x+MC.width*(k+1)-14,MC.y+6+23*i,0xffffffff)
+      else
+          DrawText("OFF",8,MC.x+MC.width*(k+1)-15,MC.y+6+23*i,0xffffffff)
       end
       return 0
     elseif p.type == "KeyBinding" then
@@ -652,11 +653,11 @@ function __MC_Draw()
       FillRect(MC.x-1+(4+MC.width)*k, MC.y-1+23*i, MC.width+2, 22, ARGB(55,255,255,255))
       FillRect(MC.x+(4+MC.width)*k, MC.y+23*i, MC.width, 20, ARGB(255,0,0,0))
       DrawText(" "..p.name.." ",15,MC.x+(4+MC.width)*k,MC.y+1+23*i,0xffffffff)
-    for I = -1, 1 do
-    for j = -1, 1 do
-      DrawText("x", 25, MC.x+4+MC.width*(k+1)-15+I, MC.y-6+23*i+j, 0xffffffff)
-    end
-    end
+      for I = -1, 1 do
+        for j = -1, 1 do
+          DrawText("x", 25, MC.x+4+MC.width*(k+1)-15+I, MC.y-6+23*i+j, 0xffffffff)
+        end
+      end
       DrawText("x", 25, MC.x+4+MC.width*(k+1)-15, MC.y-6+23*i, 0xff000000)
       if p.active then
         if CursorIsUnder(MC.x+(4+MC.width)*(k+1), MC.y+23*i+23, MC.width, 20) then
@@ -670,24 +671,24 @@ function __MC_Draw()
         __MC_DrawParam(i, p.settings[1], k+1)
         __MC_DrawParam(i+1, p.settings[2], k+1)
         local mode = p.settings[2]:Value()
-    if mode == 2 or mode == 3 or mode == 9 then
-      for I=3,#p.settings do
-      p.settings[I].active = true
-      __MC_DrawParam(i+(I*1.35-2), p.settings[I], k+1)
-      end
-    end
+        if mode == 2 or mode == 3 or mode == 9 then
+          for I=3,#p.settings do
+            p.settings[I].active = true
+            __MC_DrawParam(i+(I*1.35-2), p.settings[I], k+1)
+          end
+        end
       end
       return 0
     elseif p.type == "ColorPick" then
       FillRect(MC.x-1+(4+MC.width)*k, MC.y-1+23*i, MC.width+2, 22, ARGB(55,255,255,255))
       FillRect(MC.x+(4+MC.width)*k, MC.y+23*i, MC.width, 20, ARGB(255,0,0,0))
       DrawText(" "..p.name.." ",15,MC.x+(4+MC.width)*k,MC.y+1+23*i,0xffffffff)
-    DrawFilledScreenCircle(MC.x-1+4+MC.width*(k+1)-12, MC.y+10+23*i, 6, p:Value())
+      DrawFilledScreenCircle(MC.x-1+4+MC.width*(k+1)-12, MC.y+10+23*i, 6, p:Value())
       if p.active then
         for c,v in pairs(p.color) do v.active = true end
         __MC_DrawParam(i, p.color[1], k+1)
         __MC_DrawParam(i, p.color[2], k+2.35)
-    FillRect(MC.x+(4+MC.width)*(k+2), MC.y+23*i, MC.width*0.35-3, 60, p:Value())
+        FillRect(MC.x+(4+MC.width)*(k+2), MC.y+23*i, MC.width*0.35-3, 60, p:Value())
         __MC_DrawParam(i+1.35, p.color[3], k+1)
         __MC_DrawParam(i+1.35, p.color[4], k+2.35)
       end
@@ -697,6 +698,11 @@ function __MC_Draw()
       FillRect(MC.x+(4+MC.width)*k, MC.y+23*i, MC.width, 20, ARGB(255,0,0,0))
       DrawText(" "..p.name.." ",15,MC.x+(4+MC.width)*k,MC.y+1+23*i,0xffffffff)
       return 0
+    elseif p.type == "Sprite" then
+      FillRect(MC.x-1+(4+MC.width)*k, MC.y-2+23*i, MC.width+3, p.height+2, ARGB(55,255,255,255))
+      print(p.ID)
+      DrawSprite(p.ID, MC.x+(4+MC.width)*k, MC.y+23*i, p.x, p.y, MC.width+p.x, p.height+p.y, p.color)
+      return p.height/23-0.9
     else
       return 0
     end
@@ -736,6 +742,7 @@ local function __MC_WndMsg()
     local function __MC_IsBrowseParam(i, p, k)
       local isB, ladd = false, 0
       if p.type == "Slider" then ladd = 0.35 end
+      if p.type == "Sprite" then ladd = p.height/23-0.9 end
       if p.type == "Empty" then ladd = p.value end
       if CursorIsUnder(MC.x+(4+MC.width)*k, MC.y+23*i-2, MC.width, 23+ladd*23) then
         isB = true
@@ -866,6 +873,7 @@ local function __MC_WndMsg()
   local function __MC_BrowseParam(i, p, k)
     local isB, ladd = false, 0
     if p.type == "Slider" then ladd = 0.35 end
+    if p.type == "Sprite" then ladd = p.height/23-0.9 end
     if p.type == "Empty" then ladd = p.value
     elseif CursorIsUnder(MC.x+(4+MC.width)*k, MC.y+23*i+ladd*23, MC.width, 20) then
       __MC_ResetInstance(p.head, nil, true)
@@ -1268,6 +1276,17 @@ function Section:__init(head, id, name)
   self.type = "Section"
 end
 
+function Sprite:__init(head, id, ID, x, y, height, color)
+  self.head = head
+  self.id = id
+  self.type = "Sprite"
+  self.ID = ID
+  self.x = x or 0
+  self.y = y or 0
+  self.height = height or 0
+  self.color = color or ARGB(255,255,255,255)
+end
+
 function DropDown:__init(head, id, name, value, drop, callback, forceDefault)
   self.head = head
   self.id = id
@@ -1453,6 +1472,15 @@ end
 
 function MenuConfig:Section(id, name)
   local s = Section(self, id, name)
+  table.insert(self.__params, s)
+  self[id] = s
+  __MC_LoadAll()
+end
+
+function MenuConfig:Sprite(id, name, x, y, height, color)
+  local sID = CreateSpriteFromFile(name)
+  if sID == 0 then print("Sprite "..name.." not found!") end
+  local s = Sprite(self, id, sID, x, y, height, color)
   table.insert(self.__params, s)
   self[id] = s
   __MC_LoadAll()
@@ -3261,7 +3289,8 @@ do
     mc_cfg_base:Boolean("Show", "Show always", true)
     mc_cfg_base:Boolean("ontop", "Stay OnTop", false)
     mc_cfg_base:Boolean("ps", "PermaShow", true)
-    mc_cfg_base:DropDown("Width", "Menu Width", 2, {150, 200, 250, 300}, function(value) MC.width = value*50+100 end)
+    --mc_cfg_base:DropDown("Width", "Menu Width", 2, {150, 200, 250, 300}, function(value) MC.width = value*50+100 end)
+    MC.width = 200
     mc_cfg_base:KeyBinding("MenuKey", "Key to open Menu", 16)
     PermaShow(mc_cfg_base.MenuKey)
     PermaShow(mc_cfg_base.Show)
@@ -3285,6 +3314,6 @@ AutoUpdate(
   "/Inspired-gos/scripts/master/Common/Inspired.lua", -- git lua url
   "/Inspired-gos/scripts/master/Common/Inspired.version", -- git version url
   "Common\\Inspired.lua", -- local lua path
-  1) -- local version number
+  1.01) -- local version number
 
 return true
