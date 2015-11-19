@@ -700,7 +700,6 @@ function __MC_Draw()
       return 0
     elseif p.type == "Sprite" then
       FillRect(MC.x-1+(4+MC.width)*k, MC.y-2+23*i, MC.width+3, p.height+2, ARGB(55,255,255,255))
-      print(p.ID)
       DrawSprite(p.ID, MC.x+(4+MC.width)*k, MC.y+23*i, p.x, p.y, MC.width+p.x, p.height+p.y, p.color)
       return p.height/23-0.9
     else
