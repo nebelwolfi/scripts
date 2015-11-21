@@ -1,6 +1,6 @@
 require("Inspired")
 _G.EVADEloaded = true
-_G.EVADEversion = 2
+_G.EVADEversion = 3
 AutoUpdate("/Inspired-gos/scripts/master/SmoothEvade.lua","/Inspired-gos/scripts/master/SmoothEvade.version","SmoothEvade.lua",EVADEversion)
 local myHero = GetMyHero()
 local myHeroName = GetObjectName(myHero)
@@ -682,9 +682,6 @@ function SmoothEvade:Data()
 		["Singed"] = {
 		},
 		["Sion"] = {
-			[_Q] = { name = "SionQ", speed = math.huge, delay = 0.125, range = 925, width = 250, collision = false, aoe = false, type = "linear"}, -- cone
-				[_E] = { name = "SionE", speed = 1400, delay = 0.250, range = 925, width = 60, collision = false, aoe = false, type = "linear"},
-				[_R] = { name = "SionR", speed = 1700, delay = 0, range = 925, width = 250, collision = false, aoe = false, type = "special"}
 		},
 		["Sivir"] = {
 			[_Q] = { name = "SivirQ", speed = 1330, delay = 0.250, range = 1075, width = 0, collision = false, aoe = false, type = "linear"}
