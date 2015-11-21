@@ -9,7 +9,7 @@ do
 	Prediction.WayPointManager = {}
 
 	Prediction.Vars = {
-		Version = 14,
+		Version = 16,
 		Heroes = {},
 		Slowed = {},
 		Stunned = {},
@@ -116,20 +116,24 @@ do
 			end
 			Prediction.WayPointManager.RemoveOldWayPoints(unit)
 			if ValidTarget(unit) then
-				local I = #Prediction.Vars.DashCallbacks;
-				for i = 1, I do
-					dashCallback = Prediction.Vars.DashCallbacks[i]
-					local x, y, z = Prediction.User.Interface.IsUnitDashing(unit, dashCallback.range, dashCallback.speed, dashCallback.delay, dashCallback.width, dashCallback.source)
-					if x and z <= dashCallback.width + GetHitBox(unit) then
-						dashCallback.callback(unit, y)
+				if Prediction.Vars.Config.callbacks.dash["h"..GetObjectName(unit)]:Value() then
+					local I = #Prediction.Vars.DashCallbacks;
+					for i = 1, I do
+						dashCallback = Prediction.Vars.DashCallbacks[i]
+						local x, y, z = Prediction.User.Interface.IsUnitDashing(unit, dashCallback.range, dashCallback.speed, dashCallback.delay, dashCallback.width, dashCallback.source)
+						if x and z <= dashCallback.width + GetHitBox(unit) then
+							dashCallback.callback(unit, y)
+						end
 					end
 				end
-				local I = #Prediction.Vars.StunCallbacks;
-				for i = 1, I do
-					stunCallback = Prediction.Vars.StunCallbacks[i]
-					local x, y, z = Prediction.User.Interface.IsUnitStunned(unit, stunCallback.range, stunCallback.speed, stunCallback.delay, stunCallback.width, stunCallback.source)
-					if x and y <= stunCallback.width + GetHitBox(unit) and GetDistance(z) < stunCallback.range + stunCallback.width + GetHitBox(unit) then
-						stunCallback.callback(unit, z, y)
+				if Prediction.Vars.Config.callbacks.stun["h"..GetObjectName(unit)]:Value() then
+					local I = #Prediction.Vars.StunCallbacks;
+					for i = 1, I do
+						stunCallback = Prediction.Vars.StunCallbacks[i]
+						local x, y, z = Prediction.User.Interface.IsUnitStunned(unit, stunCallback.range, stunCallback.speed, stunCallback.delay, stunCallback.width, stunCallback.source)
+						if x and y <= stunCallback.width + GetHitBox(unit) and GetDistance(z) < stunCallback.range + stunCallback.width + GetHitBox(unit) then
+							stunCallback.callback(unit, z, y)
+						end
 					end
 				end
 			end
@@ -167,14 +171,22 @@ do
 		end
 	end
 
+	function Prediction.Callback.Draw()
+		if display then
+			DrawCircle(GetOrigin(myHero), display[1].range+display[1].width, 1, 1, ARGB(255-255 * (GetGameTimer()-display[2]),255,255,255))
+			if display[2] + 1 < GetGameTimer() then
+				display = nil
+			end
+		end
+	end
+
 	function Prediction.Core.Collision(startP, endP, spell, type, team, exclude)
-		local spelL = table.copy(spell) spelL.collision = math.huge
 		local objects = {}
 		local collides = {}
 		if not type or type == Obj_AI_Minion then
 			for i=1, minionManager.maxObjects do
 				local object = minionManager.objects[i]
-				if object and GetTeam(object) == team and (not exclude or exclude ~= object) then
+				if object and GetTeam(object) == team and (not exclude and endP ~= object or exclude ~= object) then
 					table.insert(objects, object)
 				end
 			end
@@ -182,18 +194,19 @@ do
 		if not type or type == Obj_AI_Hero then
 			for i=1, #heroes do
 				local object = heroes[i]
-				if GetTeam(object) == team and (not exclude or exclude ~= object) then
+				if GetTeam(object) == team and (not exclude and endP ~= object or exclude ~= object) then
 					table.insert(objects, object)
 				end
 			end
 		end
 		for I=1, #objects do
 			local object = objects[I]
-			if IsObjectAlive(object) and GetOrigin(object) ~= nil and IsVisible(object) then
-				local hc, predP = Prediction.Core.Predict(object, spelL, startP, true)
+			if IsObjectAlive(object) and GetOrigin(object) ~= nil and IsVisible(object) and GetDistance(object) < spell.range+spell.width then
+				local hc, predP = Prediction.Core.PredictPos(object, GetDistance(startP,unit)/spell.speed+spell.delay)
+				if not predP then predP = Vector(object) end
 				local ProjPoint,_,OnSegment = VectorPointProjectionOnLineSegment(Vector(startP), Vector(endP), Vector(predP))
 				if OnSegment then
-					if GetDistanceSqr(ProjPoint, predP) < (GetHitBox(object) + spelL.width) ^ 2 then
+					if GetDistanceSqr(ProjPoint, predP) < (GetHitBox(object) + spell.width) ^ 2 then
 						table.insert(collides, object)
 					end
 				end
@@ -203,26 +216,30 @@ do
 		return collN>0, collN, collides
 	end
 
-	function Prediction.Core.Predict(unit, spell, source, ignoreColl)
+	function Prediction.Core.Predict(unit, spell, source)
 		local chance, pos, info = 0, nil, nil
 		if not unit or not IsVisible(unit) or not Prediction.WayPointManager.IsVisible(unit) then
 			return Prediction.User.State.INVISIBLE, nil
 		end
-		if not ignoreColl and spell.collision < math.huge then
-			local collType = (spell.collisionH and spell.collisionM) and nil or spell.collisionH and Obj_AI_Hero or spell.collisionM and Obj_AI_Minion
+		if spell.collision < math.huge then
+			local collType = not (spell.collisionH and spell.collisionM) and (spell.collisionH and Obj_AI_Hero or Obj_AI_Minion) or nil
 			local x, y, z = Prediction.Core.Collision(source, unit, spell, collType, GetTeam(unit), unit)
 			if x and y-spell.collision > 0 then
 				return Prediction.User.State.WILL_COLLIDE, nil, {num = y, objects = z}
 			end
 		end
 		if GetObjectType(unit) == Obj_AI_Hero then
-			local i, p, d = Prediction.User.Interface.IsUnitDashing(unit, spell.range, spell.speed, spell.delay, spell.width, source)
-			if i and d <= spell.width + GetHitBox(unit) then
-				return Prediction.User.State.ENEMY_IS_DASHING, Vector(p), d
+			if Prediction.Vars.Config.spells["s"..spell.id].dash:Value() then
+				local i, p, d = Prediction.User.Interface.IsUnitDashing(unit, spell.range, spell.speed, spell.delay, spell.width, source)
+				if i and d <= spell.width + GetHitBox(unit) then
+					return Prediction.User.State.ENEMY_IS_DASHING, Vector(p), d
+				end
 			end
-			local i, d, p = Prediction.User.Interface.IsUnitStunned(unit, spell.range, spell.speed, spell.delay, spell.width, source)
-			if i and d <= spell.width + GetHitBox(unit) and GetDistance(p) < spell.range + spell.width + GetHitBox(unit) then
-				return Prediction.User.State.ENEMY_IS_IMMOBILE, Vector(p), d
+			if Prediction.Vars.Config.spells["s"..spell.id].stun:Value() then
+				local i, d, p = Prediction.User.Interface.IsUnitStunned(unit, spell.range, spell.speed, spell.delay, spell.width, source)
+				if i and d <= spell.width + GetHitBox(unit) and GetDistance(p) < spell.range + spell.width + GetHitBox(unit) then
+					return Prediction.User.State.ENEMY_IS_IMMOBILE, Vector(p), d
+				end
 			end
 			local wp = Prediction.WayPointManager.GetWayPoints(unit)
 			if #wp == 0 then
@@ -235,30 +252,37 @@ do
 		end
 		--[[ TODO: cone | circular
 		if spell.type == "cone" then
-			chance, pos, info = Prediction.Core.PredictCone(unit, range, speed, delay, width, source)
+			chance, pos, info = Prediction.Core.PredictCone(unit, spell, source)
 		elseif spell.type == "linear " then
-			chance, pos, info = Prediction.Core.PredictLinear(unit, range, speed, delay, width, source)
+			chance, pos, info = Prediction.Core.PredictLinear(unit, spell, source)
 		else
-			chance, pos, info = Prediction.Core.PredictCircular(unit, range, speed, delay, width, source)
+			chance, pos, info = Prediction.Core.PredictCircular(unit, spell, source)
 		end]]
-		return Prediction.Core.PredictLinear(unit, spell, source, ignoreColl)
+		return Prediction.Core.PredictLinear(unit, spell, source)
 	end
 
 	function Prediction.Core.PredictPos(unit, delay)
 		return Vector(unit)+Vector(Prediction.WayPointManager.GetDirection(unit)):normalized()*delay*GetMoveSpeed(unit)
 	end
 
-	function Prediction.Core.PredictCone(unit, range, speed, delay, width, source)
+	function Prediction.Core.PredictCone(unit, spell, source)
+		if spell.aoe then
+		end
 	end
 
-	function Prediction.Core.PredictCircular(unit, range, speed, delay, width, source)
+	function Prediction.Core.PredictCircular(unit, spell, source)
+		if spell.aoe then
+		end
 	end
 
 	function Prediction.Core.PredictLinear(unit, spell, source)
+		if spell.aoe then
+		end
         local Position = Prediction.Core.PredictPos(unit, GetDistance(source,unit)/spell.speed+spell.delay)
         local coll, colL = 0, {}
-		if not ignoreColl and spell.collision < math.huge then
-			local x, y, z = Prediction.Core.Collision(source, Position, spell, nil, GetTeam(unit), unit)
+		if spell.collision < math.huge then
+			local collType = not (spell.collisionH and spell.collisionM) and (spell.collisionH and Obj_AI_Hero or Obj_AI_Minion) or nil
+			local x, y, z = Prediction.Core.Collision(source, Position, spell, collType, GetTeam(unit), unit)
 			coll, colL = y, z
 			if x and y-spell.collision > 0 then
 				return Prediction.User.State.WILL_COLLIDE, nil, {num = y, objects = z}
@@ -453,23 +477,33 @@ do
 	end
 
 	function Prediction.User.Interface.Collision(startP, endP, spell, team, exc)
-		return Prediction.Core.Collision(startP, endP, spell, nil, team, exc or endP)
+		return Prediction.Core.Collision(startP, endP, spell, nil, team or GetTeam(endP), exc or endP)
 	end
 
-	function Prediction.User.Interface.CollisionH(startP, endP, spell, team)
-		return Prediction.Core.Collision(startP, endP, spell, Obj_AI_Hero, team, exc or endP)
+	function Prediction.User.Interface.CollisionH(startP, endP, spell, team, exc)
+		return Prediction.Core.Collision(startP, endP, spell, Obj_AI_Hero, team or GetTeam(endP), exc or endP)
 	end
 
-	function Prediction.User.Interface.CollisionM(startP, endP, spell, team)
-		return Prediction.Core.Collision(startP, endP, spell, Obj_AI_Minion, team, exc or endP)
+	function Prediction.User.Interface.CollisionM(startP, endP, spell, team, exc)
+		return Prediction.Core.Collision(startP, endP, spell, Obj_AI_Minion, team or GetTeam(endP), exc or endP)
 	end
 
 	do
 		for name, callback in pairs(Prediction.Callback) do
 			_G["On"..name](callback)
 		end
-		Prediction.Vars.Config:Info("i1", "Loaded!")
-		Prediction.Vars.Config:Info("i2", "More menu options soon")
+		--Prediction.Vars.Config:Info("i1", "Loaded!")
+		--Prediction.Vars.Config:Info("i2", "More menu options soon")
+		Prediction.Vars.Config:SubMenu("callbacks", "Callbacks")
+		Prediction.Vars.Config.callbacks:SubMenu("stun", "Immobile")
+		Prediction.Vars.Config.callbacks:SubMenu("dash", "Dash")
+		OnObjectLoad(function(hero)
+			if GetObjectType(hero) == GetObjectType(myHero) and GetTeam(hero) ~= GetTeam(myHero) then
+				Prediction.Vars.Config.callbacks.stun:Boolean("h"..GetObjectName(hero), "Predict -> "..GetObjectName(hero), true, function() end, true)
+				Prediction.Vars.Config.callbacks.dash:Boolean("h"..GetObjectName(hero), "Predict -> "..GetObjectName(hero), true, function() end, true)
+			end
+		end)
+		Prediction.Vars.Config:SubMenu("spells", "Spells")
 		AutoUpdate(
 			"/Inspired-gos/scripts/master/Common/IPrediction.lua", -- git lua url
 			"/Inspired-gos/scripts/master/Common/IPrediction.version", -- git version url
@@ -480,6 +514,7 @@ do
 	class "Spell"
 
 	function Spell:__init(table)
+		self.name = table.name
 		self.key = table.key
 		self.range = table.range
 		self.speed = table.speed
@@ -488,11 +523,17 @@ do
 		self.type = table.type
 		self.collision = table.collision
 		self.callback = table.callback
+		self.collisionH = table.collisionH
+		self.collisionM = table.collisionM
 		return self;
 	end
 
 	function Spell:Predict(unit, source)
 		return Prediction.Core.Predict(unit, self, source or myHero)
+	end
+
+	function Spell:Collision(unit, source)
+		return Prediction.Core.Collision(Vector(source or myHero), Vector(unit), self, (self.collisionH and self.collisionM) and nil or self.collisionH and Obj_AI_Hero or self.collisionM and Obj_AI_Minion or nil, GetTeam(unit), unit)
 	end
 
 	_G.IPrediction = {
@@ -504,11 +545,24 @@ do
 		Collision = Prediction.User.Interface.Collision,
 		Prediction = function(data)
 			if not (data.range and data.speed and data.delay and data.width) then print("Please specify spelldata!") end
-			local spell = Spell({range = data.range, speed = data.speed, delay = data.delay, width = data.width, type = data.type, collisionH = data.collisionH or false, collisionM = data.collisionM or false, collision = type(data.collision) == "number" and data.collision or data.collision and 0 or math.huge, callback = callback})
+			if not data.name then print("Please specify a spellname!") end
+			local spell = Spell({name = data.name, range = data.range, speed = data.speed, delay = data.delay, width = data.width, type = data.type, collisionH = data.collisionH or false, collisionM = data.collisionM or false, collision = type(data.collision) == "number" and data.collision or data.collision and 0 or math.huge, aoe = data.aoe})						
 			if spell.collision < math.huge and not spell.collisionH and not spell.collisionM then
+				spell.collisionH = true
 				spell.collisionM = true
 			end
-			Prediction.Vars.Spells[#Prediction.Vars.Spells+1] = spell
+			spell.id = #Prediction.Vars.Spells+1
+			Prediction.Vars.Config.spells:SubMenu("s"..spell.id, spell.name or data.name or ".")
+			Prediction.Vars.Config.spells["s"..spell.id]:Boolean("dash", "Dash", true, function() end, true)
+			Prediction.Vars.Config.spells["s"..spell.id]:Boolean("stun", "Stun", true, function() end, true)
+			Prediction.Vars.Config.spells["s"..spell.id]:Slider("r", "Max Range", spell.range, 0, spell.range*1.25, 1, function(x) display = {spell, GetGameTimer()} spell.range = x end, true)
+			Prediction.Vars.Config.spells["s"..spell.id]:Empty("e", -0.75)
+			OnObjectLoad(function(hero)
+				if GetObjectType(hero) == GetObjectType(myHero) and GetTeam(hero) ~= GetTeam(myHero) then
+					Prediction.Vars.Config.spells["s"..spell.id]:Boolean("h"..GetObjectName(hero), "Predict -> "..GetObjectName(hero), true, function() end, true)
+				end
+			end)
+			Prediction.Vars.Spells[spell.id] = spell
 			return spell
 		end,
 		OnDash = Prediction.User.OnDash,
