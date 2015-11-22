@@ -1611,7 +1611,7 @@ end
 function GetUnderTurret(pos, enemyTurret)
   local enemyTurret = (enemyTurret ~= false)
   for _, turret in pairs(_turrets) do
-    if turret ~= nil and (turret.team ~= GetTeam(player)) == enemyTurret and GetDistanceSqr(turret, pos) <= (turret.range) ^ 2 then
+    if turret ~= nil and (GetTeam(turret) ~= GetTeam(myHero)) == enemyTurret and GetDistanceSqr(turret, pos) <= (turret.range) ^ 2 then
       return turret
     end
   end
@@ -3313,6 +3313,6 @@ AutoUpdate(
   "/Inspired-gos/scripts/master/Common/Inspired.lua", -- git lua url
   "/Inspired-gos/scripts/master/Common/Inspired.version", -- git version url
   "Common\\Inspired.lua", -- local lua path
-  1.03) -- local version number
+  1.04) -- local version number
 
 return true
