@@ -1,6 +1,6 @@
 require("Inspired")
 _G.EVADEloaded = true
-_G.EVADEversion = 3
+_G.EVADEversion = 4
 AutoUpdate("/Inspired-gos/scripts/master/SmoothEvade.lua","/Inspired-gos/scripts/master/SmoothEvade.version","SmoothEvade.lua",EVADEversion)
 local myHero = GetMyHero()
 local myHeroName = GetObjectName(myHero)
@@ -50,7 +50,7 @@ local function DrawRectangleOutline(startPos, endPos, pos, width)
 	DrawLine3D(c3.x,c3.y,c3.z,c4.x,c4.y,c4.z,math.ceil(width/100),ARGB(25, 255, 255, 255))
 	DrawLine3D(c1.x,c1.y,c1.z,c4.x,c4.y,c4.z,math.ceil(width/100),ARGB(25, 255, 255, 255))
 	if pos then
-		DrawCircle(pos.x, pos.y, pos.z, width/2, 1, 32, ARGB(155, 255, 255, 255))
+		DrawCircle(pos, width/2, 1, 32, ARGB(155, 255, 255, 255))
 	end
 end
 
@@ -67,7 +67,7 @@ function SmoothEvade:__init()
 	DelayAction(function()
 		for _,k in pairs(heroes) do
 		  self.Config:Menu(GetObjectName(k), GetObjectName(k))
-		  for i=-3,4 do
+		  for i=-8,4 do
 			if self.data and self.data[GetObjectName(k)] and self.data[GetObjectName(k)][i] and self.data[GetObjectName(k)][i].name ~= "" and self.data[GetObjectName(k)][i].type then
 			  self.Config[GetObjectName(k)]:Boolean(self.str[i], "Evade "..self.str[i], true)
 			end
@@ -86,7 +86,7 @@ function SmoothEvade:__init()
 	self.Config:Slider("er", "Extrarange", 20, 0, 100, 0)
 	self.Config:DropDown("p", "Pathfinding", 1, {"Basic", "Advanced"})
 	self.activeSpells = {}
-	self.str = {[4] = "R2", [-3] = "P", [-2] = "Q3", [-1] = "Q2", [_Q] = "Q", [_W] = "W", [_E] = "E", [_R] = "R"}
+	self.str = { [-8} = "P", [-7] = "E3", [-6] = "E2", [-5] = "W3", [-4] = "W2", [-3] = "Q4", [-2] = "Q3", [-1] = "Q2", [_Q] = "Q", [_W] = "W", [_E] = "E", [_R] = "R", [4] = "R2"}
 end
 
 function SmoothEvade:Pos()
@@ -111,7 +111,7 @@ function SmoothEvade:Dodge()
 			if self.dashKey and self.Config.dd:Value() and (CanUseSpell(myHero, self.dashKey) == 0 or self.Config.od:Value()) then
 				CastSkillShot(self.dashKey, self.m)
 			else
-				MoveToXYZ(self.m.x, self.m.x, self.m.z)
+				MoveToXYZ(self.m)
 			end
 			IOW.forcePos = self.m
 			return
@@ -234,7 +234,7 @@ end
 function SmoothEvade:Draw()
 	if not self.Config.d:Value() then return end
 	if _G.Evade and self.m then
-		DrawCircle(self.m.x, self.m.y, self.m.z, GetHitBox(myHero), 2, 32, ARGB(255, 255, 255, 255))
+		DrawCircle(self.m, GetHitBox(myHero), 2, 32, ARGB(255, 255, 255, 255))
 	end
 	if self.Config.se:Value() then
 		DrawText("Evading Disabled", 35, GetResolution().x/2.5, GetResolution().y/4, ARGB(255, 255, 0, 0))
@@ -262,8 +262,8 @@ function SmoothEvade:Draw()
 				end
 			elseif type == "circular" then
 				if spell.startTime+range/speed+delay+self:GetGroundTime(spell.source, spell.slot) > GetGameTimer() then
-					DrawCircle(spell.endPos.x, spell.endPos.y, spell.endPos.z, width, 2, 32, ARGB(255, 255, 255, 255))
-					DrawCircle(spell.endPos.x, spell.endPos.y, spell.endPos.z, width+50, 2, 32, ARGB(55, 255, 255, 255))
+					DrawCircle(spell.endPos, width, 2, 32, ARGB(255, 255, 255, 255))
+					DrawCircle(spell.endPos, spell.endPos.z, width+50, 2, 32, ARGB(55, 255, 255, 255))
 				else
 					table.remove(self.activeSpells, _)
 				end
@@ -271,8 +271,8 @@ function SmoothEvade:Draw()
 		elseif speed == math.huge then
 			if type == "circular" then
 				if spell.startTime+delay > GetGameTimer() then
-					DrawCircle(spell.endPos.x, spell.endPos.y, spell.endPos.z, width, 2, 32, ARGB(255, 255, 255, 255))
-					DrawCircle(spell.endPos.x, spell.endPos.y, spell.endPos.z, width+50, 2, 32, ARGB(55, 255, 255, 255))
+					DrawCircle(spell.endPos, width, 2, 32, ARGB(255, 255, 255, 255))
+					DrawCircle(spell.endPos, width+50, 2, 32, ARGB(55, 255, 255, 255))
 				else
 					table.remove(self.activeSpells, _)
 				end
@@ -311,7 +311,7 @@ function SmoothEvade:ProcessSpell(unit, spell)
 	if self.Config and unit and spell and spell.name and GetTeam(unit) ~= GetTeam(myHero) then
 		if spell.name:lower():find("attack") or not GetObjectName(spell.target) then return end
 		if self.data and self.data[GetObjectName(unit)] then
-			for i = -3,4 do
+			for i = -8,4 do
 				if self.Config[GetObjectName(unit)][self.str[i]] and spell.name:find(self.data[GetObjectName(unit)][i].name) then
 					s = {slot = i, source = unit, startTime = GetGameTimer(), startPos = Vector(unit), endPos = Vector(spell.endPos), name = spell.name}
 					table.insert(self.activeSpells, s)
@@ -324,14 +324,14 @@ end
 function SmoothEvade:Data()
 	self.data = {
 		["Aatrox"] = {
-			[_Q] = { name = "AatroxQ", speed = 450, delay = 0.25, range = 650, width = 150, collision = false, aoe = true, type = "circular"},
-			[_E] = { name = "AatroxE", objname = "AatroxEConeMissile", speed = 1200, delay = 0.25, range = 1000, width = 150, collision = false, aoe = false, type = "linear"}
+			[_Q] = { name = "AatroxQ", speed = 450, delay = 0.25, range = 650, width = 285, collision = false, aoe = true, type = "circular"},
+			[_E] = { name = "AatroxE", objname = "AatroxEConeMissile", speed = 1250, delay = 0.25, range = 1075, width = 35, collision = false, aoe = false, type = "linear"}
 		},
 		["Ahri"] = {
-			[_Q] = { name = "AhriOrbofDeception", objname = "AhriOrbMissile", speed = 2500, delay = 0.25, range = 975, width = 100, collision = false, aoe = false, type = "linear"},
-			[-1] = { name = "AhriOrbReturn", objname = "AhriOrbReturn", speed = 915, delay = 0.61, range = 975, width = 100, collision = false, aoe = false, type = "linear"},
+			[_Q] = { name = "AhriOrbofDeception", objname = "AhriOrbMissile", speed = 2500, delay = 0.25, range = 1000, width = 100, collision = false, aoe = false, type = "linear"},
+			[-1] = { name = "AhriOrbReturn", objname = "AhriOrbReturn", speed = 1900, delay = 0.25, range = 1000, width = 100, collision = false, aoe = false, type = "linear"},
 			[_W] = { name = "AhriFoxFire", range = 700},
-			[_E] = { name = "AhriSeduce", objname = "AhriSeduceMissile", speed = 1550, delay = 0.25, range = 1075, width = 65, collision = true, aoe = false, type = "linear"},
+			[_E] = { name = "AhriSeduce", objname = "AhriSeduceMissile", speed = 1550, delay = 0.25, range = 1000, width = 60, collision = true, aoe = false, type = "linear"},
 			[_R] = { name = "AhriTumble", range = 450}
 		},
 		["Akali"] = {
@@ -344,7 +344,7 @@ function SmoothEvade:Data()
 			[_Q] = { name = "BandageToss", objname = "SadMummyBandageToss", speed = 725, delay = 0.25, range = 1000, width = 100, collision = true, aoe = false, type = "linear"}
 		},
 		["Anivia"] = {
-			[_Q] = { name = "FlashFrostSpell", objname = "FlashFrostSpell", speed = 850, delay = 0.250, range = 1200, width = 110, collision = false, aoe = false, type = "linear"},
+			--[_Q] = { name = "FlashFrostSpell", objname = "FlashFrostSpell", speed = 850, delay = 0.250, range = 1200, width = 110, collision = false, aoe = false, type = "linear"},
 			[_R] = { name = "GlacialStorm", speed = math.huge, delay = math.huge, range = 615, width = 350, collision = false, aoe = true, type = "circular"}
 		},
 		["Annie"] = {
@@ -840,7 +840,7 @@ function SmoothEvade:Data()
 			[_Q] = { name = "ZileanQ", objname = "ZileanQMissile", speed = math.huge, delay = 0.5, range = 900, width = 150, collision = false, aoe = true, type = "circular"}
 		},
 		["Zyra"] = {
-			[-3] = { name = "zyrapassivedeathmanager", objname = "zyrapassivedeathmanager", speed = 1900, delay = 0.5, range = 1475, width = 70, collision = false, aoe = false, type = "linear"},
+			[-8] = { name = "zyrapassivedeathmanager", objname = "zyrapassivedeathmanager", speed = 1900, delay = 0.5, range = 1475, width = 70, collision = false, aoe = false, type = "linear"},
 			[_Q] = { name = "ZyraQFissure", objname = "ZyraQFissure", speed = math.huge, delay = 0.7, range = 800, width = 85, collision = false, aoe = true, type = "circular"},
 			[_E] = { name = "ZyraGraspingRoots", objname = "ZyraGraspingRoots", speed = 1150, delay = 0.25, range = 1100, width = 70, collision = false, aoe = false, type = "linear"},
 			[_R] = { name = "ZyraBrambleZone", speed = math.huge, delay = 1, range = 1100, width = 500, collision=false, aoe = true, type = "circular"}
