@@ -513,7 +513,7 @@ function SmoothEvade:Data()
 			[_E] = { name = "", range = 1000},
 			[_R] = { name = "", range = 2000}
 		},
-		["Karma"] = {KarmaQMissileMantra
+		["Karma"] = {
 			[_Q] = { name = "KarmaQ", objname = "KarmaQMissile", speed = 1700, delay = 0.25, range = 1050, width = 60, collision = true, aoe = false, type = "linear"},
 		        [-1] = { name = "KarmaQMantra", objname = "KarmaQMissileMantra", speed = 1700, delay = 0.25, range = 950, width = 80, collision = true, aoe = false, type = "linear"}
 		},
