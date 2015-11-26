@@ -1,6 +1,6 @@
 require("Inspired")
 _G.EVADEloaded = true
-_G.EVADEversion = 5
+_G.EVADEversion = 6
 AutoUpdate("/Inspired-gos/scripts/master/SmoothEvade.lua","/Inspired-gos/scripts/master/SmoothEvade.version","SmoothEvade.lua",EVADEversion)
 local myHero = GetMyHero()
 local myHeroName = GetObjectName(myHero)
@@ -673,7 +673,7 @@ function SmoothEvade:Data()
 			[_Q] = { name = "RumbleFlameThrower", speed = math.huge, delay = 0.250, range = 600, width = 500, collision = false, aoe = false, type = "cone"},
 			[_W] = { range = GetHitBox(myHero)},
 			[_E] = { name = "RumbleGrenade", objname = "RumbleGrenade", speed = 1200, delay = 0.250, range = 850, width = 90, collision = true, aoe = false, type = "linear"},
-			[_R] = { name = "RumbleCarpetBombM", objname = "RumbleCarpetBombMissile" speed = 1200, delay = 0.250, range = 1700, width = 90, collision = false, aoe = false, type = "linear"}
+			[_R] = { name = "RumbleCarpetBombM", objname = "RumbleCarpetBombMissile", speed = 1200, delay = 0.250, range = 1700, width = 90, collision = false, aoe = false, type = "linear"}
 		},
 		["Ryze"] = {
 			[_Q] = { name = "RyzeQ", objname = "RyzeQ", speed = 1700, delay = 0.25, range = 900, width = 50, collision = true, aoe = false, type = "linear"},
