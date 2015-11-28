@@ -9,7 +9,7 @@ do
 	Prediction.WayPointManager = {}
 
 	Prediction.Vars = {
-		Version = 16,
+		Version = 17,
 		Heroes = {},
 		Slowed = {},
 		Stunned = {},
@@ -487,7 +487,11 @@ do
 	function Prediction.User.Interface.CollisionM(startP, endP, spell, team, exc)
 		return Prediction.Core.Collision(startP, endP, spell, Obj_AI_Minion, team or GetTeam(endP), exc or endP)
 	end
-
+	
+	function Prediction.User.Interface.PredictPos(unit, delay)
+                return Prediction.Core.PredictPos(unit, delay)
+	end
+	
 	do
 		for name, callback in pairs(Prediction.Callback) do
 			_G["On"..name](callback)
@@ -543,6 +547,7 @@ do
 		CollisionM = Prediction.User.Interface.CollisionM,
 		CollisionH = Prediction.User.Interface.CollisionH,
 		Collision = Prediction.User.Interface.Collision,
+		PredictPos = Prediction.User.Interface.PredictPos,
 		Prediction = function(data)
 			if not (data.range and data.speed and data.delay and data.width) then print("Please specify spelldata!") end
 			if not data.name then print("Please specify a spellname!") end
