@@ -1,6 +1,6 @@
 require("Inspired")
 _G.EVADEloaded = true
-_G.EVADEversion = 6
+_G.EVADEversion = 7
 AutoUpdate("/Inspired-gos/scripts/master/SmoothEvade.lua","/Inspired-gos/scripts/master/SmoothEvade.version","SmoothEvade.lua",EVADEversion)
 local myHero = GetMyHero()
 local myHeroName = GetObjectName(myHero)
@@ -263,7 +263,7 @@ function SmoothEvade:Draw()
 			elseif type == "circular" then
 				if spell.startTime+range/speed+delay+self:GetGroundTime(spell.source, spell.slot) > GetGameTimer() then
 					DrawCircle(spell.endPos, width, 2, 32, ARGB(255, 255, 255, 255))
-					DrawCircle(spell.endPos, spell.endPos.z, width+50, 2, 32, ARGB(55, 255, 255, 255))
+					DrawCircle(spell.endPos, width+50, 2, 32, ARGB(55, 255, 255, 255))
 				else
 					table.remove(self.activeSpells, _)
 				end
@@ -505,7 +505,7 @@ function SmoothEvade:Data()
 		["Jinx"] = {
 			[_W] = { name = "JinxW", objname = "JinxWMissile", speed = 3000, delay = 0.600, range = 1400, width = 60, collision = true, aoe = false, type = "linear"},
 			--[_E] = { name = "JinxE", speed = 887, delay = 0.500, range = 830, width = 0, collision = false, aoe = true, type = "circular"},
-			[_R] = { name = "JinxR", objname = "JinxR", speed = 1700, delay = 0.600, range = 20000, width = 120, collision = false, aoe = true, type = "circular"}
+			[_R] = { name = "JinxR", objname = "JinxR", speed = 1700, delay = 0.600, range = 20000, width = 120, collision = false, aoe = true, type = "linear"}
 		},
 		["Kalista"] = {
 			[_Q] = { name = "KalistaMysticShot", objname = "kalistamysticshotmis", speed = 1700, delay = 0.25, range = 1150, width = 40, collision = true, aoe = false, type = "linear"},
