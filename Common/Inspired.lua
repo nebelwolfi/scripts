@@ -34,7 +34,7 @@ function AutoUpdate()
 			PrintChat("Downloaded Inspired.lua!")
 			PrintChat("Reload now!")
 		end
-	end
+	end)
 end
 AutoUpdate()
 -- this is just a downloader of real inspired lua.
