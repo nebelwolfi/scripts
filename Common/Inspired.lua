@@ -499,6 +499,7 @@ do -- overwrite gos pointer structure to classes
 		x = function(t) return GetOrigin(t).x end,
 		y = function(t) return GetOrigin(t).y end,
 		z = function(t) return GetOrigin(t).z end,
+		distance = function(t) return t:DistanceTo(myHero) end,
 		buffCount = function(t) return 63 end,
 		networkID = function(t) return GetNetworkID(t) end,
 		isInvulnerable = function(t) return IsImmune(t,GetMyHero()) end,
