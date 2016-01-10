@@ -23,4 +23,4 @@ function AutoUpdate()
 	end
 end
 AutoUpdate()
--- this is just a download of real inspired lua.
+-- this is just a downloader of real inspired lua.
