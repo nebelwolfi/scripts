@@ -1,17 +1,4 @@
 -- this is just a downloader of real inspired lua.
-function WriteFile(text, path, mode)
-	assert(type(text) == "string" and type(path) == "string" and (not mode or type(mode) == "string"), "WriteFile: wrong argument types (<string> expected for text, path and mode)")
-	local file = io.open(path, mode or "w+")
-	if not file then
-		file = io.open(path, mode or "w+")
-		if not file then
-			return false
-		end
-	end
-	file:write(text)
-	file:close()
-	return true
-end
 function AutoUpdate()
 	local lskt = require("socket")
 	local skt = lskt.tcp()
@@ -30,7 +17,9 @@ function AutoUpdate()
 		file = file .. (rcv or snip)
 		if file:find('</'..'g'..'o'..'s'..'>') and not saved then
 			file = file:sub(file:find('<'..'g'..'o'..'s'..'>')+5,file:find('</'..'g'..'o'..'s'..'>')-1)
-			WriteFile(file, COMMON_PATH.."Inspired.lua")
+			local file = io.open(COMMON_PATH.."Inspired.lua", "w+")
+			file:write(file)
+			file:close()
 			saved = true
 			PrintChat("Downloaded Inspired.lua!")
 			PrintChat("Reload now!")
