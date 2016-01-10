@@ -529,6 +529,7 @@ do -- overwrite gos pointer structure to classes
 		critChance = function(t) return GetCritChance(t) end,
 		baseAttackSpeed = function(t) return GetBaseAttackSpeed(t) end,
 		attackSpeed = function(t) return GetAttackSpeed(t) end,
+		windUp = function(t) return GetWindUp(t) end,
 		exp = function(t) return GetExperience(t) end,
 		lifeSteal = function(t) return GetLifeSteal(t) end,
 		spellVamp = function(t) return GetSpellVamp(t) end,
