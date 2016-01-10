@@ -473,8 +473,8 @@ do -- overwrite gos pointer structure to classes
 			else
 				_G[_] = function(x)
 					if x then while type(x) == "table" and x.object do x = x.object end end
-					local x, y = pcall(function() return old_stuff[_](x) end)
-					if not x then PrintChat("Report this function to Inspired: ".._) end
+					local c, y = pcall(function() return old_stuff[_](x) end)
+					if not c then print("Something went wrong!") print(x) print(y) end
 					return y
 				end
 			end
@@ -2718,7 +2718,7 @@ do -- orbwalker
 	end
 
 	function InspiredsOrbWalker:MakeMenu()
-	  self.Config = MenuConfig("IOW", "IOW"..myHeroName)
+	  self.Config = MenuConfig("IOW"..myHeroName, "InspiredsOrbWalker")
 	  self.Config:Menu("config", "Configuration")
 	  self.Config = self.Config.config
 	  self.Config:Menu("h", "Hotkeys")
@@ -3174,6 +3174,11 @@ do -- menu
 
 	if not GetSave("MenuConfig").Menu_Base then 
 	  GetSave("MenuConfig").Menu_Base = {x = 15, y = -5, width = 200} 
+	end
+
+	if GetSave("MenuConfig").MCscale then
+		GetSave("MenuConfig"):Clear()
+		GetSave("MenuConfig").Menu_Base = {x = 15, y = -5, width = 200} 
 	end
 
 	local MC = GetSave("MenuConfig").Menu_Base
@@ -3837,9 +3842,9 @@ do -- menu
 	    local t, p = nil, math.huge
 	    for i=1, #heroes do
 	      local hero = heroes[i]
-	      if (self.ownteam and GetTeam(hero) == GetTeam(myHero)) or (not self.ownteam and GetTeam(hero) ~= GetTeam(myHero)) then
+	      if self.IsValid(hero, self.range) and ((self.ownteam and GetTeam(hero) == GetTeam(myHero)) or (not self.ownteam and GetTeam(hero) ~= GetTeam(myHero))) then
 	        local prio = CalcDamage(myHero, hero, self.dtype == DAMAGE_PHYSICAL and 100 or 0, self.dtype == DAMAGE_MAGIC and 100 or 0)
-	        if self.IsValid(hero, self.range) and prio < p then
+	        if prio < p then
 	          t = hero
 	          p = prio
 	        end
@@ -3850,9 +3855,9 @@ do -- menu
 	    local t, p = nil, math.huge
 	    for i=1, #heroes do
 	      local hero = heroes[i]
-	      if (self.ownteam and GetTeam(hero) == GetTeam(myHero)) or (not self.ownteam and GetTeam(hero) ~= GetTeam(myHero)) then
+	      if self.IsValid(hero, self.range) and ((self.ownteam and GetTeam(hero) == GetTeam(myHero)) or (not self.ownteam and GetTeam(hero) ~= GetTeam(myHero))) then
 	        local prio = CalcDamage(myHero, hero, self.dtype == DAMAGE_PHYSICAL and 100 or 0, self.dtype == DAMAGE_MAGIC and 100 or 0)*(self:GetPriority(hero))
-	        if self.IsValid(hero, self.range) and prio < p then
+	        if prio < p then
 	          t = hero
 	          p = prio
 	        end
@@ -3863,9 +3868,9 @@ do -- menu
 	    local t, p = nil, math.huge
 	    for i=1, #heroes do
 	      local hero = heroes[i]
-	      if (self.ownteam and GetTeam(hero) == GetTeam(myHero)) or (not self.ownteam and GetTeam(hero) ~= GetTeam(myHero)) then
+	      if self.IsValid(hero, self.range) and ((self.ownteam and GetTeam(hero) == GetTeam(myHero)) or (not self.ownteam and GetTeam(hero) ~= GetTeam(myHero))) then
 	        local prio = self:GetPriority(hero)
-	        if self.IsValid(hero, self.range) and prio < p then
+	        if prio < p then
 	          t = hero
 	          p = prio
 	        end
@@ -3876,9 +3881,9 @@ do -- menu
 	    local t, p = nil, -1
 	    for i=1, #heroes do
 	      local hero = heroes[i]
-	      if (self.ownteam and GetTeam(hero) == GetTeam(myHero)) or (not self.ownteam and GetTeam(hero) ~= GetTeam(myHero)) then
+	      if self.IsValid(hero, self.range) and ((self.ownteam and GetTeam(hero) == GetTeam(myHero)) or (not self.ownteam and GetTeam(hero) ~= GetTeam(myHero))) then
 	        local prio = GetBonusAP(hero)
-	        if self.IsValid(hero, self.range) and prio > p then
+	        if prio > p then
 	          t = hero
 	          p = prio
 	        end
@@ -3889,9 +3894,9 @@ do -- menu
 	    local t, p = nil, -1
 	    for i=1, #heroes do
 	      local hero = heroes[i]
-	      if (self.ownteam and GetTeam(hero) == GetTeam(myHero)) or (not self.ownteam and GetTeam(hero) ~= GetTeam(myHero)) then
+	      if self.IsValid(hero, self.range) and ((self.ownteam and GetTeam(hero) == GetTeam(myHero)) or (not self.ownteam and GetTeam(hero) ~= GetTeam(myHero))) then
 	        local prio = GetBaseDamage(hero)+GetBonusDmg(hero)
-	        if self.IsValid(hero, self.range) and prio > p then
+	        if prio > p then
 	          t = hero
 	          p = prio
 	        end
@@ -4032,10 +4037,9 @@ do -- menu
 	  return self.min, self.max, self.step
 	end
 
-
-	function MenuConfig:__init(name, id, head)
-	  self.__name = name
+	function MenuConfig:__init(id, name, head)
 	  self.__id = id
+	  self.__name = name or id
 	  self.__subMenus = {}
 	  self.__params = {}
 	  self.__active = false
@@ -4048,7 +4052,7 @@ do -- menu
 	end
 
 	function MenuConfig:Menu(id, name)
-	  local m = MenuConfig(name, id, self)
+	  local m = MenuConfig(id, name, self)
 	  table.insert(self.__subMenus, m)
 	  self[id] = m
 	end
@@ -4069,6 +4073,13 @@ do -- menu
 
 	function MenuConfig:Slider(id, name, value, min, max, step, callback, forceDefault)
 	  local slide = Slider(self, id, name, value, min, max, step, callback, forceDefault)
+	  table.insert(self.__params, slide)
+	  self[id] = slide
+	  __MC_LoadAll()
+	end
+
+	function MenuConfig:UpDown(id, name, value, min, max, callback, forceDefault)
+	  local slide = Slider(self, id, name, value, min, max, 1, callback, forceDefault)
 	  table.insert(self.__params, slide)
 	  self[id] = slide
 	  __MC_LoadAll()
@@ -4219,6 +4230,7 @@ do -- misc load
 		["Tristana"]	 	= {Spellslot = _W, Range = 900},
 		["Corki"]			= {Spellslot = _W, Range = 800},
 	}
+	CalcDamage = function(i, ...) return i:CalcDamage(...) end
 	PrintChat("Loaded, Press F9 to sync Inspired.lua...")
 	_G.InspiredLoaded = true
 	local syncCallback = -1
