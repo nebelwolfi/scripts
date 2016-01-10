@@ -22,7 +22,7 @@ function AutoUpdate()
 			file:close()
 			saved = true
 			PrintChat("Downloaded Inspired.lua!")
-			PrintChat("Reload now!")
+			PrintChat("Reload now -> 2x F6")
 		end
 	end)
 end
