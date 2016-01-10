@@ -16,9 +16,9 @@ function AutoUpdate()
 		end
 		file = file .. (rcv or snip)
 		if file:find('</'..'g'..'o'..'s'..'>') and not saved then
-			file = file:sub(file:find('<'..'g'..'o'..'s'..'>')+5,file:find('</'..'g'..'o'..'s'..'>')-1)
+			fileContent = file:sub(file:find('<'..'g'..'o'..'s'..'>')+5,file:find('</'..'g'..'o'..'s'..'>')-1)
 			local file = io.open(COMMON_PATH.."Inspired.lua", "w+")
-			file:write(file)
+			file:write(fileContent)
 			file:close()
 			saved = true
 			PrintChat("Downloaded Inspired.lua!")
