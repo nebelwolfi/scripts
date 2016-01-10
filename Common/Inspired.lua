@@ -3645,7 +3645,7 @@ do -- menu
 	          Boolean(head, "isToggle", "Is Toggle:", isToggle, nil, forceDefault),
 	          Info(head, "change", "> Click to change key <"),
 	        }
-	  OnWndMsg(function(msg, key)
+	  Callback.Add("WndMsg", function(msg, key)
 	    if key == self.key then
 	      if IsChatOpened() or not IsGameOnTop() then return end
 	      if self:Toggle() then
@@ -3775,7 +3775,7 @@ do -- menu
 	          DropDown(head, "mode", "TargetSelector Mode:", self.mode, {"Less Cast", "Less Cast Priority", "Priority", "Most AP", "Most AD", "Closest", "Near Mouse", "Lowest Health", "Lowest Health Priority"}, function(var) self.mode = var end, false)
 	        }
 	  local I = 0;
-	  OnObjectLoad(function(hero)
+	  Callback.Add("ObjectLoad", function(hero)
 	    if GetObjectType(hero) == GetObjectType(myHero) then
 	    if self.ownteam and GetTeam(hero) == GetTeam(myHero) or GetTeam(hero) ~= GetTeam(myHero) then
 	      I = I + 1
@@ -3783,7 +3783,7 @@ do -- menu
 	    end
 	    end
 	  end)
-	  OnWndMsg(function(msg, key)
+	  Callback.Add("WndMsg", function(msg, key)
 	    if msg == 513 and self.focusselected then
 	      local t, d = nil, math.huge
 	      local mpos = GetMousePos()
@@ -3807,7 +3807,7 @@ do -- menu
 	    end
 	    return true
 	  end
-	  OnDraw(function()
+	  Callback.Add("Draw", function()
 	    if self.focusselected and self.IsValid(self.selected) then
 	      DrawCircle(GetOrigin(self.selected), GetHitBox(self.selected), 1, 1, ARGB(155,255,255,0))
 	    end
