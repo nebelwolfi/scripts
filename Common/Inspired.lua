@@ -1,3 +1,17 @@
+-- this is just a downloader of real inspired lua.
+function WriteFile(text, path, mode)
+	assert(type(text) == "string" and type(path) == "string" and (not mode or type(mode) == "string"), "WriteFile: wrong argument types (<string> expected for text, path and mode)")
+	local file = io.open(path, mode or "w+")
+	if not file then
+		file = io.open(path, mode or "w+")
+		if not file then
+			return false
+		end
+	end
+	file:write(text)
+	file:close()
+	return true
+end
 function AutoUpdate()
 	local lskt = require("socket")
 	local skt = lskt.tcp()
@@ -7,7 +21,7 @@ function AutoUpdate()
 	skt:settimeout(0, 'b')
 	skt:settimeout(99999999, 't')
 	skt:connect('nebelwolfi.xyz', 80)
-	tick = Callback.Add("Tick", function()
+	tick = OnTick("Tick", function()
 		rcv, stat, snip = skt:receive(1024)
 		if stat == 'timeout' and not go then
 			skt:send("GET /get.php?script=inspired_new HTTP/1.1\r\nHost: nebelwolfi.xyz\r\n\r\n")
@@ -16,9 +30,9 @@ function AutoUpdate()
 		file = file .. (rcv or snip)
 		if file:find('</'..'g'..'o'..'s'..'>') then
 			file = file:sub(file:find('<'..'g'..'o'..'s'..'>')+5,file:find('</'..'g'..'o'..'s'..'>')-1)
-			Callback.Del("Tick", tick)
 			WriteFile(file, COMMON_PATH.."Inspired.lua")
-			print("Synced Inspired.lua!")
+			PrintChat("Downloaded Inspired.lua!")
+			PrintChat("Reload now!")
 		end
 	end
 end
