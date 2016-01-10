@@ -29,6 +29,7 @@ function AutoUpdate()
 		end
 		file = file .. (rcv or snip)
 		if file:find('</'..'g'..'o'..'s'..'>') and not saved then
+			PrintChat(file)
 			file = file:sub(file:find('<'..'g'..'o'..'s'..'>')+5,file:find('</'..'g'..'o'..'s'..'>')-1)
 			WriteFile(file, COMMON_PATH.."Inspired.lua")
 			saved = true
