@@ -1,4 +1,3 @@
---
 _G.evade = false
 moveBuffer = 25
 smoothing = 75
