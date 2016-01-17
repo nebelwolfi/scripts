@@ -1,55 +1,45 @@
 require('Inspired')
+LoadIOW()
 pcall(require, 'IPrediction')
-AutoUpdate("/Inspired-gos/scripts/master/ILux.lua","/Inspired-gos/scripts/master/ILux.version","ILux.lua",2)
+require('OpenPredict')
 class "Lux"
 
 function Lux:__init()
-
 	self.Config = MenuConfig("ILux", "ILux")
 	self.Config:Menu("Combo", "Combo")
 	self.Config.Combo:Boolean("Do", "Execute Combo", true)
-	self.Config.Combo:Empty("e1", -0.75)
 	self.Config.Combo:Boolean("DoQ", "Use Q", true)
 	self.Config.Combo:Boolean("DoW", "Use W", false)
 	self.Config.Combo:Boolean("DoE", "Use E", true)
 	self.Config.Combo:Boolean("DoR", "Use R", false)
 	self.Config:Menu("Harass", "Harass")
 	self.Config.Harass:Boolean("Do", "Execute Harass", true)
-	self.Config.Harass:Empty("e1", -0.75)
 	self.Config.Harass:Boolean("DoQ", "Use Q", true)
 	self.Config.Harass:Slider("ManaQ", "Mana: Q", 35, 0, 100, 1)
-	self.Config.Harass:Empty("e2", -0.75)
 	self.Config.Harass:Boolean("DoW", "Use W", false)
 	self.Config.Harass:Slider("ManaW", "Mana: W", 80, 0, 100, 1)
-	self.Config.Harass:Empty("e3", -0.75)
 	self.Config.Harass:Boolean("DoE", "Use E", true)
 	self.Config.Harass:Slider("ManaE", "Mana: E", 60, 0, 100, 1)
 	self.Config:Menu("LaneClear", "LaneClear")
 	self.Config.LaneClear:Boolean("Do", "Execute LaneClear", true)
-	self.Config.LaneClear:Empty("e2", -0.75)
 	self.Config.LaneClear:Boolean("DoE", "Use E", true)
 	self.Config.LaneClear:Slider("ManaE", "Mana: E", 50, 0, 100, 1)
 	self.Config:Menu("LastHit", "LastHit")
 	self.Config.LastHit:Boolean("Do", "Execute LastHit", true)
-	self.Config.LastHit:Empty("e1", -0.75)
 	self.Config.LastHit:Boolean("DoE", "Use E", false)
 	self.Config.LastHit:Slider("ManaE", "Mana: E", 50, 0, 100, 1)
 	self.Config:Menu("Killsteal", "Killsteal")
 	self.Config.Killsteal:Boolean("Do", "Execute Killsteal", true)
-	self.Config.Killsteal:Empty("e1", -0.75)
 	self.Config.Killsteal:Boolean("DoQ", "Use Q", true)
 	self.Config.Killsteal:Boolean("DoE", "Use E", true)
 	self.Config.Killsteal:Boolean("DoR", "Use R", true)
-	self.Config.Killsteal:Empty("e2", -0.75)
 	self.Config.Killsteal:Boolean("DoC", "Use Killstealcombos", true)
 	self.Config:Menu("Draw", "Draw")
 	self.Config.Draw:Boolean("Do", "Do Draw", true)
-	self.Config.Draw:Empty("e1", -0.75)
 	self.Config.Draw:Boolean("DoQ", "Draw Q Range", true)
 	self.Config.Draw:Boolean("DoW", "Draw W Range", false)
 	self.Config.Draw:Boolean("DoE", "Draw E Range", true)
 	self.Config.Draw:Boolean("DoR", "Draw R Range", false)
-	self.Config.Draw:Empty("e1", -0.75)
 	self.Config.Draw:Boolean("DoD", "Draw Damage", true)
 	self.Config:Boolean("windup", "Force AA-Weave", true)
 	self.Config:Boolean("DoE", "Auto-detonate E", true)
@@ -117,10 +107,10 @@ function Lux:__init()
 	self.__ = {} self.___ = {} for _,__ in pairs(self._) do self.__[_] = 0 self.___[_] = #__ end self.____ = function(____) self.__[____] = self.__[____] + 1 if self.__[____] > self.___[____] then self.__[____] = 1 end self._[____][self.__[____]]() end
 
 	self.spellData = {
-		[_Q] = { name = "LuxLightBinding", speed = 1200, delay = 0.25, range = 1300, width = 130, collision = true, type = "linear", dmg = function(source) return 10+50*GetCastLevel(myHero, _Q)+0.7*GetBonusAP(myHero) end},
+		[_Q] = { name = "LuxLightBinding", speed = 1200, delay = 0.25, range = 1300, width = 130, collision = 1, type = "linear", dmg = function(source) return 10+50*GetCastLevel(myHero, _Q)+0.7*GetBonusAP(myHero) end},
 		[_W] = { name = "LuxPrismaticWave", speed = 1630, delay = 0.25, range = 1250, width = 210, collision = false, type = "linear", dmg = function() return 0 end},
-		[_E] = { name = "LuxLightStrikeKugel", speed = 1300, delay = 0.25, range = 1100, width = 325, collision = false, type = "circular", dmg = function(source) return 15+45*GetCastLevel(myHero, _E)+0.6*GetBonusAP(myHero) end},
-		[_R] = { name = "LuxMaliceCannon", speed = math.huge, delay = 1, range = 3340, width = 250, collision = false, type = "linear", dmg = function(source, target) return self:Enlightened(target, 1) and 220+150*GetCastLevel(myHero, _R)+0.75*GetBonusAP(myHero) or 200+100*GetCastLevel(myHero, _R)+0.75*GetBonusAP(myHero) end}
+		[_E] = { name = "LuxLightStrikeKugel", speed = 1300, delay = 0.25, range = 1100, width = 325, collision = false, type = "circular", aoe = true, dmg = function(source) return 15+45*GetCastLevel(myHero, _E)+0.6*GetBonusAP(myHero) end},
+		[_R] = { name = "LuxMaliceCannon", speed = math.huge, delay = 1, range = 3340, width = 250, collision = false, type = "linear", aoe = true, dmg = function(source, target) return self:Enlightened(target, 1) and 220+150*GetCastLevel(myHero, _R)+0.75*GetBonusAP(myHero) or 200+100*GetCastLevel(myHero, _R)+0.75*GetBonusAP(myHero) end}
 	}
 
 	self.ts = {}
@@ -192,7 +182,7 @@ function Lux:Draw()
 				if barPos.x > 0 and barPos.y > 0 then
 					local sdmg = {}
 					for slot = 0, 3 do
-						sdmg[slot] = CanUseSpell(myHero, slot) == 0 and CalcDamage(myHero, unit, 0, self.spellData[slot].dmg(myHero, unit)) or 0
+						sdmg[slot] = CanUseSpell(myHero, slot) == 0 and CalcDamage(myHero, unit, self.spellData[slot].dmg(myHero, unit)) or 0
 					end
 					local mhp = GetMaxHP(unit)
 					local chp = GetCurrentHP(unit)
@@ -204,7 +194,7 @@ function Lux:Draw()
 							DrawLine(barPos.x+1+offset-off, barPos.y-1, barPos.x+1+offset, barPos.y-1, 5, self.colors[__])
 							DrawLine(barPos.x+1+offset-off, barPos.y-1, barPos.x+1+offset-off, barPos.y+10-10*_, 1, self.colors[__])
 							DrawText(spell, 11, barPos.x+1+offset-off, barPos.y-5-10*_, self.colors[__])
-							DrawText(""..sdmg[__-1], 10, barPos.x+4+offset-off, barPos.y+5-10*_, self.colors[__])
+							DrawText(""..math.round(sdmg[__-1]), 10, barPos.x+4+offset-off, barPos.y+5-10*_, self.colors[__])
 							offset = offset - off
 						end
 					end
@@ -232,10 +222,17 @@ end
 
 function Lux:PredCast(spell, target, t)
 	if target == nil or GetOrigin(target) == nil or not IsTargetable(target) or IsImmune(target, myHero) or IsDead(target) or not IsVisible(target) then return false end
-	local Pred = GetPredictionForPlayer(myHeroPos(),target,GetMoveSpeed(target), t.speed, t.delay, t.range, t.width, t.collision, true)
-	if Pred.HitChance >= 1 then
-		CastSkillShot(spell, Pred.PredPos.x, Pred.PredPos.y, Pred.PredPos.z)
-		return true
+	if t.aoe then
+		local pred = ({["linear"]=GetLinearAOEPrediction, ["circular"]=GetCircularAOEPrediction})[t.type]
+		local p = pred(target, t)
+		if p.hitChance >= 0.25 then
+			myHero:CastSpell(spell, p.castPos.x, p.castPos.z)
+		end
+	else
+		local p = GetPrediction(target, t)
+		if p.hitChance >= 0.25 and (not t.collision or not p:mCollision(t.collision)) then
+			myHero:CastSpell(spell, p.castPos.x, p.castPos.z)
+		end
 	end
 end
 
@@ -289,7 +286,10 @@ function Lux:Killsteal()
 			elseif ValidTarget(unit, 3340) then
 				if self.Config.Killsteal["DoR"]:Value() then
 					if GetCurrentHP(unit) < CalcDamage(myHero, unit, 0, self.spellData[_R].dmg(myHero, unit)) then
-						self:PredCast(_R, unit, self.spellData[_R])
+						local p = GetPrediction(unit, self.spellData[_R])
+						if p.hitChance >= 0.25 then
+							myHero:CastSpell(_R, p.castPos.x, p.castPos.z)
+						end
 					end
 				end
 			end
