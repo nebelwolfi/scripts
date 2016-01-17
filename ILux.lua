@@ -182,7 +182,7 @@ function Lux:Draw()
 				if barPos.x > 0 and barPos.y > 0 then
 					local sdmg = {}
 					for slot = 0, 3 do
-						sdmg[slot] = CanUseSpell(myHero, slot) == 0 and CalcDamage(myHero, unit, self.spellData[slot].dmg(myHero, unit)) or 0
+						sdmg[slot] = CanUseSpell(myHero, slot) == 0 and CalcDamage(myHero, unit, 0, self.spellData[slot].dmg(myHero, unit)) or 0
 					end
 					local mhp = GetMaxHP(unit)
 					local chp = GetCurrentHP(unit)
