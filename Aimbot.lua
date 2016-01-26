@@ -2381,7 +2381,7 @@ local spellData = {
     }
 }
 require("Inspired")
-AutoUpdate("/Inspired-gos/scripts/master/Aimbot.lua", "/Inspired-gos/scripts/master/Aimbot.version", "Aimbot.lua", 1)
+AutoUpdate("/Inspired-gos/scripts/master/Aimbot.lua", "/Inspired-gos/scripts/master/Aimbot.version", "Aimbot.lua", 2)
 require("OpenPredict")
 local lastSpell -- { endPos, targetID, startPos, spellID }
 local allowCast = {}
@@ -2457,7 +2457,7 @@ Callback.Add("SpellCast", function(iSpell)
         allowCast[iSpell.spellID] = false
         return
     end
-    if mySpells[iSpell.spellID] and Config.Spells["u"..iSpell.spellID]:Value() and EnemiesAround(myHero.pos, mySpells[iSpell.spellID].range) > 0 then 
+    if mySpells[iSpell.spellID] and Config.Spells["u"..iSpell.spellID]:Value() and EnemiesAround(myHero.pos, mySpells[iSpell.spellID].range) > 0 and mySpells[iSpell.spellID].spellName == myHero:GetSpellData(iSpell.spellID).name then 
         lastSpell = table.copy(iSpell)
         lastSpell.time = os.clock()
         BlockCast()
