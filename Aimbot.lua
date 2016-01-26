@@ -2381,7 +2381,7 @@ local spellData = {
     }
 }
 require("Inspired")
-AutoUpdate("/Inspired-gos/scripts/master/Aimbot.version", "/Inspired-gos/scripts/master/Aimbot.version", "Aimbot.lua", 1)
+AutoUpdate("/Inspired-gos/scripts/master/Aimbot.lua", "/Inspired-gos/scripts/master/Aimbot.version", "Aimbot.lua", 1)
 require("OpenPredict")
 local lastSpell -- { endPos, targetID, startPos, spellID }
 local allowCast = {}
